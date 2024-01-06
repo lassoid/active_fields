@@ -1,0 +1,22 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+# IDE
+.idea/
+.vscode/
+
+# rspec failure tracking
+.rspec_status
+
+spec/dummy_app/db/*
+!spec/dummy_app/db/migrations
+spec/log/*
+!spec/log/.keep
+
+Gemfile.lock
