@@ -1,0 +1,73 @@
+# frozen_string_literal: true
+
+module ActiveFields
+  module Validators
+    # Validates the active_value value
+    class BaseValidator
+      attr_reader :active_field, :errors
+
+      def initialize(active_field)
+        @active_field = active_field
+        @errors = Set.new
+      end
+
+      def validate(value)
+        perform_validation(value)
+        valid?
+      end
+
+      def valid?
+        errors.empty?
+      end
+
+      private
+
+      def perform_validation(value)
+        raise NotImplementedError
+      end
+
+      def validate_size(value, min:, max:)
+        if min && value.size < min
+          errors << [:size_too_short, count: min]
+        end
+
+        if max && value.size > max
+          errors << [:size_too_long, count: max]
+        end
+      end
+
+      def validate_length(value, min:, max:)
+        if min && value.length < min
+          errors << [:too_short, count: min]
+        end
+
+        if max && value.length > max
+          errors << [:too_long, count: max]
+        end
+      end
+
+      def validate_minmax(value, min:, max:)
+        # maybe acts_like?(:date) || acts_like?(:time)
+        if min && value < min
+          formatted =
+            if min.respond_to?(:strftime) && defined?(I18n) && I18n.respond_to?(:l)
+              I18n.l(min)
+            else
+              min
+            end
+          errors << [:greater_than_or_equal_to, count: formatted]
+        end
+
+        if max && value > max
+          if max.respond_to?(:strftime) && defined?(I18n) && I18n.respond_to?(:l)
+            I18n.l(max)
+          else
+            max
+          end
+
+          errors << [:less_than_or_equal_to, count: formatted]
+        end
+      end
+    end
+  end
+end

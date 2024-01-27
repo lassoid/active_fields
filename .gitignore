@@ -15,8 +15,9 @@
 .rspec_status
 
 spec/dummy_app/db/*
-!spec/dummy_app/db/migrations
+!spec/dummy_app/db/migrate
 spec/log/*
 !spec/log/.keep
 
 Gemfile.lock
+TODO.md
