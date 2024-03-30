@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../field"
+
 module ActiveFields
   class Field
     class Enum < ActiveFields::Field
@@ -13,11 +15,11 @@ module ActiveFields
 
       %i[required].each do |column|
         define_method(column) do
-          ActiveModel::Type::Boolean.new.cast(super)
+          ActiveModel::Type::Boolean.new.cast(super())
         end
 
         define_method("#{column}?") do
-          ActiveModel::Type::Boolean.new.cast(super)
+          !!public_send(column)
         end
 
         define_method("#{column}=") do |other|
@@ -27,8 +29,8 @@ module ActiveFields
 
       %i[allowed_values].each do |column|
         define_method(column) do
-          if super.is_a?(Array)
-            super.map { |el| ActiveModel::Type::String.new.cast(el) }
+          if super().is_a?(Array)
+            super().map { |el| ActiveModel::Type::String.new.cast(el) }
           else
             nil
           end

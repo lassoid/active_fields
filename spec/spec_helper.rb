@@ -3,8 +3,13 @@
 require "pg"
 require "active_record"
 require "logger"
+require "factory_bot"
+
+Dir["#{__dir__}/support/**/*.rb"].each { |f| require f }
 
 ActiveRecord::Base.logger = Logger.new("spec/log/log.txt")
+
+FactoryBot.find_definitions
 
 def reinitialize_database
   connection_options = {
@@ -49,6 +54,8 @@ def db_migrate
 end
 
 RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 

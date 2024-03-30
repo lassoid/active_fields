@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "integer_caster"
+
 module ActiveFields
   module Casters
     class IntegerArrayCaster < IntegerCaster

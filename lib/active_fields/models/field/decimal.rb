@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../field"
+
 module ActiveFields
   class Field
     class Decimal < ActiveFields::Field
@@ -14,11 +16,11 @@ module ActiveFields
 
       %i[required].each do |column|
         define_method(column) do
-          ActiveModel::Type::Boolean.new.cast(super)
+          ActiveModel::Type::Boolean.new.cast(super())
         end
 
         define_method("#{column}?") do
-          ActiveModel::Type::Boolean.new.cast(super)
+          !!public_send(column)
         end
 
         define_method("#{column}=") do |other|
@@ -28,7 +30,7 @@ module ActiveFields
 
       %i[min max].each do |column|
         define_method(column) do
-          ActiveModel::Type::Decimal.new.cast(super)
+          ActiveModel::Type::Decimal.new.cast(super())
         end
 
         define_method("#{column}=") do |other|

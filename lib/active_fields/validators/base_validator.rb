@@ -59,12 +59,12 @@ module ActiveFields
         end
 
         if max && value > max
-          if max.respond_to?(:strftime) && defined?(I18n) && I18n.respond_to?(:l)
-            I18n.l(max)
-          else
-            max
-          end
-
+          formatted =
+            if max.respond_to?(:strftime) && defined?(I18n) && I18n.respond_to?(:l)
+              I18n.l(max)
+            else
+              max
+            end
           errors << [:less_than_or_equal_to, count: formatted]
         end
       end

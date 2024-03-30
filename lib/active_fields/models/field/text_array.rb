@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../field"
+
 module ActiveFields
   class Field
     class TextArray < ActiveFields::Field
@@ -17,7 +19,7 @@ module ActiveFields
 
       %i[min_length max_length min_size max_size].each do |column|
         define_method(column) do
-          ActiveModel::Type::Integer.new.cast(super)
+          ActiveModel::Type::Integer.new.cast(super())
         end
 
         define_method("#{column}=") do |other|

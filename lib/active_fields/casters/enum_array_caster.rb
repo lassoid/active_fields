@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
+require_relative "text_array_caster"
+
 module ActiveFields
   module Casters
-    class EnumArrayCaster < BaseCaster
-      def serialize(value)
-        return value unless value.is_a?(Array)
-
-        value.map { _1&.to_s }
-      end
-    end
+    class EnumArrayCaster < TextArrayCaster; end
   end
 end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "decimal_caster"
+
 module ActiveFields
   module Casters
     class DecimalArrayCaster < DecimalCaster

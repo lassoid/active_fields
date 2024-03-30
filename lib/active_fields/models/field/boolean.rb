@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../field"
+
 module ActiveFields
   class Field
     class Boolean < ActiveFields::Field
@@ -13,11 +15,11 @@ module ActiveFields
 
       %i[required nullable].each do |column|
         define_method(column) do
-          ActiveModel::Type::Boolean.new.cast(super)
+          ActiveModel::Type::Boolean.new.cast(super())
         end
 
         define_method("#{column}?") do
-          ActiveModel::Type::Boolean.new.cast(super)
+          !!public_send(column)
         end
 
         define_method("#{column}=") do |other|
