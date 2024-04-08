@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers
-RSpec.describe ActiveFields::Validators::DateArrayValidator do
+RSpec.describe ActiveFields::Validators::IntegerArrayValidator do
   subject(:validate) { object.validate(value) }
 
   let(:object) { described_class.new(active_field) }
   let(:active_field) do
-    build_stubbed(:date_array_active_field, min: min, max: max, min_size: min_size, max_size: max_size)
+    build_stubbed(:integer_array_active_field, min: min, max: max, min_size: min_size, max_size: max_size)
   end
 
   let(:min) { nil }
@@ -15,16 +15,14 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
   let(:max_size) { nil }
 
   include_examples "field_value_validate",
-    -> { [Date.today, [Date.today, nil], ["test value", Date.today]].sample },
-    "not an array of dates",
+    -> { [1, [33, nil], ["test value", 7]].sample },
+    "not an array of numbers",
     -> { [:invalid] }
 
   context "array size comparison" do
     context "without min and max" do
       include_examples "field_value_validate", -> { [] }, "an empty array"
-      include_examples "field_value_validate",
-        -> { Array.new(rand(1..9)) { |n| Date.today + n } },
-        "an array of dates"
+      include_examples "field_value_validate", -> { Array.new(rand(1..9), &:itself) }, "an array of numbers"
     end
 
     context "with min" do
@@ -35,12 +33,12 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
         "an empty array",
         -> { [[:size_too_short, count: min_size]] }
       include_examples "field_value_validate",
-        -> { Array.new(min_size - 1) { |n| Date.today + n } },
-        "an array of dates with too short size",
+        -> { Array.new(min_size - 1, &:itself) },
+        "an array of numbers with too short size",
         -> { [[:size_too_short, count: min_size]] }
       include_examples "field_value_validate",
-        -> { Array.new(min_size) { |n| Date.today + n } },
-        "an array of dates with min size"
+        -> { Array.new(min_size, &:itself) },
+        "an array of numbers with min size"
     end
 
     context "with max" do
@@ -48,11 +46,11 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
 
       include_examples "field_value_validate", -> { [] }, "an empty array"
       include_examples "field_value_validate",
-        -> { Array.new(max_size) { |n| Date.today + n } },
-        "an array of dates with max size"
+        -> { Array.new(max_size, &:itself) },
+        "an array of numbers with max size"
       include_examples "field_value_validate",
-        -> { Array.new(max_size + 1) { |n| Date.today + n } },
-        "an array of dates with exceeded size",
+        -> { Array.new(max_size + 1, &:itself) },
+        "an array of numbers with exceeded size",
         -> { [[:size_too_long, count: max_size]] }
     end
 
@@ -65,18 +63,18 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
         "an empty array",
         -> { [[:size_too_short, count: min_size]] }
       include_examples "field_value_validate",
-        -> { Array.new(min_size - 1) { |n| Date.today + n } },
-        "an array of dates with too short size",
+        -> { Array.new(min_size - 1, &:itself) },
+        "an array of numbers with too short size",
         -> { [[:size_too_short, count: min_size]] }
       include_examples "field_value_validate",
-        -> { Array.new(min_size) { |n| Date.today + n } },
-        "an array of dates with min size"
+        -> { Array.new(min_size, &:itself) },
+        "an array of numbers with min size"
       include_examples "field_value_validate",
-        -> { Array.new(max_size) { |n| Date.today + n } },
-        "an array of dates with max size"
+        -> { Array.new(max_size, &:itself) },
+        "an array of numbers with max size"
       include_examples "field_value_validate",
-        -> { Array.new(max_size + 1) { |n| Date.today + n } },
-        "an array of dates with exceeded size",
+        -> { Array.new(max_size + 1, &:itself) },
+        "an array of numbers with exceeded size",
         -> { [[:size_too_long, count: max_size]] }
     end
   end
@@ -84,53 +82,51 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
   context "element comparison" do
     context "without min and max" do
       include_examples "field_value_validate", -> { [] }, "an empty array"
-      include_examples "field_value_validate",
-        -> { Array.new(rand(1..9)) { |n| Date.today + n } },
-        "an array of dates"
+      include_examples "field_value_validate", -> { Array.new(rand(1..9), &:itself) }, "an array of numbers"
     end
 
     context "with min" do
-      let(:min) { Date.today - rand(1..10) }
+      let(:min) { rand(1..10) }
 
       include_examples "field_value_validate", -> { [] }, "an empty array"
       include_examples "field_value_validate",
         -> { [min, min + 1] },
-        "an array of dates greater than or equal to min"
+        "an array of numbers greater than or equal to min"
       include_examples "field_value_validate",
         -> { [min, min - 1] },
-        "an array containing a date less than min",
-        -> { [[:greater_than_or_equal_to, count: I18n.l(min)]] }
+        "an array containing a number less than min",
+        -> { [[:greater_than_or_equal_to, count: min]] }
     end
 
     context "with max" do
-      let(:max) { Date.today + rand(1..10) }
+      let(:max) { rand(11..20) }
 
       include_examples "field_value_validate", -> { [] }, "an empty array"
       include_examples "field_value_validate",
         -> { [max, max - 1] },
-        "an array of dates less than or equal to max"
+        "an array of numbers less than or equal to max"
       include_examples "field_value_validate",
         -> { [max, max + 1] },
-        "an array containing a date greater than max",
-        -> { [[:less_than_or_equal_to, count: I18n.l(max)]] }
+        "an array containing a number greater than max",
+        -> { [[:less_than_or_equal_to, count: max]] }
     end
 
     context "with both min and max" do
-      let(:min) { Date.today - rand(1..10) }
-      let(:max) { Date.today + rand(1..10) }
+      let(:min) { rand(1..10) }
+      let(:max) { rand(11..20) }
 
       include_examples "field_value_validate", -> { [] }, "an empty array"
       include_examples "field_value_validate",
-        -> { (min..max).to_a.take(2) },
-        "an array of dates between min and max"
+        -> { Array.new(2) { rand(min..max) } },
+        "an array of numbers between min and max"
       include_examples "field_value_validate",
         -> { [min, min - 1] },
-        "an array containing a date less than min",
-        -> { [[:greater_than_or_equal_to, count: I18n.l(min)]] }
+        "an array containing a number less than min",
+        -> { [[:greater_than_or_equal_to, count: min]] }
       include_examples "field_value_validate",
         -> { [max, max + 1] },
-        "an array containing a date greater than max",
-        -> { [[:less_than_or_equal_to, count: I18n.l(max)]] }
+        "an array containing a number greater than max",
+        -> { [[:less_than_or_equal_to, count: max]] }
     end
   end
 end
