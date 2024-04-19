@@ -6,7 +6,7 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
 
   let(:object) { described_class.new(active_field) }
   let(:active_field) do
-    build_stubbed(:date_array_active_field, min: min, max: max, min_size: min_size, max_size: max_size)
+    build(:date_array_active_field, min: min, max: max, min_size: min_size, max_size: max_size)
   end
 
   let(:min) { nil }
@@ -15,7 +15,7 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
   let(:max_size) { nil }
 
   include_examples "field_value_validate",
-    -> { [Date.today, [Date.today, nil], ["test value", Date.today]].sample },
+    -> { [nil, Date.today, [Date.today, nil], ["test value", Date.today]].sample },
     "not an array of dates",
     -> { [:invalid] }
 

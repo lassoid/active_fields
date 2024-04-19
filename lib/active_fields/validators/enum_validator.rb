@@ -8,7 +8,7 @@ module ActiveFields
       private
 
       def perform_validation(value)
-        if value.nil? || value == ""
+        if value.nil?
           errors << :required if active_field.required?
         else
           validate_allowed_values(value)

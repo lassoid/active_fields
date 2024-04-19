@@ -4,7 +4,7 @@ RSpec.describe ActiveFields::Validators::IntegerValidator do
   subject(:validate) { object.validate(value) }
 
   let(:object) { described_class.new(active_field) }
-  let(:active_field) { build_stubbed(:integer_active_field, required: required, min: min, max: max) }
+  let(:active_field) { build(:integer_active_field, required: required, min: min, max: max) }
 
   let(:required) { false }
   let(:min) { nil }

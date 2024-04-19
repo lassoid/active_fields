@@ -6,7 +6,7 @@ RSpec.describe ActiveFields::Validators::IntegerArrayValidator do
 
   let(:object) { described_class.new(active_field) }
   let(:active_field) do
-    build_stubbed(:integer_array_active_field, min: min, max: max, min_size: min_size, max_size: max_size)
+    build(:integer_array_active_field, min: min, max: max, min_size: min_size, max_size: max_size)
   end
 
   let(:min) { nil }
@@ -15,7 +15,7 @@ RSpec.describe ActiveFields::Validators::IntegerArrayValidator do
   let(:max_size) { nil }
 
   include_examples "field_value_validate",
-    -> { [1, [33, nil], ["test value", 7]].sample },
+    -> { [nil, 1, [33, nil], ["test value", 7]].sample },
     "not an array of numbers",
     -> { [:invalid] }
 
