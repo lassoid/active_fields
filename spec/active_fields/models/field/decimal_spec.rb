@@ -1,142 +1,137 @@
 # frozen_string_literal: true
 
-RSpec.xdescribe ActiveFields::Field::Decimal do
-  it_behaves_like "custom_field", factory: :decimal_custom_field_definition
+RSpec.describe ActiveFields::Field::Decimal do
+  it_behaves_like "active_field", factory: :decimal_active_field
+
+  include_examples "store_attribute_boolean", :required, :options, described_class
+  include_examples "store_attribute_decimal", :min, :options, described_class
+  include_examples "store_attribute_decimal", :max, :options, described_class
 
   it "has a valid factory" do
-    expect(build(:decimal_custom_field_definition)).to be_valid
+    expect(build(:decimal_active_field)).to be_valid
   end
 
   context "validations" do
-    subject { build(:decimal_custom_field_definition) }
+    subject(:record) { build(:decimal_active_field, min: min, max: max) }
 
-    it { is_expected.to validate_exclusion_of(:required).in_array([nil]) }
-    it { is_expected.to validate_exclusion_of(:multiple).in_array([nil]) }
+    let(:min) { nil }
+    let(:max) { nil }
 
-    context "when required" do
-      subject { build(:decimal_custom_field_definition, :required) }
+    describe "#validate_default_value" do
+      before do
+        validator = instance_double(ActiveFields::Validators::DecimalValidator, errors: validator_errors)
+        # rubocop:disable RSpec/SubjectStub
+        allow(record).to receive(:value_validator).and_return(validator)
+        # rubocop:enable RSpec/SubjectStub
+        allow(validator).to receive(:validate).with(record.default_value).and_return(validator_errors.empty?)
+      end
 
-      it { is_expected.to validate_presence_of(:default) }
+      context "when validator returns success" do
+        let(:validator_errors) { Set.new }
+
+        it { is_expected.to be_valid }
+      end
+
+      context "when validator returns error" do
+        let(:validator_errors) { Set.new([:invalid, [:greater_than, count: 1]]) }
+
+        it { is_expected.not_to be_valid }
+
+        it "adds errors from validator" do
+          record.valid?
+
+          validator_errors.each do |error|
+            expect(record.errors.added?(:default_value, *error)).to be(true)
+          end
+        end
+      end
     end
 
-    context "when not required" do
-      it { is_expected.not_to validate_presence_of(:default) }
-    end
+    describe "#max" do
+      context "with min" do
+        let(:min) { rand(-10.0..10.0).to_d }
 
-    context "with min" do
-      subject { build(:decimal_custom_field_definition, min: min) }
+        context "when max is nil" do
+          let(:max) { nil }
 
-      let(:min) { rand(0..10).to_f }
+          it { is_expected.to be_valid }
+        end
 
-      it { is_expected.to validate_numericality_of(:max).is_greater_than_or_equal_to(min).allow_nil }
-      it { is_expected.to validate_numericality_of(:default).is_greater_than_or_equal_to(min).allow_nil }
-    end
+        context "when max is less than min" do
+          let(:max) { min - 0.1 }
 
-    context "without min" do
-      it { is_expected.not_to validate_numericality_of(:max) }
-      it { is_expected.not_to validate_numericality_of(:default) }
-    end
+          it { is_expected.not_to be_valid }
 
-    context "with max" do
-      subject { build(:decimal_custom_field_definition, max: max) }
+          it "adds errors from validator" do
+            record.valid?
 
-      let(:max) { rand(0..10).to_f }
+            expect(record.errors.of_kind?(:max, :greater_than_or_equal_to)).to be(true)
+          end
+        end
 
-      it { is_expected.to validate_numericality_of(:default).is_less_than_or_equal_to(max).allow_nil }
-    end
+        context "when max is equal to min" do
+          let(:max) { min }
 
-    context "without max" do
-      it { is_expected.not_to validate_numericality_of(:default) }
+          it { is_expected.to be_valid }
+        end
+
+        context "when max is greater than min" do
+          let(:max) { min + 0.1 }
+
+          it { is_expected.to be_valid }
+        end
+      end
     end
   end
 
   context "callbacks" do
     describe "after_initialize #set_defaults" do
-      context "when required is nil" do
-        let(:record) { described_class.new }
+      let(:record) { described_class.new(required: required) }
+      let(:required) { nil }
 
+      context "when required is nil" do
         it "sets false" do
           expect(record.required).to be(false)
         end
       end
 
       context "when required is not nil" do
-        let(:record) { described_class.new(required: true) }
+        let(:required) { [true, false].sample }
 
         it "doesn't change column" do
-          expect(record.required).to be(true)
-        end
-      end
-
-      context "when multiple is nil" do
-        let(:record) { described_class.new }
-
-        it "sets false" do
-          expect(record.multiple).to be(false)
-        end
-      end
-
-      context "when multiple is not nil" do
-        let(:record) { described_class.new(multiple: true) }
-
-        it "doesn't change column" do
-          expect(record.multiple).to be(true)
+          expect(record.required).to be(required)
         end
       end
     end
 
     describe "after_create #add_field_to_records" do
-      let_it_be(:customizable, refind: true) { create(:user) }
+      let!(:customizable) { Post.create! }
 
-      let(:record) { build(:decimal_custom_field_definition) }
+      let(:record) do
+        build(
+          :decimal_active_field,
+          required: false,
+          default_value: [nil, rand(-10.0..10.0)].sample,
+          customizable_type: customizable.class.name,
+        )
+      end
 
-      it "creates custom field for customizable" do
+      it "creates active_value for customizable" do
         expect do
           record.save!
           customizable.reload
-        end.to change { customizable.custom_fields.count }.by(1)
+        end.to change { customizable.active_values.size }.by(1)
       end
 
-      context "when default is present" do
-        let(:record) { build(:decimal_custom_field_definition, default: rand(0..10).to_f) }
+      it "sets active_value value" do
+        record.save!
+        customizable.reload
 
-        it "sets custom field value" do
-          record.save!
+        caster = record.value_caster
 
-          caster = record.field_caster
-
-          expect(customizable.custom_fields.take!.value).to eq(
-            caster.deserialize(caster.serialize(record.default)),
-          )
-        end
-      end
-
-      context "when default is present and multiple enabled" do
-        let(:record) { build(:decimal_custom_field_definition, :multiple, default: rand(0..10).to_f) }
-
-        it "sets custom field value" do
-          record.save!
-
-          caster = record.field_caster
-
-          expect(customizable.custom_fields.take!.value).to eq(
-            caster.deserialize(caster.serialize(record.default)),
-          )
-        end
-      end
-
-      context "when default is nil" do
-        let(:record) { build(:decimal_custom_field_definition, default: nil) }
-
-        it "sets custom field value" do
-          record.save!
-
-          caster = record.field_caster
-
-          expect(customizable.custom_fields.take!.value).to eq(
-            caster.deserialize(caster.serialize(record.default)),
-          )
-        end
+        expect(customizable.active_values.take!.value).to eq(
+          caster.deserialize(caster.serialize(record.default_value)),
+        )
       end
     end
   end

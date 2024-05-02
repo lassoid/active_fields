@@ -10,13 +10,14 @@ module ActiveFields
       # attribute :required, :boolean, default: false
       # attribute :min, :decimal
       # attribute :max, :decimal
+      # TODO attribute :precision, :integer
 
       validates :required, exclusion: [nil]
       validates :max, numericality: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
 
       %i[required].each do |column|
         define_method(column) do
-          ActiveModel::Type::Boolean.new.cast(super())
+          ActiveFields::Casters::BooleanCaster.new.deserialize(super())
         end
 
         define_method("#{column}?") do
@@ -24,17 +25,17 @@ module ActiveFields
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Boolean.new.cast(other))
+          super(ActiveFields::Casters::BooleanCaster.new.serialize(other))
         end
       end
 
       %i[min max].each do |column|
         define_method(column) do
-          ActiveModel::Type::Decimal.new.cast(super())
+          ActiveFields::Casters::DecimalCaster.new.deserialize(super())
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Decimal.new.cast(other))
+          super(ActiveFields::Casters::DecimalCaster.new.serialize(other))
         end
       end
 

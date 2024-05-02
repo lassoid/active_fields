@@ -22,7 +22,7 @@ RSpec.describe ActiveFields::Validators::DecimalArrayValidator do
   context "array size comparison" do
     context "without min and max" do
       include_examples "field_value_validate", -> { [] }, "an empty array"
-      include_examples "field_value_validate", -> { Array.new(rand(1..9), &:to_f) }, "an array of numbers"
+      include_examples "field_value_validate", -> { Array.new(rand(1..9), &:to_d) }, "an array of numbers"
     end
 
     context "with min" do
@@ -33,11 +33,11 @@ RSpec.describe ActiveFields::Validators::DecimalArrayValidator do
         "an empty array",
         -> { [[:size_too_short, count: min_size]] }
       include_examples "field_value_validate",
-        -> { Array.new(min_size - 1, &:to_f) },
+        -> { Array.new(min_size - 1, &:to_d) },
         "an array of numbers with too short size",
         -> { [[:size_too_short, count: min_size]] }
       include_examples "field_value_validate",
-        -> { Array.new(min_size, &:to_f) },
+        -> { Array.new(min_size, &:to_d) },
         "an array of numbers with min size"
     end
 
@@ -46,10 +46,10 @@ RSpec.describe ActiveFields::Validators::DecimalArrayValidator do
 
       include_examples "field_value_validate", -> { [] }, "an empty array"
       include_examples "field_value_validate",
-        -> { Array.new(max_size, &:to_f) },
+        -> { Array.new(max_size, &:to_d) },
         "an array of numbers with max size"
       include_examples "field_value_validate",
-        -> { Array.new(max_size + 1, &:to_f) },
+        -> { Array.new(max_size + 1, &:to_d) },
         "an array of numbers with exceeded size",
         -> { [[:size_too_long, count: max_size]] }
     end
@@ -63,17 +63,17 @@ RSpec.describe ActiveFields::Validators::DecimalArrayValidator do
         "an empty array",
         -> { [[:size_too_short, count: min_size]] }
       include_examples "field_value_validate",
-        -> { Array.new(min_size - 1, &:to_f) },
+        -> { Array.new(min_size - 1, &:to_d) },
         "an array of numbers with too short size",
         -> { [[:size_too_short, count: min_size]] }
       include_examples "field_value_validate",
-        -> { Array.new(min_size, &:to_f) },
+        -> { Array.new(min_size, &:to_d) },
         "an array of numbers with min size"
       include_examples "field_value_validate",
-        -> { Array.new(max_size, &:to_f) },
+        -> { Array.new(max_size, &:to_d) },
         "an array of numbers with max size"
       include_examples "field_value_validate",
-        -> { Array.new(max_size + 1, &:to_f) },
+        -> { Array.new(max_size + 1, &:to_d) },
         "an array of numbers with exceeded size",
         -> { [[:size_too_long, count: max_size]] }
     end
@@ -82,7 +82,7 @@ RSpec.describe ActiveFields::Validators::DecimalArrayValidator do
   context "element comparison" do
     context "without min and max" do
       include_examples "field_value_validate", -> { [] }, "an empty array"
-      include_examples "field_value_validate", -> { Array.new(rand(1..9), &:to_f) }, "an array of numbers"
+      include_examples "field_value_validate", -> { Array.new(rand(1..9), &:to_d) }, "an array of numbers"
     end
 
     context "with min" do

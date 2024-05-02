@@ -9,10 +9,14 @@ module ActiveFields
         cast(value)
       end
 
+      def deserialize(value)
+        cast(value)
+      end
+
       private
 
       def cast(value)
-        Float(value, exception: false)
+        BigDecimal(value, 0, exception: false)
       end
     end
   end

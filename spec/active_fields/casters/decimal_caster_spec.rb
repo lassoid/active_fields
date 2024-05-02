@@ -15,10 +15,10 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     context "when integer" do
       let(:value) { rand(0..10) }
 
-      it { is_expected.to eq(Float(value)) }
+      it { is_expected.to eq(BigDecimal(value)) }
     end
 
-    context "when float" do
+    context "when decimal" do
       let(:value) { rand(0.0..10.0) }
 
       it { is_expected.to eq(value) }
@@ -27,13 +27,13 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     context "when string with integer" do
       let(:value) { rand(0..10).to_s }
 
-      it { is_expected.to eq(Float(value)) }
+      it { is_expected.to eq(BigDecimal(value)) }
     end
 
-    context "when string with float" do
+    context "when string with decimal" do
       let(:value) { rand(0.0..10.0).to_s }
 
-      it { is_expected.to eq(Float(value)) }
+      it { is_expected.to eq(BigDecimal(value)) }
     end
 
     context "when string" do
@@ -57,10 +57,10 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     context "when integer" do
       let(:value) { rand(0..10) }
 
-      it { is_expected.to eq(Float(value)) }
+      it { is_expected.to eq(BigDecimal(value)) }
     end
 
-    context "when float" do
+    context "when decimal" do
       let(:value) { rand(0.0..10.0) }
 
       it { is_expected.to eq(value) }
@@ -69,13 +69,13 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     context "when string with integer" do
       let(:value) { rand(0..10).to_s }
 
-      it { is_expected.to eq(Float(value)) }
+      it { is_expected.to eq(BigDecimal(value)) }
     end
 
-    context "when string with float" do
+    context "when string with decimal" do
       let(:value) { rand(0.0..10.0).to_s }
 
-      it { is_expected.to eq(Float(value)) }
+      it { is_expected.to eq(BigDecimal(value)) }
     end
 
     context "when string" do

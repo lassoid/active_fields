@@ -18,7 +18,7 @@ RSpec.describe ActiveFields::Casters::IntegerCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when float" do
+    context "when decimal" do
       let(:value) { rand(0.0..10.0) }
 
       it { is_expected.to eq(Integer(value)) }
@@ -30,7 +30,7 @@ RSpec.describe ActiveFields::Casters::IntegerCaster do
       it { is_expected.to eq(Integer(value)) }
     end
 
-    context "when string with float" do
+    context "when string with decimal" do
       let(:value) { rand(0.0..10.0).to_s }
 
       it { is_expected.to be_nil }
@@ -60,7 +60,7 @@ RSpec.describe ActiveFields::Casters::IntegerCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when float" do
+    context "when decimal" do
       let(:value) { rand(0.0..10.0) }
 
       it { is_expected.to eq(Integer(value)) }
@@ -72,7 +72,7 @@ RSpec.describe ActiveFields::Casters::IntegerCaster do
       it { is_expected.to eq(Integer(value)) }
     end
 
-    context "when string with float" do
+    context "when string with decimal" do
       let(:value) { rand(0.0..10.0).to_s }
 
       it { is_expected.to be_nil }

@@ -4,15 +4,19 @@ require_relative "base_caster"
 
 module ActiveFields
   module Casters
-    class IntegerCaster < BaseCaster
+    class IntegerCaster < DecimalCaster
       def serialize(value)
+        cast(value)
+      end
+
+      def deserialize(value)
         cast(value)
       end
 
       private
 
       def cast(value)
-        Integer(value, exception: false)
+        super(value)&.to_i
       end
     end
   end

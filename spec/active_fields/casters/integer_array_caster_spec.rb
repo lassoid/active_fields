@@ -30,7 +30,7 @@ RSpec.describe ActiveFields::Casters::IntegerArrayCaster do
       it { is_expected.to eq(value.map { Integer(_1) }) }
     end
 
-    context "when array of float strings" do
+    context "when array of decimal strings" do
       let(:value) { [rand(0.0..10.0).to_s, rand(0.0..10.0).to_s] }
 
       it { is_expected.to eq([nil, nil]) }
@@ -54,7 +54,7 @@ RSpec.describe ActiveFields::Casters::IntegerArrayCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when float" do
+    context "when decimal" do
       let(:value) { rand(0.0..10.0) }
 
       it { is_expected.to eq(value) }
@@ -66,7 +66,7 @@ RSpec.describe ActiveFields::Casters::IntegerArrayCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when string with float" do
+    context "when string with decimal" do
       let(:value) { rand(0.0..10.0).to_s }
 
       it { is_expected.to eq(value) }
@@ -108,7 +108,7 @@ RSpec.describe ActiveFields::Casters::IntegerArrayCaster do
       it { is_expected.to eq(value.map { Integer(_1) }) }
     end
 
-    context "when array of float strings" do
+    context "when array of decimal strings" do
       let(:value) { [rand(0.0..10.0).to_s, rand(0.0..10.0).to_s] }
 
       it { is_expected.to eq([nil, nil]) }
@@ -132,7 +132,7 @@ RSpec.describe ActiveFields::Casters::IntegerArrayCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when float" do
+    context "when decimal" do
       let(:value) { rand(0.0..10.0) }
 
       it { is_expected.to eq(value) }
@@ -144,7 +144,7 @@ RSpec.describe ActiveFields::Casters::IntegerArrayCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when string with float" do
+    context "when string with decimal" do
       let(:value) { rand(0.0..10.0).to_s }
 
       it { is_expected.to eq(value) }

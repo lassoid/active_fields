@@ -19,11 +19,11 @@ module ActiveFields
 
       %i[min_length max_length min_size max_size].each do |column|
         define_method(column) do
-          ActiveModel::Type::Integer.new.cast(super())
+          ActiveFields::Casters::IntegerCaster.new.deserialize(super())
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Integer.new.cast(other))
+          super(ActiveFields::Casters::IntegerCaster.new.serialize(other))
         end
       end
 

@@ -18,21 +18,21 @@ module ActiveFields
 
       %i[min_size max_size].each do |column|
         define_method(column) do
-          ActiveModel::Type::Integer.new.cast(super())
+          ActiveFields::Casters::IntegerCaster.new.deserialize(super())
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Integer.new.cast(other))
+          super(ActiveFields::Casters::IntegerCaster.new.serialize(other))
         end
       end
 
       %i[min max].each do |column|
         define_method(column) do
-          ActiveModel::Type::Date.new.cast(super())
+          ActiveFields::Casters::DateCaster.new.deserialize(super())
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Date.new.cast(other))
+          super(ActiveFields::Casters::DateCaster.new.serialize(other))
         end
       end
 

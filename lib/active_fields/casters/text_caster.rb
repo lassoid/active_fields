@@ -9,6 +9,10 @@ module ActiveFields
         cast(value)
       end
 
+      def deserialize(value)
+        cast(value)
+      end
+
       private
 
       def cast(value)

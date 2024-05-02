@@ -15,7 +15,7 @@ module ActiveFields
 
       %i[required].each do |column|
         define_method(column) do
-          ActiveModel::Type::Boolean.new.cast(super())
+          ActiveFields::Casters::BooleanCaster.new.deserialize(super())
         end
 
         define_method("#{column}?") do
@@ -23,25 +23,17 @@ module ActiveFields
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Boolean.new.cast(other))
+          super(ActiveFields::Casters::BooleanCaster.new.serialize(other))
         end
       end
 
       %i[allowed_values].each do |column|
         define_method(column) do
-          if super().is_a?(Array)
-            super().map { |el| ActiveModel::Type::String.new.cast(el) }
-          else
-            nil
-          end
+          ActiveFields::Casters::TextArrayCaster.new.deserialize(super())
         end
 
         define_method("#{column}=") do |other|
-          if other.is_a?(Array)
-            super(other.map { |el| ActiveModel::Type::String.new.cast(el) })
-          else
-            super(nil)
-          end
+          super(ActiveFields::Casters::TextArrayCaster.new.serialize(other))
         end
       end
 
@@ -53,7 +45,7 @@ module ActiveFields
         elsif allowed_values.is_a?(Array)
           if allowed_values.empty?
             errors.add(:allowed_values, :blank)
-          elsif allowed_values.any(&:blank?)
+          elsif allowed_values.any?(&:blank?)
             errors.add(:allowed_values, :blank)
           end
         else

@@ -9,6 +9,7 @@ module ActiveFields
 
       # attribute :min, :decimal
       # attribute :max, :decimal
+      # TODO attribute :precision, :integer
       # attribute :min_size, :integer
       # attribute :max_size, :integer
 
@@ -18,21 +19,21 @@ module ActiveFields
 
       %i[min_size max_size].each do |column|
         define_method(column) do
-          ActiveModel::Type::Integer.new.cast(super())
+          ActiveFields::Casters::IntegerCaster.new.deserialize(super())
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Integer.new.cast(other))
+          super(ActiveFields::Casters::IntegerCaster.new.serialize(other))
         end
       end
 
       %i[min max].each do |column|
         define_method(column) do
-          ActiveModel::Type::Decimal.new.cast(super())
+          ActiveFields::Casters::DecimalCaster.new.deserialize(super())
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Decimal.new.cast(other))
+          super(ActiveFields::Casters::DecimalCaster.new.serialize(other))
         end
       end
 

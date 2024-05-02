@@ -49,7 +49,7 @@ RSpec.describe ActiveFields::Field::Date do
 
     describe "#max" do
       context "with min" do
-        let(:min) { Date.today }
+        let(:min) { Date.today + rand(-10..10) }
 
         context "when max is nil" do
           let(:max) { nil }
@@ -111,7 +111,7 @@ RSpec.describe ActiveFields::Field::Date do
         build(
           :date_active_field,
           required: false,
-          default_value: [nil, Date.today].sample,
+          default_value: [nil, Date.today + rand(-10..10)].sample,
           customizable_type: customizable.class.name,
         )
       end

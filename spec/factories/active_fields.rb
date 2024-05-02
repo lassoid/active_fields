@@ -18,10 +18,21 @@ FactoryBot.define do
 
   factory :enum_active_field, parent: :active_field, class: "ActiveFields::Field::Enum" do
     type { "ActiveFields::Field::Enum" }
+
+    allowed_values { Array.new(5) { TestMethods.random_string(10) } }
+    default_value do
+      allowed = allowed_values.dup
+      allowed << nil unless required
+
+      allowed.sample
+    end
   end
 
   factory :enum_array_active_field, parent: :active_field, class: "ActiveFields::Field::EnumArray" do
     type { "ActiveFields::Field::EnumArray" }
+
+    allowed_values { Array.new(5) { TestMethods.random_string(10) } }
+    default_value { allowed_values.sample(rand((min_size || 0)..(max_size || allowed_values.size))) }
   end
 
   factory :integer_active_field, parent: :active_field, class: "ActiveFields::Field::Integer" do
@@ -53,8 +64,8 @@ FactoryBot.define do
 
     default_value do
       allowed = [true]
-      allowed << false unless required?
-      allowed << nil if nullable?
+      allowed << false unless required
+      allowed << nil if nullable
 
       allowed.sample
     end
@@ -105,12 +116,12 @@ FactoryBot.define do
 
   factory :decimal_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
     active_field factory: %i[decimal_active_field]
-    sequence(:value, &:to_f)
+    sequence(:value, &:to_d)
   end
 
   factory :decimal_array_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
     active_field factory: %i[decimal_array_active_field]
-    sequence(:value) { |n| [n.to_f, (n + 1).to_f] }
+    sequence(:value) { |n| [n.to_d, (n + 1).to_d] }
   end
 
   factory :date_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do

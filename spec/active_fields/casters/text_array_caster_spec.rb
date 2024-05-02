@@ -30,14 +30,8 @@ RSpec.describe ActiveFields::Casters::TextArrayCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when number" do
-      let(:value) { rand(0..10) }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string" do
-      let(:value) { "test value" }
+    context "when not an array" do
+      let(:value) { [rand(0..10), "test value", Date.today].sample }
 
       it { is_expected.to eq(value) }
     end
@@ -72,14 +66,8 @@ RSpec.describe ActiveFields::Casters::TextArrayCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when number" do
-      let(:value) { rand(0..10) }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string" do
-      let(:value) { "test value" }
+    context "when not an array" do
+      let(:value) { [rand(0..10), "test value", Date.today].sample }
 
       it { is_expected.to eq(value) }
     end

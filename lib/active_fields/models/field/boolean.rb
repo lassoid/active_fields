@@ -15,7 +15,7 @@ module ActiveFields
 
       %i[required nullable].each do |column|
         define_method(column) do
-          ActiveModel::Type::Boolean.new.cast(super())
+          ActiveFields::Casters::BooleanCaster.new.deserialize(super())
         end
 
         define_method("#{column}?") do
@@ -23,7 +23,7 @@ module ActiveFields
         end
 
         define_method("#{column}=") do |other|
-          super(ActiveModel::Type::Boolean.new.cast(other))
+          super(ActiveFields::Casters::BooleanCaster.new.serialize(other))
         end
       end
 
