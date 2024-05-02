@@ -32,7 +32,7 @@ module ActiveFields
     end
 
     def value_caster
-      value_caster_class.new(self)
+      value_caster_class.new
     end
 
     def customizable_model
@@ -40,11 +40,11 @@ module ActiveFields
     end
 
     def default_value=(v)
-      super(field_caster.serialize(v))
+      super(value_caster.serialize(v))
     end
 
     def default_value
-      field_caster.deserialize(super)
+      value_caster.deserialize(super)
     end
 
     private

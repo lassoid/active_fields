@@ -9,7 +9,11 @@ module ActiveFields
       # active_values association for the owner record.
       # We skip built-in autosave because it doesn't work if the owner record isn't changed.
       # Instead, we implement our own autosave callback: `save_changed_active_values`.
-      has_many :active_values, class_name: "ActiveFields::Value", as: :customizable, autosave: false, dependent: :destroy
+      has_many :active_values,
+        class_name: "ActiveFields::Value",
+        as: :customizable,
+        autosave: false,
+        dependent: :destroy
 
       # Firstly, we build active_values that hasn't been already created.
       # Than, we set values for active_values whose values should be changed
@@ -49,7 +53,7 @@ module ActiveFields
       active_fields.each do |active_field|
         active_value =
           find_active_value_by_field(active_field) ||
-            active_values.new(active_field: active_field, value: active_field.default_value)
+          active_values.new(active_field: active_field, value: active_field.default_value)
 
         next unless active_values_attributes.is_a?(Hash)
         next unless active_values_attributes.key?(active_field.name)

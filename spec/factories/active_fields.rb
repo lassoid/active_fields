@@ -50,6 +50,14 @@ FactoryBot.define do
 
   factory :boolean_active_field, parent: :active_field, class: "ActiveFields::Field::Boolean" do
     type { "ActiveFields::Field::Boolean" }
+
+    default_value do
+      allowed = [true]
+      allowed << false unless required?
+      allowed << nil if nullable?
+
+      allowed.sample
+    end
   end
 
   # ActiveField::Value

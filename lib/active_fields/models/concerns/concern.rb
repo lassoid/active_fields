@@ -9,7 +9,7 @@ module ActiveFields
       def has_active_fields(options = {})
         include ActiveFields::Customizable
 
-        @__active_fields_options = options.dup
+        @__active_fields_options__ = options.dup
       end
     end
   end

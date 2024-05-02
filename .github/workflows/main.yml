@@ -7,47 +7,58 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
         ruby:
-          - '3.0.6'
-          - '3.1.4'
-          - '3.2.2'
-          - '3.3.0'
+          - '3.0.7'
+          - '3.1.5'
+          - '3.2.4'
+          - '3.3.1'
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: active_fields_test
+          PGUSER: postgres # Fixes 'FATAL:  role "root" does not exist'
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
+      - name: Info
+        run: |
+          echo "Triggered by: ${{ github.triggering_actor }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Ruby
+      - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
 
-      - name: Test
+      - name: Run tests
         run: bin/rspec
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.0
+          ruby-version: 3.3.1
           bundler-cache: true
 
-      - name: Rubocop
+      - name: Rubocop check
         run: bin/rubocop
-
-      - name: Install Bundler linters
-        run: gem install bundler-audit bundler-leak
-      - name: Bundler audit check
-        run: bundler-audit check --update
-      - name: Bundler leak check
-        run: bundler-leak check --update
