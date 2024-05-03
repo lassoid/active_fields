@@ -12,34 +12,40 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       it { is_expected.to be_nil }
     end
 
-    context "when integer" do
-      let(:value) { rand(0..10) }
+    context "when invalid string" do
+      let(:value) { "1234 not a number" }
 
-      it { is_expected.to eq(BigDecimal(value)) }
+      it { is_expected.to be_nil }
     end
 
-    context "when decimal" do
-      let(:value) { rand(0.0..10.0) }
+    context "when integer" do
+      let(:value) { rand(-10..10) }
+
+      it { is_expected.to eq(value.to_d) }
+    end
+
+    context "when float" do
+      let(:value) { rand(-10.0..10.0) }
+
+      it { is_expected.to eq(value.to_d) }
+    end
+
+    context "when big decimal" do
+      let(:value) { rand(-10.0..10.0).to_d }
 
       it { is_expected.to eq(value) }
     end
 
-    context "when string with integer" do
-      let(:value) { rand(0..10).to_s }
+    context "when integer string" do
+      let(:value) { rand(-10..10).to_s }
 
-      it { is_expected.to eq(BigDecimal(value)) }
+      it { is_expected.to eq(value.to_d) }
     end
 
-    context "when string with decimal" do
-      let(:value) { rand(0.0..10.0).to_s }
+    context "when decimal string" do
+      let(:value) { rand(-10.0..10.0).to_s }
 
-      it { is_expected.to eq(BigDecimal(value)) }
-    end
-
-    context "when string" do
-      let(:value) { "test value" }
-
-      it { is_expected.to be_nil }
+      it { is_expected.to eq(value.to_d) }
     end
   end
 
@@ -54,34 +60,40 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       it { is_expected.to be_nil }
     end
 
-    context "when integer" do
-      let(:value) { rand(0..10) }
+    context "when invalid string" do
+      let(:value) { "1234 not a number" }
 
-      it { is_expected.to eq(BigDecimal(value)) }
+      it { is_expected.to be_nil }
     end
 
-    context "when decimal" do
-      let(:value) { rand(0.0..10.0) }
+    context "when integer" do
+      let(:value) { rand(-10..10) }
+
+      it { is_expected.to eq(value.to_d) }
+    end
+
+    context "when float" do
+      let(:value) { rand(-10.0..10.0) }
+
+      it { is_expected.to eq(value.to_d) }
+    end
+
+    context "when big decimal" do
+      let(:value) { rand(-10.0..10.0).to_d }
 
       it { is_expected.to eq(value) }
     end
 
-    context "when string with integer" do
-      let(:value) { rand(0..10).to_s }
+    context "when integer string" do
+      let(:value) { rand(-10..10).to_s }
 
-      it { is_expected.to eq(BigDecimal(value)) }
+      it { is_expected.to eq(value.to_d) }
     end
 
-    context "when string with decimal" do
-      let(:value) { rand(0.0..10.0).to_s }
+    context "when decimal string" do
+      let(:value) { rand(-10.0..10.0).to_s }
 
-      it { is_expected.to eq(BigDecimal(value)) }
-    end
-
-    context "when string" do
-      let(:value) { "test value" }
-
-      it { is_expected.to be_nil }
+      it { is_expected.to eq(value.to_d) }
     end
   end
 end

@@ -13,7 +13,7 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
     end
 
     context "when array of numbers" do
-      let(:value) { [rand(0..10), rand(0..10)] }
+      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
 
       it { is_expected.to eq(value.map(&:to_s)) }
     end
@@ -31,7 +31,7 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
     end
 
     context "when number" do
-      let(:value) { rand(0..10) }
+      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
 
       it { is_expected.to eq(value) }
     end
@@ -55,7 +55,7 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
     end
 
     context "when array of numbers" do
-      let(:value) { [rand(0..10), rand(0..10)] }
+      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
 
       it { is_expected.to eq(value.map(&:to_s)) }
     end
@@ -73,7 +73,7 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
     end
 
     context "when number" do
-      let(:value) { rand(0..10) }
+      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
 
       it { is_expected.to eq(value) }
     end

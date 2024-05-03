@@ -8,13 +8,13 @@ module ActiveFields
       def serialize(value)
         return value unless value.is_a?(Array)
 
-        value.map { cast(_1) }
+        value.map { super(_1) }
       end
 
       def deserialize(value)
         return value unless value.is_a?(Array)
 
-        value.map { cast(_1) }
+        value.map { super(_1) }
       end
     end
   end

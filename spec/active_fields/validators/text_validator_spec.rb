@@ -12,7 +12,7 @@ RSpec.describe ActiveFields::Validators::TextValidator do
 
   include_examples "field_value_validate", -> { nil }, "nil"
   include_examples "field_value_validate",
-    -> { [rand(0..10), Date.current, ["test value"]].sample },
+    -> { [rand(-10..10), Date.current, ["test value"]].sample },
     "not a string or nil",
     -> { [:invalid] }
 

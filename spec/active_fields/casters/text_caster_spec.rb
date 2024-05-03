@@ -13,7 +13,7 @@ RSpec.describe ActiveFields::Casters::TextCaster do
     end
 
     context "when number" do
-      let(:value) { rand(0..10) }
+      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
 
       it { is_expected.to eq(value.to_s) }
     end
@@ -37,7 +37,7 @@ RSpec.describe ActiveFields::Casters::TextCaster do
     end
 
     context "when number" do
-      let(:value) { rand(0..10) }
+      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
 
       it { is_expected.to eq(value.to_s) }
     end

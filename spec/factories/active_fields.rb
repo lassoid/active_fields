@@ -10,6 +10,29 @@ FactoryBot.define do
 
   factory :text_active_field, parent: :active_field, class: "ActiveFields::Field::Text" do
     type { "ActiveFields::Field::Text" }
+
+    trait :required do
+      required { true }
+    end
+
+    trait :with_min_length do
+      min_length { rand(0..10) }
+    end
+
+    trait :with_max_length do
+      max_length { rand(10..20) }
+    end
+
+    after(:build) do |record|
+      min_length_allowed = record.min_length || 0
+      max_length_allowed = record.max_length || 10
+      length = rand(min_length_allowed..max_length_allowed) || 10
+
+      allowed = [TestMethods.random_string(length)]
+      allowed << nil unless record.required?
+
+      record.default_value = allowed.sample
+    end
   end
 
   factory :text_array_active_field, parent: :active_field, class: "ActiveFields::Field::TextArray" do
@@ -20,11 +43,16 @@ FactoryBot.define do
     type { "ActiveFields::Field::Enum" }
 
     allowed_values { Array.new(5) { TestMethods.random_string(10) } }
-    default_value do
-      allowed = allowed_values.dup
-      allowed << nil unless required
 
-      allowed.sample
+    trait :required do
+      required { true }
+    end
+
+    after(:build) do |record|
+      allowed = record.allowed_values.is_a?(Array) ? record.allowed_values.dup : []
+      allowed << nil unless record.required?
+
+      record.default_value = allowed.sample
     end
   end
 
@@ -32,11 +60,40 @@ FactoryBot.define do
     type { "ActiveFields::Field::EnumArray" }
 
     allowed_values { Array.new(5) { TestMethods.random_string(10) } }
-    default_value { allowed_values.sample(rand((min_size || 0)..(max_size || allowed_values.size))) }
+
+    after(:build) do |record|
+      allowed_min_size = record.min_size || 0
+      allowed_max_size = record.max_size || record.allowed_values.size
+
+      record.default_value = record.allowed_values.sample(rand(allowed_min_size..allowed_max_size))
+    end
   end
 
   factory :integer_active_field, parent: :active_field, class: "ActiveFields::Field::Integer" do
     type { "ActiveFields::Field::Integer" }
+
+    trait :required do
+      required { true }
+    end
+
+    trait :with_min do
+      min { rand(-10..0) }
+    end
+
+    trait :with_max do
+      max { rand(0..10) }
+    end
+
+    after(:build) do |record|
+      max_allowed = record.max || 10
+      min_allowed = record.min || (max_allowed - 20)
+      value = rand(min_allowed..max_allowed) || 0
+
+      allowed = [value]
+      allowed << nil unless record.required?
+
+      record.default_value = allowed.sample
+    end
   end
 
   factory :integer_array_active_field, parent: :active_field, class: "ActiveFields::Field::IntegerArray" do
@@ -45,6 +102,29 @@ FactoryBot.define do
 
   factory :decimal_active_field, parent: :active_field, class: "ActiveFields::Field::Decimal" do
     type { "ActiveFields::Field::Decimal" }
+
+    trait :required do
+      required { true }
+    end
+
+    trait :with_min do
+      min { rand(-10.0..0.0) }
+    end
+
+    trait :with_max do
+      max { rand(0.0..10.0) }
+    end
+
+    after(:build) do |record|
+      max_allowed = record.max || 10.0
+      min_allowed = record.min || (max_allowed - 20.0)
+      value = rand(min_allowed..max_allowed) || 0.0
+
+      allowed = [value]
+      allowed << nil unless record.required?
+
+      record.default_value = allowed.sample
+    end
   end
 
   factory :decimal_array_active_field, parent: :active_field, class: "ActiveFields::Field::DecimalArray" do
@@ -53,6 +133,29 @@ FactoryBot.define do
 
   factory :date_active_field, parent: :active_field, class: "ActiveFields::Field::Date" do
     type { "ActiveFields::Field::Date" }
+
+    trait :required do
+      required { true }
+    end
+
+    trait :with_min do
+      min { Date.today + rand(-10..0) }
+    end
+
+    trait :with_max do
+      max { Date.today + rand(0..10) }
+    end
+
+    after(:build) do |record|
+      max_allowed = record.max || Date.today + 10
+      min_allowed = record.min || (max_allowed - 20)
+      value = (min_allowed..max_allowed).to_a.sample || Date.today
+
+      allowed = [value]
+      allowed << nil unless record.required?
+
+      record.default_value = allowed.sample
+    end
   end
 
   factory :date_array_active_field, parent: :active_field, class: "ActiveFields::Field::DateArray" do
@@ -62,80 +165,20 @@ FactoryBot.define do
   factory :boolean_active_field, parent: :active_field, class: "ActiveFields::Field::Boolean" do
     type { "ActiveFields::Field::Boolean" }
 
-    default_value do
-      allowed = [true]
-      allowed << false unless required
-      allowed << nil if nullable
-
-      allowed.sample
+    trait :required do
+      required { true }
     end
-  end
 
-  # ActiveField::Value
-  factory :active_field_value, class: "ActiveFields::Value" do
-    # We can't manually create a custom_field record,
-    # because a record with the same active_field and customizable
-    # is automatically created by customizable or active_field callbacks.
-    # So, to get a new custom_field persisted record,
-    # we should create customizable and active_field records
-    # and than fetch custom_field record associated with them.
-    skip_create
+    trait :nullable do
+      nullable { true }
+    end
 
-    customizable { association %i[post comment].sample }
-  end
+    after(:build) do |record|
+      allowed = [true]
+      allowed << false unless record.required?
+      allowed << nil if record.nullable?
 
-  factory :text_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[text_active_field]
-    sequence(:value) { |n| "Value #{n}" }
-  end
-
-  factory :text_array_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[text_array_active_field]
-    sequence(:value) { |n| ["Value #{n}", "Second value #{n}"] }
-  end
-
-  factory :enum_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[enum_active_field]
-    sequence(:value) { |n| "Value #{n}" }
-  end
-
-  factory :enum_array_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[enum_array_active_field]
-    sequence(:value) { |n| ["Value #{n}", "Second value #{n}"] }
-  end
-
-  factory :integer_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[integer_active_field]
-    sequence(:value) { |n| n }
-  end
-
-  factory :integer_array_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[integer_array_active_field]
-    sequence(:value) { |n| [n, n + 1] }
-  end
-
-  factory :decimal_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[decimal_active_field]
-    sequence(:value, &:to_d)
-  end
-
-  factory :decimal_array_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[decimal_array_active_field]
-    sequence(:value) { |n| [n.to_d, (n + 1).to_d] }
-  end
-
-  factory :date_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[date_active_field]
-    sequence(:value) { |n| Date.today + n }
-  end
-
-  factory :date_array_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[date_array_active_field]
-    sequence(:value) { |n| [Date.today + n, Date.tomorrow + n] }
-  end
-
-  factory :boolean_active_field_value, parent: :active_field_value, class: "ActiveFields::Value" do
-    active_field factory: %i[boolean_active_field]
-    sequence(:value, &:even?)
+      record.default_value = allowed.sample
+    end
   end
 end

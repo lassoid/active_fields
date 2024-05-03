@@ -105,34 +105,14 @@ RSpec.describe ActiveFields::Field::Integer do
     end
 
     describe "after_create #add_field_to_records" do
-      let!(:customizable) { Post.create! }
-
-      let(:record) do
-        build(
-          :integer_active_field,
-          required: false,
-          default_value: [nil, rand(-10..10)].sample,
-          customizable_type: customizable.class.name,
-        )
-      end
-
-      it "creates active_value for customizable" do
-        expect do
-          record.save!
-          customizable.reload
-        end.to change { customizable.active_values.size }.by(1)
-      end
-
-      it "sets active_value value" do
-        record.save!
-        customizable.reload
-
-        caster = record.value_caster
-
-        expect(customizable.active_values.take!.value).to eq(
-          caster.deserialize(caster.serialize(record.default_value)),
-        )
-      end
+      include_examples "field_value_add", :integer_active_field
+      include_examples "field_value_add", :integer_active_field, :with_min
+      include_examples "field_value_add", :integer_active_field, :with_max
+      include_examples "field_value_add", :integer_active_field, :with_min, :with_max
+      include_examples "field_value_add", :integer_active_field, :required
+      include_examples "field_value_add", :integer_active_field, :required, :with_min
+      include_examples "field_value_add", :integer_active_field, :required, :with_max
+      include_examples "field_value_add", :integer_active_field, :required, :with_min, :with_max
     end
   end
 end

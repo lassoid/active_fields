@@ -97,7 +97,7 @@ RSpec.describe ActiveFields::Field::Enum do
       end
 
       context "when allowed_values is not an array" do
-        let(:allowed_values) { [rand(0..10), "test value", Date.today].sample }
+        let(:allowed_values) { [rand(-10..10), "test value", Date.today].sample }
 
         it { is_expected.not_to be_valid }
 
@@ -152,32 +152,8 @@ RSpec.describe ActiveFields::Field::Enum do
     end
 
     describe "after_create #add_field_to_records" do
-      let!(:customizable) { Post.create! }
-
-      let(:record) do
-        build(
-          :enum_active_field,
-          customizable_type: customizable.class.name,
-        )
-      end
-
-      it "creates active_value for customizable" do
-        expect do
-          record.save!
-          customizable.reload
-        end.to change { customizable.active_values.size }.by(1)
-      end
-
-      it "sets active_value value" do
-        record.save!
-        customizable.reload
-
-        caster = record.value_caster
-
-        expect(customizable.active_values.take!.value).to eq(
-          caster.deserialize(caster.serialize(record.default_value)),
-        )
-      end
+      include_examples "field_value_add", :enum_active_field
+      include_examples "field_value_add", :enum_active_field, :required
     end
   end
 end

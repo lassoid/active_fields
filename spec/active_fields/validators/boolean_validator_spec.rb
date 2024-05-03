@@ -16,7 +16,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
       include_examples "field_value_validate", -> { true }, "true"
       include_examples "field_value_validate", -> { false }, "false"
       include_examples "field_value_validate",
-        -> { [rand(0..10), Date.current, "true", []].sample },
+        -> { [rand(-10..10), Date.current, "true", []].sample },
         "not a boolean or nil",
         [:invalid]
     end
@@ -28,7 +28,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
       include_examples "field_value_validate", -> { true }, "true"
       include_examples "field_value_validate", -> { false }, "false"
       include_examples "field_value_validate",
-        -> { [rand(0..10), Date.current, "true", []].sample },
+        -> { [rand(-10..10), Date.current, "true", []].sample },
         "not a boolean or nil",
         [:invalid]
     end
@@ -44,7 +44,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
       include_examples "field_value_validate", -> { true }, "true"
       include_examples "field_value_validate", -> { false }, "false", [:required]
       include_examples "field_value_validate",
-        -> { [rand(0..10), Date.current, "true", []].sample },
+        -> { [rand(-10..10), Date.current, "true", []].sample },
         "not a boolean or nil",
         [:invalid]
     end
@@ -56,7 +56,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
       include_examples "field_value_validate", -> { true }, "true"
       include_examples "field_value_validate", -> { false }, "false", [:required]
       include_examples "field_value_validate",
-        -> { [rand(0..10), Date.current, "true", []].sample },
+        -> { [rand(-10..10), Date.current, "true", []].sample },
         "not a boolean or nil",
         [:invalid]
     end

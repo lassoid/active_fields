@@ -12,68 +12,54 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when array of integers" do
-      let(:value) { [rand(0..10), rand(0..10)] }
+    context "when array of invalid strings" do
+      let(:value) { ["invalid", "1234 not a number"] }
 
-      it { is_expected.to eq(value.map { BigDecimal(_1) }) }
+      it { is_expected.to eq([nil, nil]) }
+    end
+
+    context "when array of integers" do
+      let(:value) { [rand(-10..10), rand(-10..10)] }
+
+      it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when array of floats" do
-      let(:value) { [rand(0.0..10.0), rand(0.0..10.0)] }
+      let(:value) { [rand(-10.0..10.0), rand(-10.0..10.0)] }
+
+      it { is_expected.to eq(value.map(&:to_d)) }
+    end
+
+    context "when array of big decimals" do
+      let(:value) { [rand(-10.0..10.0).to_d, rand(-10.0..10.0).to_d] }
 
       it { is_expected.to eq(value) }
     end
 
     context "when array of integer strings" do
-      let(:value) { [rand(0..10).to_s, rand(0..10).to_s] }
+      let(:value) { [rand(-10..10).to_s, rand(-10..10).to_s] }
 
-      it { is_expected.to eq(value.map { BigDecimal(_1) }) }
+      it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when array of decimal strings" do
-      let(:value) { [rand(0.0..10.0).to_s, rand(0.0..10.0).to_s] }
+      let(:value) { [rand(-10.0..10.0).to_s, rand(-10.0..10.0).to_s] }
 
-      it { is_expected.to eq(value.map { BigDecimal(_1) }) }
+      it { is_expected.to eq(value.map(&:to_d)) }
     end
 
-    context "when array of strings" do
-      let(:value) { %w[first second] }
-
-      it { is_expected.to eq([nil, nil]) }
-    end
-
-    context "when nil" do
-      let(:value) { nil }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when integer" do
-      let(:value) { rand(0..10) }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when decimal" do
-      let(:value) { rand(0.0..10.0) }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string with integer" do
-      let(:value) { rand(0..10).to_s }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string with decimal" do
-      let(:value) { rand(0.0..10.0).to_s }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string" do
-      let(:value) { "test value" }
+    context "when not an array" do
+      let(:value) do
+        [
+          nil,
+          rand(-10..10),
+          rand(-10.0..10.0),
+          rand(-10.0..10.0).to_d,
+          "invalid",
+          rand(-10..10).to_s,
+          rand(-10.0..10.0).to_s,
+        ].sample
+      end
 
       it { is_expected.to eq(value) }
     end
@@ -90,68 +76,54 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when array of integers" do
-      let(:value) { [rand(0..10), rand(0..10)] }
+    context "when array of invalid strings" do
+      let(:value) { ["invalid", "1234 not a number"] }
 
-      it { is_expected.to eq(value.map { BigDecimal(_1) }) }
+      it { is_expected.to eq([nil, nil]) }
+    end
+
+    context "when array of integers" do
+      let(:value) { [rand(-10..10), rand(-10..10)] }
+
+      it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when array of floats" do
-      let(:value) { [rand(0.0..10.0), rand(0.0..10.0)] }
+      let(:value) { [rand(-10.0..10.0), rand(-10.0..10.0)] }
+
+      it { is_expected.to eq(value.map(&:to_d)) }
+    end
+
+    context "when array of big decimals" do
+      let(:value) { [rand(-10.0..10.0).to_d, rand(-10.0..10.0).to_d] }
 
       it { is_expected.to eq(value) }
     end
 
     context "when array of integer strings" do
-      let(:value) { [rand(0..10).to_s, rand(0..10).to_s] }
+      let(:value) { [rand(-10..10).to_s, rand(-10..10).to_s] }
 
-      it { is_expected.to eq(value.map { BigDecimal(_1) }) }
+      it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when array of decimal strings" do
-      let(:value) { [rand(0.0..10.0).to_s, rand(0.0..10.0).to_s] }
+      let(:value) { [rand(-10.0..10.0).to_s, rand(-10.0..10.0).to_s] }
 
-      it { is_expected.to eq(value.map { BigDecimal(_1) }) }
+      it { is_expected.to eq(value.map(&:to_d)) }
     end
 
-    context "when array of strings" do
-      let(:value) { %w[first second] }
-
-      it { is_expected.to eq([nil, nil]) }
-    end
-
-    context "when nil" do
-      let(:value) { nil }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when integer" do
-      let(:value) { rand(0..10) }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when decimal" do
-      let(:value) { rand(0.0..10.0) }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string with integer" do
-      let(:value) { rand(0..10).to_s }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string with decimal" do
-      let(:value) { rand(0.0..10.0).to_s }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string" do
-      let(:value) { "test value" }
+    context "when not an array" do
+      let(:value) do
+        [
+          nil,
+          rand(-10..10),
+          rand(-10.0..10.0),
+          rand(-10.0..10.0).to_d,
+          "invalid",
+          rand(-10..10).to_s,
+          rand(-10.0..10.0).to_s,
+        ].sample
+      end
 
       it { is_expected.to eq(value) }
     end
