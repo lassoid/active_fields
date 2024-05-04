@@ -36,23 +36,23 @@ RSpec.shared_examples "active_field" do |factory:|
     end
   end
 
-  context "scopes" do
-    # describe "#for" do
-    #   let_it_be(:user_record) { create(factory, :for_users) }
-    #
-    #   it "returns users custom fields definitions only" do
-    #     expect(described_class.for("User").to_a).to include(user_record)
-    #   end
-    # end
-    #
-    # describe "#with_name" do
-    #   let_it_be(:record1) { create(factory) }
-    #   let_it_be(:record2) { create(factory) }
-    #
-    #   it "returns user custom fields definitions only" do
-    #     expect(described_class.with_name(record1.name).to_a).to include(record1).and exclude(record2)
-    #   end
-    # end
+  xcontext "scopes" do
+    describe "#for" do
+      # let_it_be(:user_record) { create(factory, :for_users) }
+
+      it "returns users custom fields definitions only" do
+        expect(described_class.for("User").to_a).to include(user_record)
+      end
+    end
+
+    describe "#with_name" do
+      # let_it_be(:record1) { create(factory) }
+      # let_it_be(:record2) { create(factory) }
+
+      it "returns user custom fields definitions only" do
+        expect(described_class.with_name(record1.name).to_a).to include(record1).and exclude(record2)
+      end
+    end
   end
 
   context "methods" do

@@ -6,13 +6,13 @@ module ActiveFields
   module Casters
     class DecimalArrayCaster < DecimalCaster
       def serialize(value)
-        return value unless value.is_a?(Array)
+        return unless value.is_a?(Array)
 
         value.map { super(_1) }
       end
 
       def deserialize(value)
-        return value unless value.is_a?(Array)
+        return unless value.is_a?(Array)
 
         value.map { super(_1) }
       end

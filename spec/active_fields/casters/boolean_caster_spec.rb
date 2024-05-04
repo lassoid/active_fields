@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::BooleanCaster do
+  let(:object) { described_class.new }
+
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }
 
-    let(:object) { described_class.new }
+    context "when nil" do
+      let(:value) { nil }
+
+      it { is_expected.to be_nil }
+    end
 
     context "when falsy value" do
       let(:value) { [0, "0", "false", "f", false].sample }
@@ -18,8 +24,8 @@ RSpec.describe ActiveFields::Casters::BooleanCaster do
       it { is_expected.to be(true) }
     end
 
-    context "when nil value" do
-      let(:value) { ["", nil].sample }
+    context "when empty string" do
+      let(:value) { "" }
 
       it { is_expected.to be_nil }
     end
@@ -28,7 +34,11 @@ RSpec.describe ActiveFields::Casters::BooleanCaster do
   describe "#deserialize" do
     subject(:call_method) { object.deserialize(value) }
 
-    let(:object) { described_class.new }
+    context "when nil" do
+      let(:value) { nil }
+
+      it { is_expected.to be_nil }
+    end
 
     context "when falsy value" do
       let(:value) { [0, "0", "false", "f", false].sample }
@@ -42,8 +52,8 @@ RSpec.describe ActiveFields::Casters::BooleanCaster do
       it { is_expected.to be(true) }
     end
 
-    context "when nil value" do
-      let(:value) { ["", nil].sample }
+    context "when empty string" do
+      let(:value) { "" }
 
       it { is_expected.to be_nil }
     end

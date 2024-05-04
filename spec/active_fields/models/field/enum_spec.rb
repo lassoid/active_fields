@@ -45,7 +45,7 @@ RSpec.describe ActiveFields::Field::Enum do
 
     describe "#validate_allowed_values" do
       subject(:record) do
-        build(:enum_active_field, required: false, default_value: nil, allowed_values: allowed_values)
+        build(:enum_active_field, allowed_values: allowed_values)
       end
 
       context "when allowed_values is nil" do
@@ -72,19 +72,7 @@ RSpec.describe ActiveFields::Field::Enum do
         end
       end
 
-      context "when allowed_values contains blank string" do
-        let(:allowed_values) { ["string", ""] }
-
-        it { is_expected.not_to be_valid }
-
-        it "adds errors" do
-          record.valid?
-
-          expect(record.errors.added?(:allowed_values, :blank)).to be(true)
-        end
-      end
-
-      context "when allowed_values contains nil" do
+      context "when allowed_values contains not a string" do
         let(:allowed_values) { ["string", nil] }
 
         it { is_expected.not_to be_valid }
@@ -92,7 +80,7 @@ RSpec.describe ActiveFields::Field::Enum do
         it "adds errors" do
           record.valid?
 
-          expect(record.errors.added?(:allowed_values, :blank)).to be(true)
+          expect(record.errors.added?(:allowed_values, :invalid)).to be(true)
         end
       end
 
@@ -104,12 +92,18 @@ RSpec.describe ActiveFields::Field::Enum do
         it "adds errors" do
           record.valid?
 
-          expect(record.errors.added?(:allowed_values, :invalid)).to be(true)
+          expect(record.errors.added?(:allowed_values, :blank)).to be(true)
         end
       end
 
       context "when allowed_values is an array of strings" do
         let(:allowed_values) { %w[first second] }
+
+        it { is_expected.to be_valid }
+      end
+
+      context "when allowed_values contains blank string" do
+        let(:allowed_values) { ["string", ""] }
 
         it { is_expected.to be_valid }
       end

@@ -45,8 +45,8 @@ module ActiveFields
         elsif allowed_values.is_a?(Array)
           if allowed_values.empty?
             errors.add(:allowed_values, :blank)
-          elsif allowed_values.any?(&:blank?)
-            errors.add(:allowed_values, :blank)
+          elsif allowed_values.any? { !_1.is_a?(String) }
+            errors.add(:allowed_values, :invalid)
           end
         else
           errors.add(:allowed_values, :invalid)

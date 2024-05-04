@@ -12,13 +12,13 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
     context "when not nullable" do
       let(:nullable) { false }
 
-      include_examples "field_value_validate", -> { nil }, "nil", [:exclusion]
+      include_examples "field_value_validate", -> { nil }, "nil", -> { [:exclusion] }
       include_examples "field_value_validate", -> { true }, "true"
       include_examples "field_value_validate", -> { false }, "false"
       include_examples "field_value_validate",
         -> { [rand(-10..10), Date.current, "true", []].sample },
         "not a boolean or nil",
-        [:invalid]
+        -> { [:invalid] }
     end
 
     context "when nullable" do
@@ -30,7 +30,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
       include_examples "field_value_validate",
         -> { [rand(-10..10), Date.current, "true", []].sample },
         "not a boolean or nil",
-        [:invalid]
+        -> { [:invalid] }
     end
   end
 
@@ -40,13 +40,13 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
     context "when not nullable" do
       let(:nullable) { false }
 
-      include_examples "field_value_validate", -> { nil }, "nil", [:exclusion]
+      include_examples "field_value_validate", -> { nil }, "nil", -> { [:exclusion] }
       include_examples "field_value_validate", -> { true }, "true"
-      include_examples "field_value_validate", -> { false }, "false", [:required]
+      include_examples "field_value_validate", -> { false }, "false", -> { [:required] }
       include_examples "field_value_validate",
         -> { [rand(-10..10), Date.current, "true", []].sample },
         "not a boolean or nil",
-        [:invalid]
+        -> { [:invalid] }
     end
 
     context "when nullable" do
@@ -54,11 +54,11 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
 
       include_examples "field_value_validate", -> { nil }, "nil"
       include_examples "field_value_validate", -> { true }, "true"
-      include_examples "field_value_validate", -> { false }, "false", [:required]
+      include_examples "field_value_validate", -> { false }, "false", -> { [:required] }
       include_examples "field_value_validate",
         -> { [rand(-10..10), Date.current, "true", []].sample },
         "not a boolean or nil",
-        [:invalid]
+        -> { [:invalid] }
     end
   end
 end

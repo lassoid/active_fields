@@ -10,25 +10,31 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       record.public_send(store_attr_name)[attr_name.to_s] = internal_value
     end
 
-    context "when internal value is integer" do
+    context "when internal value is nil" do
+      let(:internal_value) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context "when internal value is an integer" do
       let(:internal_value) { rand(-10..10) }
 
       it { is_expected.to eq(internal_value.to_d) }
     end
 
-    context "when internal value is float" do
+    context "when internal value is a float" do
       let(:internal_value) { rand(-10.0..10.0) }
 
       it { is_expected.to eq(internal_value.to_d) }
     end
 
-    context "when internal value is big decimal" do
+    context "when internal value is a big decimal" do
       let(:internal_value) { rand(-10.0..10.0).to_d }
 
       it { is_expected.to eq(internal_value) }
     end
 
-    context "when internal value is integer string" do
+    context "when internal value is an integer string" do
       let(:internal_value) { rand(-10..10).to_s }
 
       it { is_expected.to eq(internal_value.to_d) }
@@ -41,13 +47,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     end
 
     context "when internal value is invalid" do
-      let(:internal_value) { [Date.today, "invalid"].sample }
-
-      it { is_expected.to be_nil }
-    end
-
-    context "when internal value is nil" do
-      let(:internal_value) { nil }
+      let(:internal_value) { "#{rand(-10..10)} not a number #{rand(-10..10)}" }
 
       it { is_expected.to be_nil }
     end
@@ -64,7 +64,17 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
 
     let(:record) { klass.new }
 
-    context "when value is integer" do
+    context "when value is nil" do
+      let(:value) { nil }
+
+      it "sets nil" do
+        call_method
+
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to be_nil
+      end
+    end
+
+    context "when value is an integer" do
       let(:value) { rand(-10..10) }
 
       it "sets decimal" do
@@ -74,7 +84,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       end
     end
 
-    context "when value is float" do
+    context "when value is a float" do
       let(:value) { rand(-10.0..10.0) }
 
       it "sets decimal" do
@@ -84,7 +94,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       end
     end
 
-    context "when value is big decimal" do
+    context "when value is a big decimal" do
       let(:value) { rand(-10.0..10.0).to_d }
 
       it "sets decimal" do
@@ -94,7 +104,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       end
     end
 
-    context "when value is integer string" do
+    context "when value is an integer string" do
       let(:value) { rand(-10..10).to_s }
 
       it "sets decimal" do
@@ -114,18 +124,8 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       end
     end
 
-    context "when value is invalid" do
-      let(:value) { [Date.today, "invalid"].sample }
-
-      it "sets true" do
-        call_method
-
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to be_nil
-      end
-    end
-
-    context "when value is nil" do
-      let(:value) { nil }
+    context "when value is an invalid string" do
+      let(:value) { "#{rand(-10..10)} not a number #{rand(-10..10)}" }
 
       it "sets nil" do
         call_method

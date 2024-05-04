@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::DateArrayCaster do
+  let(:object) { described_class.new }
+
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }
 
-    let(:object) { described_class.new }
+    context "when nil" do
+      let(:value) { nil }
+
+      it { is_expected.to be_nil }
+    end
 
     context "when array of nils" do
       let(:value) { [nil, nil] }
@@ -12,16 +18,16 @@ RSpec.describe ActiveFields::Casters::DateArrayCaster do
       it { is_expected.to eq(value) }
     end
 
+    context "when array of invalid strings" do
+      let(:value) { ["", "not a date"] }
+
+      it { is_expected.to eq([nil, nil]) }
+    end
+
     context "when array of numbers" do
       let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
 
       it { is_expected.to eq([nil, nil, nil]) }
-    end
-
-    context "when array of invalid strings" do
-      let(:value) { ["invalid", "1234 not a date"] }
-
-      it { is_expected.to eq([nil, nil]) }
     end
 
     context "when array of dates" do
@@ -37,19 +43,20 @@ RSpec.describe ActiveFields::Casters::DateArrayCaster do
     end
 
     context "when not an array" do
-      let(:value) do
-        [nil, rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d, "invalid", Date.today.iso8601, Date.today]
-          .sample
-      end
+      let(:value) { [Date.today + rand(-10..10), (Date.today + rand(-10..10)).iso8601].sample }
 
-      it { is_expected.to eq(value) }
+      it { is_expected.to be_nil }
     end
   end
 
   describe "#deserialize" do
     subject(:call_method) { object.deserialize(value) }
 
-    let(:object) { described_class.new }
+    context "when nil" do
+      let(:value) { nil }
+
+      it { is_expected.to be_nil }
+    end
 
     context "when array of nils" do
       let(:value) { [nil, nil] }
@@ -57,16 +64,16 @@ RSpec.describe ActiveFields::Casters::DateArrayCaster do
       it { is_expected.to eq(value) }
     end
 
+    context "when array of invalid strings" do
+      let(:value) { ["", "not a date"] }
+
+      it { is_expected.to eq([nil, nil]) }
+    end
+
     context "when array of numbers" do
       let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
 
       it { is_expected.to eq([nil, nil, nil]) }
-    end
-
-    context "when array of invalid strings" do
-      let(:value) { ["invalid", "1234 not a date"] }
-
-      it { is_expected.to eq([nil, nil]) }
     end
 
     context "when array of dates" do
@@ -76,18 +83,15 @@ RSpec.describe ActiveFields::Casters::DateArrayCaster do
     end
 
     context "when array of date strings" do
-      let(:value) { [Date.yesterday.iso8601, Date.tomorrow.iso8601] }
+      let(:value) { [(Date.today + rand(-10..10)).iso8601, (Date.today + rand(-10..10)).iso8601] }
 
       it { is_expected.to eq(value.map { Date.parse(_1) }) }
     end
 
     context "when not an array" do
-      let(:value) do
-        [nil, rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d, "invalid", Date.today.iso8601, Date.today]
-          .sample
-      end
+      let(:value) { [Date.today + rand(-10..10), (Date.today + rand(-10..10)).iso8601].sample }
 
-      it { is_expected.to eq(value) }
+      it { is_expected.to be_nil }
     end
   end
 end

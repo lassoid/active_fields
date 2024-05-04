@@ -10,20 +10,32 @@ RSpec.shared_examples "store_attribute_date" do |attr_name, store_attr_name, kla
       record.public_send(store_attr_name)[attr_name.to_s] = internal_value
     end
 
-    context "when internal value is date" do
+    context "when internal value is nil" do
+      let(:internal_value) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context "when internal value is a date" do
+      let(:internal_value) { Date.today + rand(-10..10) }
+
+      it { is_expected.to eq(internal_value) }
+    end
+
+    context "when internal value is a date string" do
       let(:internal_value) { (Date.today + rand(-10..10)).iso8601 }
 
       it { is_expected.to eq(Date.parse(internal_value)) }
     end
 
-    context "when internal value is invalid" do
-      let(:internal_value) { [123, "invalid"].sample }
+    context "when internal value is a number" do
+      let(:internal_value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
 
       it { is_expected.to be_nil }
     end
 
-    context "when internal value is nil" do
-      let(:internal_value) { nil }
+    context "when internal value is an invalid string" do
+      let(:internal_value) { "not a date" }
 
       it { is_expected.to be_nil }
     end
@@ -40,7 +52,17 @@ RSpec.shared_examples "store_attribute_date" do |attr_name, store_attr_name, kla
 
     let(:record) { klass.new }
 
-    context "when value is date" do
+    context "when value is nil" do
+      let(:value) { nil }
+
+      it "sets nil" do
+        call_method
+
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to be_nil
+      end
+    end
+
+    context "when value is a date" do
       let(:value) { Date.today + rand(-10..10) }
 
       it "sets date as string" do
@@ -50,18 +72,28 @@ RSpec.shared_examples "store_attribute_date" do |attr_name, store_attr_name, kla
       end
     end
 
-    context "when value is invalid" do
-      let(:value) { [123, "invalid"].sample }
+    context "when value is a date string" do
+      let(:value) { (Date.today + rand(-10..10)).iso8601 }
 
-      it "sets true" do
+      it "sets date as string" do
+        call_method
+
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value)
+      end
+    end
+
+    context "when value is a number" do
+      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
+
+      it "sets nil" do
         call_method
 
         expect(record.public_send(store_attr_name)[attr_name.to_s]).to be_nil
       end
     end
 
-    context "when value is nil" do
-      let(:value) { nil }
+    context "when value is an invalid string" do
+      let(:value) { "not a date" }
 
       it "sets nil" do
         call_method

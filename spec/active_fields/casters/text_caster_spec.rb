@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::TextCaster do
+  let(:object) { described_class.new }
+
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }
-
-    let(:object) { described_class.new }
 
     context "when nil" do
       let(:value) { nil }
@@ -18,8 +18,20 @@ RSpec.describe ActiveFields::Casters::TextCaster do
       it { is_expected.to eq(value.to_s) }
     end
 
+    context "when date" do
+      let(:value) { Date.today + rand(-10..10) }
+
+      it { is_expected.to eq(value.to_s) }
+    end
+
     context "when string" do
-      let(:value) { "test value" }
+      let(:value) { random_string(10) }
+
+      it { is_expected.to eq(value) }
+    end
+
+    context "when empty string" do
+      let(:value) { "" }
 
       it { is_expected.to eq(value) }
     end
@@ -28,8 +40,6 @@ RSpec.describe ActiveFields::Casters::TextCaster do
   describe "#deserialize" do
     subject(:call_method) { object.deserialize(value) }
 
-    let(:object) { described_class.new }
-
     context "when nil" do
       let(:value) { nil }
 
@@ -42,8 +52,20 @@ RSpec.describe ActiveFields::Casters::TextCaster do
       it { is_expected.to eq(value.to_s) }
     end
 
+    context "when date" do
+      let(:value) { Date.today + rand(-10..10) }
+
+      it { is_expected.to eq(value.to_s) }
+    end
+
     context "when string" do
-      let(:value) { "test value" }
+      let(:value) { random_string(10) }
+
+      it { is_expected.to eq(value) }
+    end
+
+    context "when empty string" do
+      let(:value) { "" }
 
       it { is_expected.to eq(value) }
     end

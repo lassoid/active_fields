@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::EnumArrayCaster do
+  let(:object) { described_class.new }
+
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }
 
-    let(:object) { described_class.new }
+    context "when nil" do
+      let(:value) { nil }
+
+      it { is_expected.to be_nil }
+    end
 
     context "when array of nils" do
       let(:value) { [nil, nil] }
@@ -19,34 +25,26 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
     end
 
     context "when array of strings" do
-      let(:value) { %w[first second] }
+      let(:value) { ["", random_string(10)] }
 
       it { is_expected.to eq(value) }
     end
 
-    context "when nil" do
-      let(:value) { nil }
+    context "when not an array" do
+      let(:value) { random_string(10) }
 
-      it { is_expected.to eq(value) }
-    end
-
-    context "when number" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string" do
-      let(:value) { "test value" }
-
-      it { is_expected.to eq(value) }
+      it { is_expected.to be_nil }
     end
   end
 
   describe "#deserialize" do
     subject(:call_method) { object.deserialize(value) }
 
-    let(:object) { described_class.new }
+    context "when nil" do
+      let(:value) { nil }
+
+      it { is_expected.to be_nil }
+    end
 
     context "when array of nils" do
       let(:value) { [nil, nil] }
@@ -61,27 +59,15 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
     end
 
     context "when array of strings" do
-      let(:value) { %w[first second] }
+      let(:value) { ["", random_string(10)] }
 
       it { is_expected.to eq(value) }
     end
 
-    context "when nil" do
-      let(:value) { nil }
+    context "when not an array" do
+      let(:value) { random_string(10) }
 
-      it { is_expected.to eq(value) }
-    end
-
-    context "when number" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
-
-      it { is_expected.to eq(value) }
-    end
-
-    context "when string" do
-      let(:value) { "test value" }
-
-      it { is_expected.to eq(value) }
+      it { is_expected.to be_nil }
     end
   end
 end
