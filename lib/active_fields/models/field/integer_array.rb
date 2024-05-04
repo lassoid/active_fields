@@ -21,7 +21,7 @@ module ActiveFields
           ActiveFields::Casters::IntegerCaster.new.deserialize(super())
         end
 
-        define_method("#{column}=") do |other|
+        define_method(:"#{column}=") do |other|
           super(ActiveFields::Casters::IntegerCaster.new.serialize(other))
         end
       end

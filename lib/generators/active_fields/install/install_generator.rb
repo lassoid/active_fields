@@ -25,7 +25,7 @@ module ActiveFields
         format(
           "[%d.%d]",
           ActiveRecord::VERSION::MAJOR,
-          ActiveRecord::VERSION::MINOR
+          ActiveRecord::VERSION::MINOR,
         )
       end
     end

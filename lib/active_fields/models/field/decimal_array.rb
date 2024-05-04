@@ -22,7 +22,7 @@ module ActiveFields
           ActiveFields::Casters::IntegerCaster.new.deserialize(super())
         end
 
-        define_method("#{column}=") do |other|
+        define_method(:"#{column}=") do |other|
           super(ActiveFields::Casters::IntegerCaster.new.serialize(other))
         end
       end
@@ -32,7 +32,7 @@ module ActiveFields
           ActiveFields::Casters::DecimalCaster.new.deserialize(super())
         end
 
-        define_method("#{column}=") do |other|
+        define_method(:"#{column}=") do |other|
           super(ActiveFields::Casters::DecimalCaster.new.serialize(other))
         end
       end

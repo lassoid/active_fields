@@ -5,7 +5,7 @@ FactoryBot.define do
   factory :active_field, class: "ActiveFields::Field" do
     sequence(:name) { |n| "field_#{n}" }
 
-    customizable_type { ["Post", "Comment"].sample }
+    customizable_type { %w[Post Comment].sample }
   end
 
   factory :text_active_field, parent: :active_field, class: "ActiveFields::Field::Text" do

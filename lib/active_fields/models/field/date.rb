@@ -19,11 +19,11 @@ module ActiveFields
           ActiveFields::Casters::BooleanCaster.new.deserialize(super())
         end
 
-        define_method("#{column}?") do
+        define_method(:"#{column}?") do
           !!public_send(column)
         end
 
-        define_method("#{column}=") do |other|
+        define_method(:"#{column}=") do |other|
           super(ActiveFields::Casters::BooleanCaster.new.serialize(other))
         end
       end
@@ -33,7 +33,7 @@ module ActiveFields
           ActiveFields::Casters::DateCaster.new.deserialize(super())
         end
 
-        define_method("#{column}=") do |other|
+        define_method(:"#{column}=") do |other|
           super(ActiveFields::Casters::DateCaster.new.serialize(other))
         end
       end

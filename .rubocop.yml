@@ -9,8 +9,11 @@ inherit_gem:
   rubocop-shopify: rubocop.yml
 
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.3
+  TargetRailsVersion: 7.1
   NewCops: enable
+  Exclude:
+    - "active_fields.gemspec"
 
 Layout/EmptyLinesAroundAccessModifier:
   EnforcedStyle: around
@@ -41,6 +44,9 @@ RSpec/ContextWording:
   Enabled: false
 
 RSpec/MultipleExpectations:
+  Enabled: false
+
+Rails/ApplicationRecord:
   Enabled: false
 
 Rails/Date:

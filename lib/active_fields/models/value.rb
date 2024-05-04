@@ -14,7 +14,7 @@
 #
 # Indexes
 #
-#  index_active_fields_values_on_customizable_and_active_field  (customizable_type,customizable_id,active_field_id) UNIQUE
+#  index_active_fields_values_on_customizable_and_field  (customizable_type,customizable_id,active_field_id) UNIQUE
 #  index_active_fields_values_on_active_field_id                (active_field_id)
 #
 # Foreign Keys

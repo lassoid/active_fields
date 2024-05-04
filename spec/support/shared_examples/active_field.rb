@@ -36,7 +36,7 @@ RSpec.shared_examples "active_field" do |factory:|
     end
   end
 
-  xcontext "scopes" do
+  context "scopes", skip: "Should be implemented" do
     describe "#for" do
       # let_it_be(:user_record) { create(factory, :for_users) }
 
@@ -88,12 +88,16 @@ RSpec.shared_examples "active_field" do |factory:|
       it { is_expected.to eq(record.customizable_type.constantize) }
     end
 
-    describe "#default_value" do
+    describe "#default_value", skip: "Should be implemented" do
       subject(:call_method) { record.default_value }
+
+      it { is_expected.to be_nil }
     end
 
-    describe "#default_value=" do
+    describe "#default_value=", skip: "Should be implemented" do
       subject(:call_method) { record.default_value = value }
+
+      it { is_expected.to be_nil }
     end
   end
 end
