@@ -21,7 +21,7 @@ RSpec.describe ActiveFields::Validators::TextArrayValidator do
   let(:max_size) { nil }
 
   include_examples "field_value_validate",
-    -> { [nil, "plain string", ["string", nil], ["string", 7]].sample },
+    -> { [nil, random_string, [random_string, nil], [random_string, 7]].sample },
     "not an array of strings",
     -> { [:invalid] }
 

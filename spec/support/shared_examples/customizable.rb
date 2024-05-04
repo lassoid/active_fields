@@ -80,7 +80,7 @@ RSpec.shared_examples "customizable" do |factory:|
         end
 
         context "with invalid custom_fields_attributes" do
-          let(:custom_fields_attributes) { "invalid" }
+          let(:custom_fields_attributes) { random_string }
 
           it "builds custom fields with defaults" do
             expect do
@@ -154,7 +154,7 @@ RSpec.shared_examples "customizable" do |factory:|
         end
 
         context "with invalid custom_fields_attributes" do
-          let(:custom_fields_attributes) { "invalid" }
+          let(:custom_fields_attributes) { random_string }
 
           it "doesn't change custom fields values" do
             expect do

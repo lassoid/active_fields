@@ -12,7 +12,7 @@ RSpec.describe ActiveFields::Validators::DateValidator do
 
   include_examples "field_value_validate", -> { nil }, "nil"
   include_examples "field_value_validate",
-    -> { ["invalid", 1, [Date.today]].sample },
+    -> { [random_string, random_number, [random_date]].sample },
     "not a date or nil",
     -> { [:invalid] }
 
@@ -24,7 +24,7 @@ RSpec.describe ActiveFields::Validators::DateValidator do
 
   context "value comparison" do
     context "without min and max" do
-      include_examples "field_value_validate", -> { Date.today }, "a date"
+      include_examples "field_value_validate", -> { random_date }, "a date"
     end
 
     context "with min" do

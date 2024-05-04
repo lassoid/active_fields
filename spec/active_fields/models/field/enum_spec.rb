@@ -73,7 +73,7 @@ RSpec.describe ActiveFields::Field::Enum do
       end
 
       context "when allowed_values contains not a string" do
-        let(:allowed_values) { ["string", nil] }
+        let(:allowed_values) { [random_string, nil] }
 
         it { is_expected.not_to be_valid }
 
@@ -85,7 +85,7 @@ RSpec.describe ActiveFields::Field::Enum do
       end
 
       context "when allowed_values is not an array" do
-        let(:allowed_values) { [rand(-10..10), "test value", Date.today].sample }
+        let(:allowed_values) { [random_integer, random_string, random_date].sample }
 
         it { is_expected.not_to be_valid }
 
@@ -97,13 +97,7 @@ RSpec.describe ActiveFields::Field::Enum do
       end
 
       context "when allowed_values is an array of strings" do
-        let(:allowed_values) { %w[first second] }
-
-        it { is_expected.to be_valid }
-      end
-
-      context "when allowed_values contains blank string" do
-        let(:allowed_values) { ["string", ""] }
+        let(:allowed_values) { ["", random_string] }
 
         it { is_expected.to be_valid }
       end
@@ -137,7 +131,7 @@ RSpec.describe ActiveFields::Field::Enum do
       end
 
       context "when allowed_values is not nil" do
-        let(:allowed_values) { ["string"] }
+        let(:allowed_values) { [random_string] }
 
         it "doesn't change column" do
           expect(record.allowed_values).to eq(allowed_values)

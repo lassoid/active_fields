@@ -49,7 +49,7 @@ RSpec.describe ActiveFields::Field::Integer do
 
     describe "#max" do
       context "with min" do
-        let(:min) { rand(-10..10) }
+        let(:min) { random_integer }
 
         context "when max is nil" do
           let(:max) { nil }

@@ -11,7 +11,7 @@ RSpec.describe ActiveFields::Validators::EnumValidator do
 
   include_examples "field_value_validate", -> { nil }, "nil"
   include_examples "field_value_validate",
-    -> { [rand(-10..10), Date.current, [allowed_values.sample]].sample },
+    -> { [random_integer, random_date, [allowed_values.sample]].sample },
     "not a string or nil",
     -> { [:inclusion] }
 

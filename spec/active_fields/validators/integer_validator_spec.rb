@@ -12,7 +12,7 @@ RSpec.describe ActiveFields::Validators::IntegerValidator do
 
   include_examples "field_value_validate", -> { nil }, "nil"
   include_examples "field_value_validate",
-    -> { ["invalid", Date.today, [13]].sample },
+    -> { [random_string, random_date, [random_integer]].sample },
     "not a number or nil",
     -> { [:invalid] }
 

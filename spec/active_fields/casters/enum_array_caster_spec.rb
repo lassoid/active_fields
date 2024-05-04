@@ -19,19 +19,19 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
     end
 
     context "when array of numbers" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
+      let(:value) { random_numbers }
 
       it { is_expected.to eq(value.map(&:to_s)) }
     end
 
     context "when array of strings" do
-      let(:value) { ["", random_string(10)] }
+      let(:value) { ["", random_string] }
 
       it { is_expected.to eq(value) }
     end
 
     context "when not an array" do
-      let(:value) { random_string(10) }
+      let(:value) { random_string }
 
       it { is_expected.to be_nil }
     end
@@ -53,19 +53,19 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
     end
 
     context "when array of numbers" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
+      let(:value) { random_numbers }
 
       it { is_expected.to eq(value.map(&:to_s)) }
     end
 
     context "when array of strings" do
-      let(:value) { ["", random_string(10)] }
+      let(:value) { ["", random_string] }
 
       it { is_expected.to eq(value) }
     end
 
     context "when not an array" do
-      let(:value) { random_string(10) }
+      let(:value) { random_string }
 
       it { is_expected.to be_nil }
     end

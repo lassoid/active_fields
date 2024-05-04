@@ -15,7 +15,7 @@ RSpec.describe ActiveFields::Validators::IntegerArrayValidator do
   let(:max_size) { nil }
 
   include_examples "field_value_validate",
-    -> { [nil, 1, [33, nil], ["test value", 7]].sample },
+    -> { [nil, 1, [33, nil], [random_string, 7]].sample },
     "not an array of numbers",
     -> { [:invalid] }
 

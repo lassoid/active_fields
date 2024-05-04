@@ -15,7 +15,7 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
   let(:max_size) { nil }
 
   include_examples "field_value_validate",
-    -> { [nil, Date.today, [Date.today, nil], ["test value", Date.today]].sample },
+    -> { [nil, random_date, [random_date, nil], [random_string, random_date]].sample },
     "not an array of dates",
     -> { [:invalid] }
 

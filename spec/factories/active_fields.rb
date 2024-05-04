@@ -42,7 +42,7 @@ FactoryBot.define do
   factory :enum_active_field, parent: :active_field, class: "ActiveFields::Field::Enum" do
     type { "ActiveFields::Field::Enum" }
 
-    allowed_values { Array.new(5) { TestMethods.random_string(10) } }
+    allowed_values { Array.new(5) { TestMethods.random_string } }
 
     trait :required do
       required { true }
@@ -59,7 +59,7 @@ FactoryBot.define do
   factory :enum_array_active_field, parent: :active_field, class: "ActiveFields::Field::EnumArray" do
     type { "ActiveFields::Field::EnumArray" }
 
-    allowed_values { Array.new(5) { TestMethods.random_string(10) } }
+    allowed_values { Array.new(5) { TestMethods.random_string } }
 
     after(:build) do |record|
       allowed_min_size = record.min_size || 0

@@ -17,37 +17,37 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     end
 
     context "when internal value is an integer" do
-      let(:internal_value) { rand(-10..10) }
+      let(:internal_value) { random_integer }
 
       it { is_expected.to eq(internal_value.to_d) }
     end
 
     context "when internal value is a float" do
-      let(:internal_value) { rand(-10.0..10.0) }
+      let(:internal_value) { random_float }
 
       it { is_expected.to eq(internal_value.to_d) }
     end
 
     context "when internal value is a big decimal" do
-      let(:internal_value) { rand(-10.0..10.0).to_d }
+      let(:internal_value) { random_decimal }
 
       it { is_expected.to eq(internal_value) }
     end
 
     context "when internal value is an integer string" do
-      let(:internal_value) { rand(-10..10).to_s }
+      let(:internal_value) { random_integer.to_s }
 
       it { is_expected.to eq(internal_value.to_d) }
     end
 
     context "when internal value is decimal string" do
-      let(:internal_value) { rand(-10.0..10.0).to_s }
+      let(:internal_value) { random_float.to_s }
 
       it { is_expected.to eq(internal_value.to_d) }
     end
 
     context "when internal value is invalid" do
-      let(:internal_value) { "#{rand(-10..10)} not a number #{rand(-10..10)}" }
+      let(:internal_value) { "#{random_integer} not a number #{random_integer}" }
 
       it { is_expected.to be_nil }
     end
@@ -75,7 +75,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     end
 
     context "when value is an integer" do
-      let(:value) { rand(-10..10) }
+      let(:value) { random_integer }
 
       it "sets decimal" do
         call_method
@@ -85,7 +85,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     end
 
     context "when value is a float" do
-      let(:value) { rand(-10.0..10.0) }
+      let(:value) { random_float }
 
       it "sets decimal" do
         call_method
@@ -95,7 +95,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     end
 
     context "when value is a big decimal" do
-      let(:value) { rand(-10.0..10.0).to_d }
+      let(:value) { random_decimal }
 
       it "sets decimal" do
         call_method
@@ -105,7 +105,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     end
 
     context "when value is an integer string" do
-      let(:value) { rand(-10..10).to_s }
+      let(:value) { random_integer.to_s }
 
       it "sets decimal" do
         call_method
@@ -115,7 +115,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     end
 
     context "when value is decimal string" do
-      let(:value) { rand(-10.0..10.0).to_s }
+      let(:value) { random_float.to_s }
 
       it "sets decimal" do
         call_method
@@ -125,7 +125,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     end
 
     context "when value is an invalid string" do
-      let(:value) { "#{rand(-10..10)} not a number #{rand(-10..10)}" }
+      let(:value) { "#{random_integer} not a number #{random_integer}" }
 
       it "sets nil" do
         call_method

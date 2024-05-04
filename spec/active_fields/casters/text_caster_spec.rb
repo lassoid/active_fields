@@ -13,19 +13,19 @@ RSpec.describe ActiveFields::Casters::TextCaster do
     end
 
     context "when number" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
+      let(:value) { random_number }
 
       it { is_expected.to eq(value.to_s) }
     end
 
     context "when date" do
-      let(:value) { Date.today + rand(-10..10) }
+      let(:value) { random_date }
 
       it { is_expected.to eq(value.to_s) }
     end
 
     context "when string" do
-      let(:value) { random_string(10) }
+      let(:value) { random_string }
 
       it { is_expected.to eq(value) }
     end
@@ -47,19 +47,19 @@ RSpec.describe ActiveFields::Casters::TextCaster do
     end
 
     context "when number" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
+      let(:value) { random_number }
 
       it { is_expected.to eq(value.to_s) }
     end
 
     context "when date" do
-      let(:value) { Date.today + rand(-10..10) }
+      let(:value) { random_date }
 
       it { is_expected.to eq(value.to_s) }
     end
 
     context "when string" do
-      let(:value) { random_string(10) }
+      let(:value) { random_string }
 
       it { is_expected.to eq(value) }
     end

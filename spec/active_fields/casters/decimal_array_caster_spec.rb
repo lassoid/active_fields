@@ -19,27 +19,25 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
     end
 
     context "when array of invalid strings" do
-      let(:value) { ["", "#{rand(-10..10)} not a number #{rand(-10..10)}"] }
+      let(:value) { ["", "#{random_number} not a number #{random_number}"] }
 
-      it { is_expected.to eq([nil, nil]) }
+      it { is_expected.to eq(Array.new(value.size, nil)) }
     end
 
     context "when array of numbers" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
+      let(:value) { random_numbers }
 
       it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when array of number strings" do
-      let(:value) { [rand(-10..10).to_s, rand(-10.0..10.0).to_s] }
+      let(:value) { [random_integer.to_s, random_float.to_s] }
 
       it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when not an array" do
-      let(:value) do
-        [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d, rand(-10..10).to_s, rand(-10.0..10.0).to_s].sample
-      end
+      let(:value) { [random_integer.to_s, random_float.to_s, *random_numbers].sample }
 
       it { is_expected.to be_nil }
     end
@@ -61,27 +59,25 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
     end
 
     context "when array of invalid strings" do
-      let(:value) { ["", "#{rand(-10..10)} not a number #{rand(-10..10)}"] }
+      let(:value) { ["", "#{random_number} not a number #{random_number}"] }
 
-      it { is_expected.to eq([nil, nil]) }
+      it { is_expected.to eq(Array.new(value.size, nil)) }
     end
 
     context "when array of numbers" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
+      let(:value) { random_numbers }
 
       it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when array of number strings" do
-      let(:value) { [rand(-10..10).to_s, rand(-10.0..10.0).to_s] }
+      let(:value) { [random_integer.to_s, random_float.to_s] }
 
       it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when not an array" do
-      let(:value) do
-        [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d, rand(-10..10).to_s, rand(-10.0..10.0).to_s].sample
-      end
+      let(:value) { [random_integer.to_s, random_float.to_s, *random_numbers].sample }
 
       it { is_expected.to be_nil }
     end

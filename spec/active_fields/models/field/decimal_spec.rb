@@ -49,7 +49,7 @@ RSpec.describe ActiveFields::Field::Decimal do
 
     describe "#max" do
       context "with min" do
-        let(:min) { rand(-10.0..10.0).to_d }
+        let(:min) { random_decimal }
 
         context "when max is nil" do
           let(:max) { nil }

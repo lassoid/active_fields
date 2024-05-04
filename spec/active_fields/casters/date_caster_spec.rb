@@ -13,19 +13,19 @@ RSpec.describe ActiveFields::Casters::DateCaster do
     end
 
     context "when date" do
-      let(:value) { Date.today + rand(-10..10) }
+      let(:value) { random_date }
 
       it { is_expected.to eq(value.iso8601) }
     end
 
     context "when date string" do
-      let(:value) { (Date.today + rand(-10..10)).iso8601 }
+      let(:value) { random_date.iso8601 }
 
       it { is_expected.to eq(value) }
     end
 
     context "when number" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
+      let(:value) { random_number }
 
       it { is_expected.to be_nil }
     end
@@ -53,19 +53,19 @@ RSpec.describe ActiveFields::Casters::DateCaster do
     end
 
     context "when date" do
-      let(:value) { Date.today + rand(-10..10) }
+      let(:value) { random_date }
 
       it { is_expected.to eq(value) }
     end
 
     context "when date string" do
-      let(:value) { (Date.today + rand(-10..10)).iso8601 }
+      let(:value) { random_date.iso8601 }
 
       it { is_expected.to eq(Date.parse(value)) }
     end
 
     context "when number" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
+      let(:value) { random_number }
 
       it { is_expected.to be_nil }
     end

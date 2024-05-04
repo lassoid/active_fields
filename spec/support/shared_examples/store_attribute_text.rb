@@ -17,19 +17,19 @@ RSpec.shared_examples "store_attribute_text" do |attr_name, store_attr_name, kla
     end
 
     context "when internal value is a number" do
-      let(:internal_value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
+      let(:internal_value) { random_number }
 
       it { is_expected.to eq(internal_value.to_s) }
     end
 
     context "when internal value is a date" do
-      let(:internal_value) { Date.today + rand(-10..10) }
+      let(:internal_value) { random_date }
 
       it { is_expected.to eq(internal_value.to_s) }
     end
 
     context "when internal value is a string" do
-      let(:internal_value) { random_string(10) }
+      let(:internal_value) { random_string }
 
       it { is_expected.to eq(internal_value) }
     end
@@ -57,7 +57,7 @@ RSpec.shared_examples "store_attribute_text" do |attr_name, store_attr_name, kla
     end
 
     context "when value is a number" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d].sample }
+      let(:value) { random_number }
 
       it "sets string" do
         call_method
@@ -67,7 +67,7 @@ RSpec.shared_examples "store_attribute_text" do |attr_name, store_attr_name, kla
     end
 
     context "when value is a date" do
-      let(:value) { Date.today + rand(-10..10) }
+      let(:value) { random_date }
 
       it "sets string" do
         call_method
@@ -77,7 +77,7 @@ RSpec.shared_examples "store_attribute_text" do |attr_name, store_attr_name, kla
     end
 
     context "when value is a string" do
-      let(:value) { random_string(10) }
+      let(:value) { random_string }
 
       it "sets string" do
         call_method

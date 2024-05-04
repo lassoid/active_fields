@@ -23,19 +23,19 @@ RSpec.shared_examples "store_attribute_text_array" do |attr_name, store_attr_nam
     end
 
     context "when internal value is an array of numbers" do
-      let(:internal_value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
+      let(:internal_value) { random_numbers }
 
       it { is_expected.to eq(internal_value.map(&:to_s)) }
     end
 
     context "when internal value is an array of strings" do
-      let(:internal_value) { ["", random_string(10)] }
+      let(:internal_value) { ["", random_string] }
 
       it { is_expected.to eq(internal_value) }
     end
 
     context "when internal value is not an array" do
-      let(:internal_value) { random_string(10) }
+      let(:internal_value) { random_string }
 
       it { is_expected.to be_nil }
     end
@@ -67,7 +67,7 @@ RSpec.shared_examples "store_attribute_text_array" do |attr_name, store_attr_nam
     end
 
     context "when value is an array of numbers" do
-      let(:value) { [rand(-10..10), rand(-10.0..10.0), rand(-10.0..10.0).to_d] }
+      let(:value) { random_numbers }
 
       it "sets array of strings" do
         call_method
@@ -77,7 +77,7 @@ RSpec.shared_examples "store_attribute_text_array" do |attr_name, store_attr_nam
     end
 
     context "when value is an array of strings" do
-      let(:value) { ["", random_string(10)] }
+      let(:value) { ["", random_string] }
 
       it "sets array of strings" do
         call_method
@@ -87,7 +87,7 @@ RSpec.shared_examples "store_attribute_text_array" do |attr_name, store_attr_nam
     end
 
     context "when value is not an array" do
-      let(:value) { random_string(10) }
+      let(:value) { random_string }
 
       it "sets nil" do
         call_method

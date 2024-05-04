@@ -15,7 +15,7 @@ RSpec.describe ActiveFields::Validators::DecimalArrayValidator do
   let(:max_size) { nil }
 
   include_examples "field_value_validate",
-    -> { [nil, 1.5, [33.9, nil], ["test value", 7.77]].sample },
+    -> { [nil, 1.5, [33.9, nil], [random_string, 7.77]].sample },
     "not an array of numbers",
     -> { [:invalid] }
 
