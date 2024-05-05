@@ -12,7 +12,7 @@ module ActiveFields
       # attribute :max, :integer
 
       validates :required, exclusion: [nil]
-      validates :max, numericality: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
+      validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
 
       %i[required].each do |column|
         define_method(column) do

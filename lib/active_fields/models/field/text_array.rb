@@ -12,10 +12,10 @@ module ActiveFields
       # attribute :min_size, :integer
       # attribute :max_size, :integer
 
-      validates :min_length, numericality: { greater_than_or_equal_to: 0 }
-      validates :max_length, numericality: { greater_than_or_equal_to: ->(r) { r.min_length || 0 } }, allow_nil: true
-      validates :min_size, numericality: { greater_than_or_equal_to: 0 }
-      validates :max_size, numericality: { greater_than_or_equal_to: ->(r) { r.min_size || 0 } }, allow_nil: true
+      validates :min_length, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
+      validates :max_length, comparison: { greater_than_or_equal_to: ->(r) { r.min_length || 0 } }, allow_nil: true
+      validates :min_size, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
+      validates :max_size, comparison: { greater_than_or_equal_to: ->(r) { r.min_size || 0 } }, allow_nil: true
 
       %i[min_length max_length min_size max_size].each do |column|
         define_method(column) do

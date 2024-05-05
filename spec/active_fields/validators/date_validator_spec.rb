@@ -55,7 +55,7 @@ RSpec.describe ActiveFields::Validators::DateValidator do
 
       include_examples "field_value_validate", -> { min }, "a min date"
       include_examples "field_value_validate", -> { max }, "a max date"
-      include_examples "field_value_validate", -> { (min..max).to_a.sample }, "a date between min and max"
+      include_examples "field_value_validate", -> { rand(min..max) }, "a date between min and max"
       include_examples "field_value_validate",
         -> { min - 1 },
         "a date less than min",

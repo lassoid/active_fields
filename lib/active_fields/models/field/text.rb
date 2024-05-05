@@ -12,8 +12,8 @@ module ActiveFields
       # attribute :max_length, :integer
 
       validates :required, exclusion: [nil]
-      validates :min_length, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
-      validates :max_length, numericality: { greater_than_or_equal_to: ->(r) { r.min_length || 0 } }, allow_nil: true
+      validates :min_length, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
+      validates :max_length, comparison: { greater_than_or_equal_to: ->(r) { r.min_length || 0 } }, allow_nil: true
 
       %i[required].each do |column|
         define_method(column) do

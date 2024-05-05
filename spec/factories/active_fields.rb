@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  # ActiveField::Field
   factory :active_field, class: "ActiveFields::Field" do
     sequence(:name) { |n| "field_#{n}" }
 
@@ -24,11 +23,10 @@ FactoryBot.define do
     end
 
     after(:build) do |record|
-      min_length_allowed = record.min_length || 0
-      max_length_allowed = record.max_length || 10
-      length = rand(min_length_allowed..max_length_allowed) || 10
+      min_length = [record.min_length, 0].compact.max
+      max_length = record.max_length && record.max_length >= min_length ? record.max_length : min_length + rand(0..10)
 
-      allowed = [TestMethods.random_string(length)]
+      allowed = [TestMethods.random_string(rand(min_length..max_length))]
       allowed << nil unless record.required?
 
       record.default_value = allowed.sample
@@ -37,19 +35,47 @@ FactoryBot.define do
 
   factory :text_array_active_field, parent: :active_field, class: "ActiveFields::Field::TextArray" do
     type { "ActiveFields::Field::TextArray" }
+
+    trait :with_min_size do
+      min_size { rand(0..5) }
+    end
+
+    trait :with_max_size do
+      max_size { rand(5..10) }
+    end
+
+    trait :with_min_length do
+      min_length { rand(0..10) }
+    end
+
+    trait :with_max_length do
+      max_length { rand(10..20) }
+    end
+
+    after(:build) do |record|
+      min_length = [record.min_length, 0].compact.max
+      max_length = record.max_length && record.max_length >= min_length ? record.max_length : min_length + rand(0..10)
+
+      min_size = [record.min_size, 0].compact.max
+      max_size = record.max_size && record.max_size >= min_size ? record.max_size : min_size + rand(0..10)
+
+      record.default_value = Array.new(rand(min_size..max_size)) do
+        TestMethods.random_string(rand(min_length..max_length))
+      end
+    end
   end
 
   factory :enum_active_field, parent: :active_field, class: "ActiveFields::Field::Enum" do
     type { "ActiveFields::Field::Enum" }
 
-    allowed_values { Array.new(5) { TestMethods.random_string } }
+    allowed_values { Array.new(rand(1..5)) { TestMethods.random_string } }
 
     trait :required do
       required { true }
     end
 
     after(:build) do |record|
-      allowed = record.allowed_values.is_a?(Array) ? record.allowed_values.dup : []
+      allowed = record.allowed_values.dup || []
       allowed << nil unless record.required?
 
       record.default_value = allowed.sample
@@ -59,13 +85,21 @@ FactoryBot.define do
   factory :enum_array_active_field, parent: :active_field, class: "ActiveFields::Field::EnumArray" do
     type { "ActiveFields::Field::EnumArray" }
 
-    allowed_values { Array.new(5) { TestMethods.random_string } }
+    trait :with_min_size do
+      min_size { rand(0..5) }
+    end
+
+    trait :with_max_size do
+      max_size { rand(5..10) }
+    end
 
     after(:build) do |record|
-      allowed_min_size = record.min_size || 0
-      allowed_max_size = record.max_size || record.allowed_values.size
+      min_size = [record.min_size, 0].compact.max
+      max_size = record.max_size && record.max_size >= min_size ? record.max_size : min_size + rand(0..10)
 
-      record.default_value = record.allowed_values.sample(rand(allowed_min_size..allowed_max_size))
+      record.allowed_values = Array.new([max_size + rand(0..5), 1].max) { TestMethods.random_string }
+
+      record.default_value = record.allowed_values.sample(rand(min_size..max_size))
     end
   end
 
@@ -85,11 +119,10 @@ FactoryBot.define do
     end
 
     after(:build) do |record|
-      max_allowed = record.max || 10
-      min_allowed = record.min || (max_allowed - 20)
-      value = rand(min_allowed..max_allowed) || 0
+      min = record.min || ((record.max || 0) - rand(0..10))
+      max = record.max && record.max >= min ? record.max : min + rand(0..10)
 
-      allowed = [value]
+      allowed = [rand(min..max)]
       allowed << nil unless record.required?
 
       record.default_value = allowed.sample
@@ -98,6 +131,32 @@ FactoryBot.define do
 
   factory :integer_array_active_field, parent: :active_field, class: "ActiveFields::Field::IntegerArray" do
     type { "ActiveFields::Field::IntegerArray" }
+
+    trait :with_min_size do
+      min_size { rand(0..5) }
+    end
+
+    trait :with_max_size do
+      max_size { rand(5..10) }
+    end
+
+    trait :with_min do
+      min { rand(-10..0) }
+    end
+
+    trait :with_max do
+      max { rand(0..10) }
+    end
+
+    after(:build) do |record|
+      min = record.min || ((record.max || 0) - rand(0..10))
+      max = record.max && record.max >= min ? record.max : min + rand(0..10)
+
+      min_size = [record.min_size, 0].compact.max
+      max_size = record.max_size && record.max_size >= min_size ? record.max_size : min_size + rand(0..10)
+
+      record.default_value = Array.new(rand(min_size..max_size)) { rand(min..max) }
+    end
   end
 
   factory :decimal_active_field, parent: :active_field, class: "ActiveFields::Field::Decimal" do
@@ -116,11 +175,10 @@ FactoryBot.define do
     end
 
     after(:build) do |record|
-      max_allowed = record.max || 10.0
-      min_allowed = record.min || (max_allowed - 20.0)
-      value = rand(min_allowed..max_allowed) || 0.0
+      min = record.min || ((record.max || 0) - rand(0.0..10.0))
+      max = record.max && record.max >= min ? record.max : min + rand(0.0..10.0)
 
-      allowed = [value]
+      allowed = [rand(min..max)]
       allowed << nil unless record.required?
 
       record.default_value = allowed.sample
@@ -129,6 +187,32 @@ FactoryBot.define do
 
   factory :decimal_array_active_field, parent: :active_field, class: "ActiveFields::Field::DecimalArray" do
     type { "ActiveFields::Field::DecimalArray" }
+
+    trait :with_min_size do
+      min_size { rand(0..5) }
+    end
+
+    trait :with_max_size do
+      max_size { rand(5..10) }
+    end
+
+    trait :with_min do
+      min { rand(-10.0..0.0) }
+    end
+
+    trait :with_max do
+      max { rand(0.0..10.0) }
+    end
+
+    after(:build) do |record|
+      min = record.min || ((record.max || 0) - rand(0.0..10.0))
+      max = record.max && record.max >= min ? record.max : min + rand(0.0..10.0)
+
+      min_size = [record.min_size, 0].compact.max
+      max_size = record.max_size && record.max_size >= min_size ? record.max_size : min_size + rand(0..10)
+
+      record.default_value = Array.new(rand(min_size..max_size)) { rand(min..max) }
+    end
   end
 
   factory :date_active_field, parent: :active_field, class: "ActiveFields::Field::Date" do
@@ -147,11 +231,10 @@ FactoryBot.define do
     end
 
     after(:build) do |record|
-      max_allowed = record.max || Date.today + 10
-      min_allowed = record.min || (max_allowed - 20)
-      value = (min_allowed..max_allowed).to_a.sample || Date.today
+      min = record.min || ((record.max || Date.today) - rand(0..10))
+      max = record.max && record.max >= min ? record.max : min + rand(0..10)
 
-      allowed = [value]
+      allowed = [rand(min..max)]
       allowed << nil unless record.required?
 
       record.default_value = allowed.sample
@@ -160,6 +243,32 @@ FactoryBot.define do
 
   factory :date_array_active_field, parent: :active_field, class: "ActiveFields::Field::DateArray" do
     type { "ActiveFields::Field::DateArray" }
+
+    trait :with_min_size do
+      min_size { rand(0..5) }
+    end
+
+    trait :with_max_size do
+      max_size { rand(5..10) }
+    end
+
+    trait :with_min do
+      min { Date.today + rand(-10..0) }
+    end
+
+    trait :with_max do
+      max { Date.today + rand(0..10) }
+    end
+
+    after(:build) do |record|
+      min = record.min || ((record.max || Date.today) - rand(0..10))
+      max = record.max && record.max >= min ? record.max : min + rand(0..10)
+
+      min_size = [record.min_size, 0].compact.max
+      max_size = record.max_size && record.max_size >= min_size ? record.max_size : min_size + rand(0..10)
+
+      record.default_value = Array.new(rand(min_size..max_size)) { rand(min..max) }
+    end
   end
 
   factory :boolean_active_field, parent: :active_field, class: "ActiveFields::Field::Boolean" do
