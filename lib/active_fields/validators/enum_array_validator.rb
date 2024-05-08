@@ -22,7 +22,7 @@ module ActiveFields
         end
 
         if value.size != value.uniq.size
-          errors << :taken
+          errors << :duplicate
         end
       end
 
