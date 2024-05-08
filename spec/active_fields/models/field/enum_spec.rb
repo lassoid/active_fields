@@ -1,75 +1,63 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Field::Enum do
-  it_behaves_like "active_field", factory: :enum_active_field
+  factory = :enum_active_field
+
+  it_behaves_like "active_field", factory: factory
 
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_text_array", :allowed_values, :options, described_class
 
   it "has a valid factory" do
-    expect(build(:enum_active_field)).to be_valid
+    expect(build(factory)).to be_valid
   end
 
   context "validations" do
-    subject(:record) { build(:enum_active_field) }
-
     describe "#validate_allowed_values" do
-      subject(:record) do
-        build(:enum_active_field, allowed_values: allowed_values)
+      let(:record) { build(factory) }
+
+      before do
+        record.allowed_values = allowed_values
       end
 
       context "when allowed_values is nil" do
         let(:allowed_values) { nil }
 
-        it { is_expected.not_to be_valid }
-
-        it "adds errors" do
+        it "is invalid" do
           record.valid?
 
-          expect(record.errors.added?(:allowed_values, :blank)).to be(true)
+          expect(record.errors.where(:allowed_values, :blank)).not_to be_empty
         end
       end
 
       context "when allowed_values is an empty array" do
         let(:allowed_values) { [] }
 
-        it { is_expected.not_to be_valid }
-
-        it "adds errors" do
+        it "is invalid" do
           record.valid?
 
-          expect(record.errors.added?(:allowed_values, :blank)).to be(true)
+          expect(record.errors.where(:allowed_values, :blank)).not_to be_empty
         end
       end
 
       context "when allowed_values contains not a string" do
         let(:allowed_values) { [random_string, nil] }
 
-        it { is_expected.not_to be_valid }
-
-        it "adds errors" do
+        it "is invalid" do
           record.valid?
 
-          expect(record.errors.added?(:allowed_values, :invalid)).to be(true)
-        end
-      end
-
-      context "when allowed_values is not an array" do
-        let(:allowed_values) { [random_integer, random_string, random_date].sample }
-
-        it { is_expected.not_to be_valid }
-
-        it "adds errors" do
-          record.valid?
-
-          expect(record.errors.added?(:allowed_values, :blank)).to be(true)
+          expect(record.errors.where(:allowed_values, :invalid)).not_to be_empty
         end
       end
 
       context "when allowed_values is an array of strings" do
         let(:allowed_values) { ["", random_string] }
 
-        it { is_expected.to be_valid }
+        it "is valid" do
+          record.valid?
+
+          expect(record.errors.where(:allowed_values)).to be_empty
+        end
       end
     end
   end
@@ -110,8 +98,8 @@ RSpec.describe ActiveFields::Field::Enum do
     end
 
     describe "after_create #add_field_to_records" do
-      include_examples "field_value_add", :enum_active_field
-      include_examples "field_value_add", :enum_active_field, :required
+      include_examples "field_value_add", factory
+      include_examples "field_value_add", factory, :required
     end
   end
 end

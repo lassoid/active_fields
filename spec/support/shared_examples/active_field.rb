@@ -138,7 +138,7 @@ RSpec.shared_examples "active_field" do |factory:|
       it "sets default_value" do
         call_method
 
-        expect(record.attributes["default_value"]).to eq(record.value_caster.serialize(value))
+        expect(record.default_value).to eq(record.value_caster.deserialize(record.value_caster.serialize(value)))
       end
     end
   end

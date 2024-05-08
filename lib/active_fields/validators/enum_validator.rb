@@ -10,13 +10,13 @@ module ActiveFields
       def perform_validation(value)
         if value.nil?
           errors << :required if active_field.required?
-        else
-          validate_allowed_values(value)
+        elsif active_field.allowed_values.is_a?(Array)
+          validate_value_allowed(value, allowed_values: active_field.allowed_values)
         end
       end
 
-      def validate_allowed_values(value)
-        return if active_field.allowed_values.include?(value)
+      def validate_value_allowed(value, allowed_values:)
+        return if allowed_values.include?(value)
 
         errors << :inclusion
       end

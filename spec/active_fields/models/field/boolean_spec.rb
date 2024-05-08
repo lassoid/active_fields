@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Field::Boolean do
-  it_behaves_like "active_field", factory: :boolean_active_field
+  factory = :boolean_active_field
+
+  it_behaves_like "active_field", factory: factory
 
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_boolean", :nullable, :options, described_class
 
   it "has a valid factory" do
-    expect(build(:boolean_active_field)).to be_valid
+    expect(build(factory)).to be_valid
   end
 
   context "callbacks" do
@@ -46,10 +48,10 @@ RSpec.describe ActiveFields::Field::Boolean do
     end
 
     describe "after_create #add_field_to_records" do
-      include_examples "field_value_add", :boolean_active_field
-      include_examples "field_value_add", :boolean_active_field, :nullable
-      include_examples "field_value_add", :boolean_active_field, :required
-      include_examples "field_value_add", :boolean_active_field, :required, :nullable
+      include_examples "field_value_add", factory
+      include_examples "field_value_add", factory, :nullable
+      include_examples "field_value_add", factory, :required
+      include_examples "field_value_add", factory, :required, :nullable
     end
   end
 end
