@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe ActiveFields::Field::Decimal do
-  factory = :decimal_active_field
+RSpec.describe ActiveFields::Field::DecimalArray do
+  factory = :decimal_array_active_field
 
   it_behaves_like "active_field", factory: factory
 
-  include_examples "store_attribute_boolean", :required, :options, described_class
+  include_examples "store_attribute_integer", :min_size, :options, described_class
+  include_examples "store_attribute_integer", :max_size, :options, described_class
   include_examples "store_attribute_decimal", :min, :options, described_class
   include_examples "store_attribute_decimal", :max, :options, described_class
 
@@ -14,6 +15,8 @@ RSpec.describe ActiveFields::Field::Decimal do
   end
 
   context "validations" do
+    include_examples "field_sizes_validate", factory: factory
+
     describe "#max" do
       let(:record) { build(factory, min: min, max: max) }
 
@@ -88,34 +91,23 @@ RSpec.describe ActiveFields::Field::Decimal do
   end
 
   context "callbacks" do
-    describe "after_initialize #set_defaults" do
-      let(:record) { described_class.new(required: required) }
-      let(:required) { nil }
-
-      context "when required is nil" do
-        it "sets false" do
-          expect(record.required).to be(false)
-        end
-      end
-
-      context "when required is not nil" do
-        let(:required) { [true, false].sample }
-
-        it "doesn't change column" do
-          expect(record.required).to be(required)
-        end
-      end
-    end
-
     describe "after_create #add_field_to_records" do
       include_examples "field_value_add", factory
       include_examples "field_value_add", factory, :with_min
       include_examples "field_value_add", factory, :with_max
       include_examples "field_value_add", factory, :with_min, :with_max
-      include_examples "field_value_add", factory, :required
-      include_examples "field_value_add", factory, :required, :with_min
-      include_examples "field_value_add", factory, :required, :with_max
-      include_examples "field_value_add", factory, :required, :with_min, :with_max
+      include_examples "field_value_add", factory, :with_min_size
+      include_examples "field_value_add", factory, :with_min_size, :with_min
+      include_examples "field_value_add", factory, :with_min_size, :with_max
+      include_examples "field_value_add", factory, :with_min_size, :with_min, :with_max
+      include_examples "field_value_add", factory, :with_max_size
+      include_examples "field_value_add", factory, :with_max_size, :with_min
+      include_examples "field_value_add", factory, :with_max_size, :with_max
+      include_examples "field_value_add", factory, :with_max_size, :with_min, :with_max
+      include_examples "field_value_add", factory, :with_min_size, :with_max_size
+      include_examples "field_value_add", factory, :with_min_size, :with_max_size, :with_min
+      include_examples "field_value_add", factory, :with_min_size, :with_max_size, :with_max
+      include_examples "field_value_add", factory, :with_min_size, :with_max_size, :with_min, :with_max
     end
   end
 end

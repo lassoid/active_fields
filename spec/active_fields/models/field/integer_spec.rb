@@ -14,9 +14,9 @@ RSpec.describe ActiveFields::Field::Integer do
   end
 
   context "validations" do
-    let(:record) { build(factory, min: min, max: max) }
-
     describe "#max" do
+      let(:record) { build(factory, min: min, max: max) }
+
       context "without min" do
         let(:min) { nil }
 

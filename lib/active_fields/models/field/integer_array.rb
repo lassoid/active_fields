@@ -5,18 +5,18 @@ require_relative "../field"
 module ActiveFields
   class Field
     class IntegerArray < ActiveFields::Field
-      store_accessor :options, :min, :max, :min_size, :max_size
+      store_accessor :options, :min_size, :max_size, :min, :max
 
-      # attribute :min, :integer
-      # attribute :max, :integer
       # attribute :min_size, :integer
       # attribute :max_size, :integer
+      # attribute :min, :integer
+      # attribute :max, :integer
 
-      validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
       validates :min_size, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
       validates :max_size, comparison: { greater_than_or_equal_to: ->(r) { r.min_size || 0 } }, allow_nil: true
+      validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
 
-      %i[min max min_size max_size].each do |column|
+      %i[min_size max_size min max].each do |column|
         define_method(column) do
           ActiveFields::Casters::IntegerCaster.new.deserialize(super())
         end

@@ -5,19 +5,19 @@ require_relative "../field"
 module ActiveFields
   class Field
     class TextArray < ActiveFields::Field
-      store_accessor :options, :min_length, :max_length, :min_size, :max_size
+      store_accessor :options, :min_size, :max_size, :min_length, :max_length
 
-      # attribute :min_length, :integer
-      # attribute :max_length, :integer
       # attribute :min_size, :integer
       # attribute :max_size, :integer
+      # attribute :min_length, :integer
+      # attribute :max_length, :integer
 
-      validates :min_length, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
-      validates :max_length, comparison: { greater_than_or_equal_to: ->(r) { r.min_length || 0 } }, allow_nil: true
       validates :min_size, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
       validates :max_size, comparison: { greater_than_or_equal_to: ->(r) { r.min_size || 0 } }, allow_nil: true
+      validates :min_length, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
+      validates :max_length, comparison: { greater_than_or_equal_to: ->(r) { r.min_length || 0 } }, allow_nil: true
 
-      %i[min_length max_length min_size max_size].each do |column|
+      %i[min_size max_size min_length max_length].each do |column|
         define_method(column) do
           ActiveFields::Casters::IntegerCaster.new.deserialize(super())
         end
