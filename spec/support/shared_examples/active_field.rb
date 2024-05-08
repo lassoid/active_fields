@@ -34,6 +34,36 @@ RSpec.shared_examples "active_field" do |factory:|
         end
       end
     end
+
+    describe "#validate_default_value" do
+      before do
+        validator = instance_double(record.value_validator_class, errors: validator_errors)
+        # rubocop:disable RSpec/SubjectStub
+        allow(record).to receive(:value_validator).and_return(validator)
+        # rubocop:enable RSpec/SubjectStub
+        allow(validator).to receive(:validate).with(record.default_value).and_return(validator_errors.empty?)
+      end
+
+      context "when validator returns success" do
+        let(:validator_errors) { Set.new }
+
+        it { is_expected.to be_valid }
+      end
+
+      context "when validator returns error" do
+        let(:validator_errors) { Set.new([:invalid, [:greater_than, count: 1]]) }
+
+        it { is_expected.not_to be_valid }
+
+        it "adds errors from validator" do
+          record.valid?
+
+          validator_errors.each do |error|
+            expect(record.errors.added?(:default_value, *error)).to be(true)
+          end
+        end
+      end
+    end
   end
 
   context "scopes", skip: "Should be implemented" do
@@ -88,16 +118,28 @@ RSpec.shared_examples "active_field" do |factory:|
       it { is_expected.to eq(record.customizable_type.constantize) }
     end
 
-    describe "#default_value", skip: "Should be implemented" do
+    describe "#default_value" do
       subject(:call_method) { record.default_value }
 
-      it { is_expected.to be_nil }
+      let(:internal_value) { build(factory).attributes["default_value"] }
+
+      before do
+        record.default_value = internal_value
+      end
+
+      it { is_expected.to eq(record.value_caster.deserialize(internal_value)) }
     end
 
-    describe "#default_value=", skip: "Should be implemented" do
+    describe "#default_value=" do
       subject(:call_method) { record.default_value = value }
 
-      it { is_expected.to be_nil }
+      let(:value) { build(factory).default_value }
+
+      it "sets default_value" do
+        call_method
+
+        expect(record.attributes["default_value"]).to eq(record.value_caster.serialize(value))
+      end
     end
   end
 end

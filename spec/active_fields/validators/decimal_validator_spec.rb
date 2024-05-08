@@ -3,67 +3,67 @@
 RSpec.describe ActiveFields::Validators::DecimalValidator do
   subject(:validate) { object.validate(value) }
 
+  factory = :decimal_active_field
   let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(:decimal_active_field, required: required, min: min, max: max) }
-
-  let(:required) { false }
-  let(:min) { nil }
-  let(:max) { nil }
+  let(:active_field) { build(factory) }
 
   include_examples "field_value_validate", -> { nil }, "nil"
   include_examples "field_value_validate",
-    -> { [random_string, random_date, [random_decimal]].sample },
+    -> { [random_string, random_date, [random_number]].sample },
     "not a number or nil",
     -> { [:invalid] }
 
   context "when required" do
-    let(:required) { true }
+    let(:active_field) { build(factory, :required) }
 
     include_examples "field_value_validate", -> { nil }, "nil", -> { [:required] }
   end
 
   context "value comparison" do
     context "without min and max" do
-      include_examples "field_value_validate", -> { rand(1.0..10.0).round(5) }, "a number"
+      let(:active_field) { build(factory) }
+
+      include_examples "field_value_validate", -> { random_number }, "a number"
     end
 
     context "with min" do
-      let(:min) { rand(1.0..10.0).round(5) }
+      let(:active_field) { build(factory, :with_min) }
 
-      include_examples "field_value_validate", -> { min }, "a min number"
-      include_examples "field_value_validate", -> { min + 0.1 }, "a number greater than min"
+      include_examples "field_value_validate", -> { active_field.min }, "a min number"
+      include_examples "field_value_validate", -> { active_field.min + 0.1 }, "a number greater than min"
       include_examples "field_value_validate",
-        -> { min - 0.1 },
+        -> { active_field.min - 0.1 },
         "a number less than min",
-        -> { [[:greater_than_or_equal_to, count: min]] }
+        -> { [[:greater_than_or_equal_to, count: active_field.min]] }
     end
 
     context "with max" do
-      let(:max) { rand(11.0..20.0).round(5) }
+      let(:active_field) { build(factory, :with_max) }
 
-      include_examples "field_value_validate", -> { max }, "a max number"
-      include_examples "field_value_validate", -> { max - 0.1 }, "a number less than max"
+      include_examples "field_value_validate", -> { active_field.max }, "a max number"
+      include_examples "field_value_validate", -> { active_field.max - 0.1 }, "a number less than max"
       include_examples "field_value_validate",
-        -> { max + 0.1 },
+        -> { active_field.max + 0.1 },
         "a number greater than max",
-        -> { [[:less_than_or_equal_to, count: max]] }
+        -> { [[:less_than_or_equal_to, count: active_field.max]] }
     end
 
     context "with both min and max" do
-      let(:min) { rand(1.0..10.0).round(5) }
-      let(:max) { rand(11.0..20.0).round(5) }
+      let(:active_field) { build(factory, :with_min, :with_max) }
 
-      include_examples "field_value_validate", -> { min }, "a min number"
-      include_examples "field_value_validate", -> { max }, "a max number"
-      include_examples "field_value_validate", -> { rand(min..max) }, "a number between min and max"
+      include_examples "field_value_validate", -> { active_field.min }, "a min number"
+      include_examples "field_value_validate", -> { active_field.max }, "a max number"
       include_examples "field_value_validate",
-        -> { min - 0.1 },
+        -> { rand(active_field.min..active_field.max) },
+        "a number between min and max"
+      include_examples "field_value_validate",
+        -> { active_field.min - 0.1 },
         "a number less than min",
-        -> { [[:greater_than_or_equal_to, count: min]] }
+        -> { [[:greater_than_or_equal_to, count: active_field.min]] }
       include_examples "field_value_validate",
-        -> { max + 0.1 },
+        -> { active_field.max + 0.1 },
         "a number greater than max",
-        -> { [[:less_than_or_equal_to, count: max]] }
+        -> { [[:less_than_or_equal_to, count: active_field.max]] }
     end
   end
 end

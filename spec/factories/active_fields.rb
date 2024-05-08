@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     trait :with_min_length do
-      min_length { rand(0..10) }
+      min_length { rand(1..10) }
     end
 
     trait :with_max_length do
@@ -37,7 +37,7 @@ FactoryBot.define do
     type { "ActiveFields::Field::TextArray" }
 
     trait :with_min_size do
-      min_size { rand(0..5) }
+      min_size { rand(1..5) }
     end
 
     trait :with_max_size do
@@ -45,7 +45,7 @@ FactoryBot.define do
     end
 
     trait :with_min_length do
-      min_length { rand(0..10) }
+      min_length { rand(1..10) }
     end
 
     trait :with_max_length do
@@ -68,13 +68,13 @@ FactoryBot.define do
   factory :enum_active_field, parent: :active_field, class: "ActiveFields::Field::Enum" do
     type { "ActiveFields::Field::Enum" }
 
-    allowed_values { Array.new(rand(1..5)) { TestMethods.random_string } }
-
     trait :required do
       required { true }
     end
 
     after(:build) do |record|
+      record.allowed_values = Array.new(rand(1..5)) { TestMethods.random_string }
+
       allowed = record.allowed_values.dup || []
       allowed << nil unless record.required?
 
@@ -86,7 +86,7 @@ FactoryBot.define do
     type { "ActiveFields::Field::EnumArray" }
 
     trait :with_min_size do
-      min_size { rand(0..5) }
+      min_size { rand(1..5) }
     end
 
     trait :with_max_size do
@@ -97,7 +97,7 @@ FactoryBot.define do
       min_size = [record.min_size, 0].compact.max
       max_size = record.max_size && record.max_size >= min_size ? record.max_size : min_size + rand(0..10)
 
-      record.allowed_values = Array.new([max_size + rand(0..5), 1].max) { TestMethods.random_string }
+      record.allowed_values = Array.new(max_size + rand(1..5)) { TestMethods.random_string }
 
       record.default_value = record.allowed_values.sample(rand(min_size..max_size))
     end
@@ -133,7 +133,7 @@ FactoryBot.define do
     type { "ActiveFields::Field::IntegerArray" }
 
     trait :with_min_size do
-      min_size { rand(0..5) }
+      min_size { rand(1..5) }
     end
 
     trait :with_max_size do
@@ -189,7 +189,7 @@ FactoryBot.define do
     type { "ActiveFields::Field::DecimalArray" }
 
     trait :with_min_size do
-      min_size { rand(0..5) }
+      min_size { rand(1..5) }
     end
 
     trait :with_max_size do
@@ -245,7 +245,7 @@ FactoryBot.define do
     type { "ActiveFields::Field::DateArray" }
 
     trait :with_min_size do
-      min_size { rand(0..5) }
+      min_size { rand(1..5) }
     end
 
     trait :with_max_size do

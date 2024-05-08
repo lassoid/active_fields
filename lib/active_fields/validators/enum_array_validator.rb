@@ -14,6 +14,8 @@ module ActiveFields
           value.each do |elem_value|
             validate_allowed_values(elem_value)
           end
+
+          # TODO: check duplicates
         else
           errors << :invalid
         end

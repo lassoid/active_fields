@@ -13,36 +13,6 @@ RSpec.describe ActiveFields::Field::Enum do
   context "validations" do
     subject(:record) { build(:enum_active_field) }
 
-    describe "#validate_default_value" do
-      before do
-        validator = instance_double(ActiveFields::Validators::EnumValidator, errors: validator_errors)
-        # rubocop:disable RSpec/SubjectStub
-        allow(record).to receive(:value_validator).and_return(validator)
-        # rubocop:enable RSpec/SubjectStub
-        allow(validator).to receive(:validate).with(record.default_value).and_return(validator_errors.empty?)
-      end
-
-      context "when validator returns success" do
-        let(:validator_errors) { Set.new }
-
-        it { is_expected.to be_valid }
-      end
-
-      context "when validator returns error" do
-        let(:validator_errors) { Set.new([:invalid, [:greater_than, count: 1]]) }
-
-        it { is_expected.not_to be_valid }
-
-        it "adds errors from validator" do
-          record.valid?
-
-          validator_errors.each do |error|
-            expect(record.errors.added?(:default_value, *error)).to be(true)
-          end
-        end
-      end
-    end
-
     describe "#validate_allowed_values" do
       subject(:record) do
         build(:enum_active_field, allowed_values: allowed_values)

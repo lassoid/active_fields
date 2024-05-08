@@ -3,33 +3,31 @@
 RSpec.describe ActiveFields::Validators::EnumValidator do
   subject(:validate) { object.validate(value) }
 
+  factory = :enum_active_field
   let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(:enum_active_field, required: required, allowed_values: allowed_values) }
-
-  let(:required) { false }
-  let(:allowed_values) { Array.new(rand(1..5)) { random_string(rand(5..10)) } }
+  let(:active_field) { build(factory) }
 
   include_examples "field_value_validate", -> { nil }, "nil"
   include_examples "field_value_validate",
-    -> { [random_integer, random_date, [allowed_values.sample]].sample },
+    -> { [random_number, random_date, [active_field.allowed_values.sample]].sample },
     "not a string or nil",
     -> { [:inclusion] }
 
-  include_examples "field_value_validate", -> { allowed_values.sample }, "an allowed string"
+  include_examples "field_value_validate", -> { active_field.allowed_values.sample }, "an allowed string"
   include_examples "field_value_validate",
-    -> { "#{allowed_values.sample} other" },
+    -> { "#{active_field.allowed_values.sample} other" },
     "a not allowed string",
     -> { [:inclusion] }
   include_examples "field_value_validate", -> { "" }, "an empty string", -> { [:inclusion] }
 
   context "when required" do
-    let(:required) { true }
+    let(:active_field) { build(factory, :required) }
 
     include_examples "field_value_validate", -> { nil }, "nil", -> { [:required] }
   end
 
   context "when empty string allowed" do
-    let(:allowed_values) { [""] + Array.new(rand(1..5)) { random_string(rand(5..10)) } }
+    let(:active_field) { build(factory).tap { _1.allowed_values += [""] } }
 
     include_examples "field_value_validate", -> { "" }, "an empty string"
   end
