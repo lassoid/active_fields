@@ -15,7 +15,9 @@ module ActiveFields
             validate_allowed_values(elem_value)
           end
 
-          # TODO: check duplicates
+          if value.size != value.uniq.size
+            errors << :taken
+          end
         else
           errors << :invalid
         end

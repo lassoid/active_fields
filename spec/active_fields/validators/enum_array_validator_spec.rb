@@ -21,6 +21,10 @@ RSpec.describe ActiveFields::Validators::EnumArrayValidator do
     "an array containing a not allowed string",
     -> { [:inclusion] }
   include_examples "field_value_validate",
+    -> { [active_field.allowed_values.first, active_field.allowed_values.first] },
+    "an array containing duplicates",
+    -> { [:taken] }
+  include_examples "field_value_validate",
     -> { ["", active_field.allowed_values.sample] },
     "an array with an empty string",
     -> { [:inclusion] }
