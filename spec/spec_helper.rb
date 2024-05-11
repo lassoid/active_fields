@@ -51,7 +51,7 @@ end
 
 def db_migrate
   Dir["#{__dir__}/dummy_app/db/migrate/*.rb"].each { |f| require_relative f }
-  ActiveRecord::Migration.run(CreatePosts, CreateComments, CreateActiveFieldsTables)
+  ActiveRecord::Migration.run(CreatePostsAndComments, CreateActiveFieldsTables)
 end
 
 RSpec.configure do |config|

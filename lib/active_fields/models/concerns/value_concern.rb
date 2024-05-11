@@ -15,15 +15,11 @@ module ActiveFields
     end
 
     def value=(v)
-      return if active_field.nil?
-
-      super(active_field.value_caster.serialize(v))
+      super(active_field&.value_caster&.serialize(v))
     end
 
     def value
-      return if active_field.nil?
-
-      active_field.value_caster.deserialize(super)
+      active_field&.value_caster&.deserialize(super)
     end
 
     private
