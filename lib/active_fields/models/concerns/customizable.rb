@@ -12,6 +12,7 @@ module ActiveFields
       has_many :active_values,
         class_name: "ActiveFields::Value",
         as: :customizable,
+        inverse_of: :customizable,
         autosave: false,
         dependent: :destroy
 

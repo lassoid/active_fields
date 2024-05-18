@@ -12,7 +12,7 @@ RSpec.shared_examples "active_field" do |factory:|
 
         it "is valid" do
           record.valid?
-          expect(record.errors.of_kind?(:name, :invalid)).to be(false)
+          expect(record.errors.where(:name, :invalid)).to be_empty
         end
       end
 
@@ -21,7 +21,7 @@ RSpec.shared_examples "active_field" do |factory:|
 
         it "is invalid" do
           record.valid?
-          expect(record.errors.of_kind?(:name, :invalid)).to be(true)
+          expect(record.errors.where(:name, :invalid)).not_to be_empty
         end
       end
 
@@ -30,7 +30,7 @@ RSpec.shared_examples "active_field" do |factory:|
 
         it "is invalid" do
           record.valid?
-          expect(record.errors.of_kind?(:name, :invalid)).to be(true)
+          expect(record.errors.where(:name, :invalid)).not_to be_empty
         end
       end
     end
@@ -68,21 +68,18 @@ RSpec.shared_examples "active_field" do |factory:|
     end
   end
 
-  context "scopes", skip: "Should be implemented" do
+  context "scopes" do
     describe "#for" do
-      # let_it_be(:user_record) { create(factory, :for_users) }
-
-      it "returns users custom fields definitions only" do
-        expect(described_class.for("User").to_a).to include(user_record)
+      let!(:active_fields) do
+        [create(factory, customizable_type: "Author"), create(factory, customizable_type: "Post")]
       end
-    end
 
-    describe "#with_name" do
-      # let_it_be(:record1) { create(factory) }
-      # let_it_be(:record2) { create(factory) }
+      it "returns active_fields for provided model only" do
+        customizable_type = active_fields.sample.customizable_type
 
-      it "returns user custom fields definitions only" do
-        expect(described_class.with_name(record1.name).to_a).to include(record1).and exclude(record2)
+        expect(described_class.for(customizable_type).to_a)
+          .to include(*active_fields.select { |field| field.customizable_type == customizable_type })
+          .and exclude(*active_fields.reject { |field| field.customizable_type == customizable_type })
       end
     end
   end
@@ -123,24 +120,22 @@ RSpec.shared_examples "active_field" do |factory:|
     describe "#default_value" do
       subject(:call_method) { record.default_value }
 
-      let(:internal_value) { build(factory).attributes["default_value"] }
-
-      before do
-        record.default_value = internal_value
-      end
-
-      it { is_expected.to eq(record.value_caster.deserialize(internal_value)) }
+      it { is_expected.to eq(record.value_caster.deserialize(record.attributes["default_value"])) }
     end
 
     describe "#default_value=" do
       subject(:call_method) { record.default_value = value }
 
-      let(:value) { build(factory).default_value }
+      let(:value) { active_value_for(record) }
 
       it "sets default_value" do
         call_method
 
-        expect(record.default_value).to eq(record.value_caster.deserialize(record.value_caster.serialize(value)))
+        expect(record.default_value).to eq(
+          record.value_caster.deserialize(
+            record.value_caster.serialize(value),
+          ),
+        )
       end
     end
   end

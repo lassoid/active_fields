@@ -1,265 +1,272 @@
 # frozen_string_literal: true
 
-# RSpec.shared_examples "customizable" do |factory:|
-#   context "associations" do
-#     it { is_expected.to have_many(:custom_fields).autosave(false).dependent(:destroy) }
-#   end
-#
-#   context "validations" do
-#     context "validates associated custom fields" do
-#       let_it_be(:definition, refind: true) do
-#         custom_field_definition_sample_record(:create, customizable_type: described_class.name)
-#       end
-#       let(:value) { build(custom_field_factory(definition.class.name)).value }
-#       let(:errors) { Set.new(%i[invalid blank]) }
-#
-#       before do
-#         validator_double = instance_double(definition.field_validator_class)
-#         allow(definition).to receive(:field_validator).and_return(validator_double)
-#         allow(validator_double).to receive(:validate).with(value).and_return(false)
-#         allow(validator_double).to receive(:errors).and_return(errors)
-#       end
-#
-#       context "new record" do
-#         let(:record) do
-#           build(factory, custom_fields_attributes: { definition.name => value })
-#         end
-#
-#         it "validates custom fields" do
-#           record.valid?
-#
-#           custom_field = record.custom_fields.find { |custom_field| custom_field.definition_id == definition.id }
-#           expect(record.errors.of_kind?(:custom_fields, :invalid)).to be(true)
-#           errors.each do |error|
-#             expect(custom_field.errors.of_kind?(:value, error)).to be(true)
-#           end
-#         end
-#       end
-#
-#       context "persisted record" do
-#         let_it_be(:record, refind: true) { create(factory) }
-#
-#         before do
-#           record.custom_fields_attributes = { definition.name => value }
-#         end
-#
-#         it "validates custom fields" do
-#           record.valid?
-#
-#           custom_field = record.custom_fields.find { |custom_field| custom_field.definition_id == definition.id }
-#           expect(record.errors.of_kind?(:custom_fields, :invalid)).to be(true)
-#           errors.each do |error|
-#             expect(custom_field.errors.of_kind?(:value, error)).to be(true)
-#           end
-#         end
-#       end
-#     end
-#   end
-#
-#   context "callbacks" do
-#     let_it_be(:definition, refind: true) do
-#       custom_field_definition_sample_record(:create, customizable_type: described_class.name)
-#     end
-#
-#     describe "before_validation #initialize_custom_fields" do
-#       context "new record" do
-#         let(:record) { build(factory, custom_fields_attributes: custom_fields_attributes) }
-#
-#         context "with nil custom_fields_attributes" do
-#           let(:custom_fields_attributes) { nil }
-#
-#           it "builds custom fields with defaults" do
-#             expect do
-#               record.valid?
-#             end.to change { record.custom_fields.size }.by(1)
-#
-#             field = record.custom_fields.find { |custom_field| custom_field.definition_id == definition.id }
-#             caster = definition.field_caster
-#             expect(field.value).to eq(caster.deserialize(caster.serialize(definition.default)))
-#           end
-#         end
-#
-#         context "with invalid custom_fields_attributes" do
-#           let(:custom_fields_attributes) { random_string }
-#
-#           it "builds custom fields with defaults" do
-#             expect do
-#               record.valid?
-#             end.to change { record.custom_fields.size }.by(1)
-#
-#             field = record.custom_fields.find { |custom_field| custom_field.definition_id == definition.id }
-#             caster = definition.field_caster
-#             expect(field.value).to eq(caster.deserialize(caster.serialize(definition.default)))
-#           end
-#         end
-#
-#         context "with string custom_fields_attributes keys" do
-#           let(:custom_fields_attributes) do
-#             {
-#               definition.name => build(custom_field_factory(definition.class.name)).value,
-#               "non existing definition name" => "doesn't matter",
-#             }
-#           end
-#
-#           it "builds custom fields with provided values" do
-#             expect do
-#               record.valid?
-#             end.to change { record.custom_fields.size }.by(1)
-#
-#             field = record.custom_fields.find { |custom_field| custom_field.definition_id == definition.id }
-#             caster = definition.field_caster
-#             expect(field.value).to eq(
-#               caster.deserialize(caster.serialize(custom_fields_attributes[definition.name])),
-#             )
-#           end
-#         end
-#
-#         context "with symbol custom_fields_attributes keys" do
-#           let(:custom_fields_attributes) do
-#             {
-#               definition.name.to_sym => build(custom_field_factory(definition.class.name)).value,
-#               "non existing definition name" => "doesn't matter",
-#             }
-#           end
-#
-#           it "builds custom fields with provided values" do
-#             expect do
-#               record.valid?
-#             end.to change { record.custom_fields.size }.by(1)
-#
-#             field = record.custom_fields.find { |custom_field| custom_field.definition_id == definition.id }
-#             caster = definition.field_caster
-#             expect(field.value).to eq(
-#               caster.deserialize(caster.serialize(custom_fields_attributes[definition.name.to_sym])),
-#             )
-#           end
-#         end
-#       end
-#
-#       context "persisted record" do
-#         let_it_be(:record, refind: true) { create(factory) }
-#
-#         before do
-#           record.custom_fields_attributes = custom_fields_attributes
-#         end
-#
-#         context "with nil custom_fields_attributes" do
-#           let(:custom_fields_attributes) { nil }
-#
-#           it "doesn't change custom fields values" do
-#             expect do
-#               record.valid?
-#             end.to not_change { record.custom_fields.find { _1.definition_id == definition.id }.value }
-#           end
-#         end
-#
-#         context "with invalid custom_fields_attributes" do
-#           let(:custom_fields_attributes) { random_string }
-#
-#           it "doesn't change custom fields values" do
-#             expect do
-#               record.valid?
-#             end.to not_change { record.custom_fields.find { _1.definition_id == definition.id }.value }
-#           end
-#         end
-#
-#         context "with string custom_fields_attributes keys" do
-#           let(:custom_fields_attributes) do
-#             {
-#               definition.name => build(custom_field_factory(definition.class.name)).value,
-#               "non existing definition name" => "doesn't matter",
-#             }
-#           end
-#
-#           it "changes custom fields for provided values only" do
-#             caster = definition.field_caster
-#             expect do
-#               record.valid?
-#             end.to change { record.custom_fields.find { _1.definition_id == definition.id }.value }.to(
-#               caster.deserialize(caster.serialize(custom_fields_attributes[definition.name])),
-#             )
-#           end
-#         end
-#
-#         context "with symbol custom_fields_attributes keys" do
-#           let(:custom_fields_attributes) do
-#             {
-#               definition.name.to_sym => build(custom_field_factory(definition.class.name)).value,
-#               "non existing definition name" => "doesn't matter",
-#             }
-#           end
-#
-#           it "changes custom fields for provided values only" do
-#             caster = definition.field_caster
-#             expect do
-#               record.valid?
-#             end.to change { record.custom_fields.find { _1.definition_id == definition.id }.value }.to(
-#               caster.deserialize(caster.serialize(custom_fields_attributes[definition.name.to_sym])),
-#             )
-#           end
-#         end
-#       end
-#     end
-#
-#     describe "after_save #save_changed_custom_fields" do
-#       let_it_be(:other_definition, refind: true) do
-#         custom_field_definition_sample_record(:create, customizable_type: described_class.name)
-#       end
-#
-#       context "new record" do
-#         let(:record) { build(factory) }
-#
-#         it "saves all custom fields" do
-#           expect do
-#             record.save!
-#             record.reload
-#           end.to change { record.custom_fields.size }.by(2)
-#         end
-#       end
-#
-#       context "persisted record" do
-#         let_it_be(:record, refind: true) { create(factory) }
-#         let(:custom_fields_attributes) do
-#           {
-#             definition.name => build(custom_field_factory(definition.class.name)).value,
-#             "non existing definition name" => "doesn't matter",
-#           }
-#         end
-#
-#         before do
-#           record.custom_fields_attributes = custom_fields_attributes
-#         end
-#
-#         it "saves only changed custom fields" do
-#           caster = definition.field_caster
-#           expect do
-#             record.save!
-#             record.reload
-#           end.to change { record.custom_fields.find { _1.definition_id == definition.id }.value }.to(
-#             caster.deserialize(caster.serialize(custom_fields_attributes[definition.name])),
-#           ).and not_change { record.custom_fields.find { _1.definition_id == other_definition.id }.value }
-#         end
-#       end
-#     end
-#   end
-#
-#   context "methods" do
-#     describe "##custom_field_definitions" do
-#       before_all do
-#         @records =
-#           custom_field_definition_suitable_model_names.map do |cfd_model_name|
-#             create(
-#               custom_field_definition_factory(cfd_model_name),
-#               customizable_type: described_class.name,
-#             )
-#           end
-#       end
-#
-#       let(:records) { @records }
-#
-#       it "returns available custom fields definitions for model" do
-#         expect(described_class.custom_field_definitions.to_a).to include(*records)
-#       end
-#     end
-#   end
-# end
+RSpec.shared_examples "customizable" do
+  context "validations" do
+    describe "#active_values" do
+      let!(:active_field) do
+        active_field = build(:active_value).active_field
+        active_field.update!(customizable_type: described_class.name)
+
+        active_field
+      end
+      let(:value) { active_value_for(active_field) }
+      let(:value_errors) { Set.new([:invalid, [:greater_than, count: random_number]]) }
+
+      context "new record" do
+        let(:record) { described_class.new(active_values_attributes: { active_field.name => value }) }
+
+        before do
+          validator = instance_double(active_field.value_validator_class, errors: value_errors)
+          allow(active_field.value_validator_class).to receive(:new).and_return(validator)
+          allow(validator).to receive(:validate).with(value).and_return(value_errors.empty?)
+        end
+
+        it "validates" do
+          record.valid?
+
+          active_value = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
+          expect(record.errors.where(:active_values, :invalid)).not_to be_empty
+          value_errors.each do |error|
+            expect(active_value.errors.added?(:value, *error)).to be(true)
+          end
+        end
+      end
+
+      context "persisted record" do
+        let!(:record) { described_class.create! }
+
+        before do
+          validator = instance_double(active_field.value_validator_class, errors: value_errors)
+          allow(active_field.value_validator_class).to receive(:new).and_return(validator)
+          allow(validator).to receive(:validate).with(value).and_return(value_errors.empty?)
+
+          record.active_values_attributes = { active_field.name => value }
+        end
+
+        it "validates" do
+          record.valid?
+
+          active_value = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
+          expect(record.errors.where(:active_values, :invalid)).not_to be_empty
+          value_errors.each do |error|
+            expect(active_value.errors.added?(:value, *error)).to be(true)
+          end
+        end
+      end
+    end
+  end
+
+  context "callbacks" do
+    let!(:active_field) do
+      active_field = build(:active_value).active_field
+      active_field.update!(customizable_type: described_class.name)
+
+      active_field
+    end
+
+    describe "before_validation #initialize_active_values" do
+      context "new record" do
+        let(:record) { described_class.new(active_values_attributes: active_values_attributes) }
+
+        context "with nil active_values_attributes" do
+          let(:active_values_attributes) { nil }
+
+          it "builds active_values with defaults" do
+            expect do
+              record.valid?
+            end.to change { record.active_values.size }.by(1)
+
+            field = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
+            expect(field.value).to eq(active_field.default_value)
+          end
+        end
+
+        context "with invalid active_values_attributes" do
+          let(:active_values_attributes) { random_string }
+
+          it "builds active_values with defaults" do
+            expect do
+              record.valid?
+            end.to change { record.active_values.size }.by(1)
+
+            field = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
+            expect(field.value).to eq(active_field.default_value)
+          end
+        end
+
+        context "with string active_values_attributes keys" do
+          let(:active_values_attributes) do
+            {
+              active_field.name => active_value_for(active_field),
+              "non existing active_field name" => "doesn't matter",
+            }
+          end
+
+          it "builds active_values with provided values" do
+            expect do
+              record.valid?
+            end.to change { record.active_values.size }.by(1)
+
+            field = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
+            expect(field.value).to eq(active_values_attributes[active_field.name])
+          end
+        end
+
+        context "with symbol active_values_attributes keys" do
+          let(:active_values_attributes) do
+            {
+              active_field.name.to_sym => active_value_for(active_field),
+              :"non existing active_field name" => "doesn't matter",
+            }
+          end
+
+          it "builds active_values with provided values" do
+            expect do
+              record.valid?
+            end.to change { record.active_values.size }.by(1)
+
+            field = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
+            expect(field.value).to eq(active_values_attributes[active_field.name.to_sym])
+          end
+        end
+      end
+
+      context "persisted record" do
+        let!(:record) { described_class.create! }
+
+        before do
+          record.active_values_attributes = active_values_attributes
+        end
+
+        context "with nil active_values_attributes" do
+          let(:active_values_attributes) { nil }
+
+          it "doesn't change active_values values" do
+            expect do
+              record.valid?
+            end.to not_change { record.active_values.find { _1.active_field_id == active_field.id }.value }
+          end
+        end
+
+        context "with invalid active_values_attributes" do
+          let(:active_values_attributes) { random_string }
+
+          it "doesn't change active_values values" do
+            expect do
+              record.valid?
+            end.to not_change { record.active_values.find { _1.active_field_id == active_field.id }.value }
+          end
+        end
+
+        context "with string active_values_attributes keys" do
+          let(:active_values_attributes) do
+            {
+              active_field.name => active_value_for(active_field),
+              "non existing active_field name" => "doesn't matter",
+            }
+          end
+
+          it "changes active_values for provided values only" do
+            record.valid?
+
+            active_value = record.active_values.find { _1.active_field_id == active_field.id }
+            expect(active_value.value).to eq(active_values_attributes[active_field.name])
+          end
+        end
+
+        context "with symbol active_values_attributes keys" do
+          let(:active_values_attributes) do
+            {
+              active_field.name.to_sym => active_value_for(active_field),
+              :"non existing active_field name" => "doesn't matter",
+            }
+          end
+
+          it "changes active_values for provided values only" do
+            record.valid?
+
+            active_value = record.active_values.find { _1.active_field_id == active_field.id }
+            expect(active_value.value).to eq(active_values_attributes[active_field.name.to_sym])
+          end
+        end
+      end
+    end
+
+    describe "after_save #save_changed_active_values" do
+      let!(:other_active_field) do
+        active_field = build(:active_value).active_field
+        active_field.update!(customizable_type: described_class.name)
+
+        active_field
+      end
+      let(:active_values_attributes) do
+        {
+          active_field.name => active_value_for(active_field),
+          "non existing active_field name" => "doesn't matter",
+        }
+      end
+
+      before do
+        record.active_values_attributes = active_values_attributes
+      end
+
+      context "new record" do
+        let(:record) { described_class.new }
+
+        it "saves active_values with provided values" do
+          record.save!
+          record.reload
+
+          changed_value = record.active_values.find { _1.active_field_id == active_field.id }
+          expect(changed_value.value).to eq(active_values_attributes[active_field.name])
+        end
+
+        it "saves active_values without provided values" do
+          record.save!
+          record.reload
+
+          not_changed_value = record.active_values.find { _1.active_field_id == other_active_field.id }
+          expect(not_changed_value.value).to eq(other_active_field.default_value)
+        end
+      end
+
+      context "persisted record" do
+        let!(:record) { described_class.create! }
+
+        it "saves active_values with provided values" do
+          record.save!
+          record.reload
+
+          changed_value = record.active_values.find { _1.active_field_id == active_field.id }
+          expect(changed_value.value).to eq(active_values_attributes[active_field.name])
+        end
+
+        it "doesn't save active_values without provided values" do
+          expect do
+            record.save!
+            record.reload
+          end.to not_change { record.active_values.find { _1.active_field_id == other_active_field.id }.value }
+        end
+      end
+    end
+  end
+
+  context "methods" do
+    describe "#active_fields" do
+      let(:record) { described_class.create! }
+
+      let!(:active_fields) do
+        author_active_field = build(:active_value).active_field.tap { _1.update!(customizable_type: "Author") }
+        post_active_field = build(:active_value).active_field.tap { _1.update!(customizable_type: "Post") }
+
+        [author_active_field, post_active_field]
+      end
+
+      it "returns active_fields for provided model only" do
+        expect(record.active_fields.to_a)
+          .to include(*active_fields.select { |field| field.customizable_type == described_class.name })
+          .and exclude(*active_fields.reject { |field| field.customizable_type == described_class.name })
+      end
+    end
+  end
+end

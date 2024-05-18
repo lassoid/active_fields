@@ -6,7 +6,11 @@ module ActiveFields
     extend ActiveSupport::Concern
 
     included do
-      has_many :active_values, foreign_key: :active_field_id, inverse_of: :active_field, dependent: :destroy
+      has_many :active_values,
+        class_name: "ActiveFields::Value",
+        foreign_key: :active_field_id,
+        inverse_of: :active_field,
+        dependent: :destroy
 
       scope :for, ->(customizable_type) { where(customizable_type: customizable_type) }
 

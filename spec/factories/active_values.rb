@@ -25,7 +25,7 @@ FactoryBot.define do
         text_array_active_field
       ].sample
     end
-    customizable { active_field&.customizable_type&.constantize&.new || [Post, Comment].sample.new }
-    value { active_field&.default_value }
+    customizable { active_field&.customizable_type&.constantize&.new || [Post, Author].sample.new }
+    value { TestMethods.active_value_for(active_field) if active_field }
   end
 end

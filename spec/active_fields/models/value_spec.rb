@@ -84,7 +84,7 @@ RSpec.describe ActiveFields::Value do
         end
 
         context "when customizable types are different" do
-          let(:customizable_type) { "Comment" }
+          let(:customizable_type) { "Author" }
 
           it "adds an error" do
             record.valid?
@@ -97,10 +97,10 @@ RSpec.describe ActiveFields::Value do
   end
 
   context "methods" do
+    let(:record) { build(:active_value) }
+
     describe "#value" do
       subject(:call_method) { record.value }
-
-      let(:record) { build(:active_value) }
 
       it { is_expected.to eq(record.active_field.value_caster.deserialize(record.attributes["value"])) }
 
@@ -116,17 +116,21 @@ RSpec.describe ActiveFields::Value do
     describe "#value=" do
       subject(:call_method) { record.value = value }
 
-      let(:record) { build(:active_value, value: nil) }
-      let(:value) { build(:active_value, active_field: record.active_field).value }
+      let(:value) { active_value_for(record.active_field) }
 
       it "sets value" do
         call_method
 
-        expect(record.value)
-          .to eq(record.active_field.value_caster.deserialize(record.active_field.value_caster.serialize(value)))
+        expect(record.value).to eq(
+          record.active_field.value_caster.deserialize(
+            record.active_field.value_caster.serialize(value),
+          ),
+        )
       end
 
       context "without active_field" do
+        let(:value) { build(:active_value).value }
+
         before do
           record.active_field = nil
         end
@@ -134,7 +138,7 @@ RSpec.describe ActiveFields::Value do
         it "sets nil" do
           call_method
 
-          expect(record.attributes["value"]).to be_nil
+          expect(record.value).to be_nil
         end
       end
     end

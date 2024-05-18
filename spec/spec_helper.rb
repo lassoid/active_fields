@@ -51,7 +51,7 @@ end
 
 def db_migrate
   Dir["#{__dir__}/dummy_app/db/migrate/*.rb"].each { |f| require_relative f }
-  ActiveRecord::Migration.run(CreatePostsAndComments, CreateActiveFieldsTables)
+  ActiveRecord::Migration.run(CreateAuthorsAndPosts, CreateActiveFieldsTables)
 end
 
 RSpec.configure do |config|
@@ -91,6 +91,7 @@ RSpec.configure do |config|
   end
 end
 
+RSpec::Matchers.define_negated_matcher :not_change, :change
 RSpec::Matchers.define_negated_matcher :exclude, :include
 
 reinitialize_database

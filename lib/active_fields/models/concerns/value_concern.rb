@@ -6,8 +6,8 @@ module ActiveFields
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :customizable, polymorphic: true, optional: false
-      belongs_to :active_field, class_name: "ActiveFields::Field", optional: false
+      belongs_to :customizable, polymorphic: true, optional: false, inverse_of: :active_values
+      belongs_to :active_field, class_name: "ActiveFields::Field", optional: false, inverse_of: :active_values
 
       validates :active_field_id, uniqueness: { scope: %i[customizable_id customizable_type] }
       validate :validate_value

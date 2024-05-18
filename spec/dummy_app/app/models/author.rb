@@ -2,8 +2,8 @@
 
 require_relative "application_record"
 
-class Comment < ApplicationRecord
+class Author < ApplicationRecord
   has_active_fields
 
-  belongs_to :post
+  has_many :posts, inverse_of: :author
 end

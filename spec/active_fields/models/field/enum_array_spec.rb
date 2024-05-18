@@ -17,11 +17,7 @@ RSpec.describe ActiveFields::Field::EnumArray do
     include_examples "field_sizes_validate", factory: factory
 
     describe "#validate_allowed_values" do
-      let(:record) { build(factory) }
-
-      before do
-        record.allowed_values = allowed_values
-      end
+      let(:record) { build(factory, allowed_values: allowed_values) }
 
       context "when allowed_values is nil" do
         let(:allowed_values) { nil }
