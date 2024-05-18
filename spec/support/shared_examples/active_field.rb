@@ -47,13 +47,15 @@ RSpec.shared_examples "active_field" do |factory:|
       context "when validator returns success" do
         let(:validator_errors) { Set.new }
 
-        it { is_expected.to be_valid }
+        it "doesn't add errors" do
+          record.valid?
+
+          expect(record.errors.where(:default_value)).to be_empty
+        end
       end
 
       context "when validator returns error" do
-        let(:validator_errors) { Set.new([:invalid, [:greater_than, count: 1]]) }
-
-        it { is_expected.not_to be_valid }
+        let(:validator_errors) { Set.new([:invalid, [:greater_than, count: random_number]]) }
 
         it "adds errors from validator" do
           record.valid?

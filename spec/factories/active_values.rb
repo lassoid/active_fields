@@ -10,7 +10,6 @@ FactoryBot.define do
     # and than fetch active_value record associated with them.
     skip_create
 
-    customizable { association %i[post comment].sample }
     active_field do
       association %i[
         boolean_active_field
@@ -26,6 +25,7 @@ FactoryBot.define do
         text_array_active_field
       ].sample
     end
+    customizable { active_field&.customizable_type&.constantize&.new || [Post, Comment].sample.new }
     value { active_field&.default_value }
   end
 end

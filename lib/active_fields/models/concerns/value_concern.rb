@@ -11,7 +11,7 @@ module ActiveFields
 
       validates :active_field_id, uniqueness: { scope: %i[customizable_id customizable_type] }
       validate :validate_value
-      validate :validate_customizable_types_match
+      validate :validate_customizable_allowed
     end
 
     def value=(v)
@@ -39,11 +39,11 @@ module ActiveFields
       end
     end
 
-    def validate_customizable_types_match
+    def validate_customizable_allowed
       return true if active_field.nil?
       return true if customizable_type == active_field.customizable_type
 
-      errors.add(:customizable_type, :invalid)
+      errors.add(:customizable, :invalid)
       false
     end
   end
