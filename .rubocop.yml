@@ -12,8 +12,6 @@ AllCops:
   TargetRubyVersion: 3.3
   TargetRailsVersion: 7.1
   NewCops: enable
-  Exclude:
-    - "active_fields.gemspec"
 
 Layout/EmptyLinesAroundAccessModifier:
   EnforcedStyle: around
@@ -57,4 +55,3 @@ RSpec/FilePath:
 
 RSpec/SpecFilePathFormat:
   Enabled: false
-
