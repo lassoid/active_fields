@@ -3,7 +3,9 @@
 RSpec.describe ActiveFields::Field::Decimal do
   factory = :decimal_active_field
 
-  it_behaves_like "active_field", factory: factory
+  it_behaves_like "active_field",
+    factory: factory,
+    available_traits: %i[required with_min with_max]
 
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_decimal", :min, :options, described_class
@@ -105,17 +107,6 @@ RSpec.describe ActiveFields::Field::Decimal do
           expect(record.required).to be(required)
         end
       end
-    end
-
-    describe "after_create #add_field_to_records" do
-      include_examples "field_value_add", factory
-      include_examples "field_value_add", factory, :with_min
-      include_examples "field_value_add", factory, :with_max
-      include_examples "field_value_add", factory, :with_min, :with_max
-      include_examples "field_value_add", factory, :required
-      include_examples "field_value_add", factory, :required, :with_min
-      include_examples "field_value_add", factory, :required, :with_max
-      include_examples "field_value_add", factory, :required, :with_min, :with_max
     end
   end
 end

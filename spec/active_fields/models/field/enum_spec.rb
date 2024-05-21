@@ -3,7 +3,9 @@
 RSpec.describe ActiveFields::Field::Enum do
   factory = :enum_active_field
 
-  it_behaves_like "active_field", factory: factory
+  it_behaves_like "active_field",
+    factory: factory,
+    available_traits: %i[required]
 
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_text_array", :allowed_values, :options, described_class
@@ -91,11 +93,6 @@ RSpec.describe ActiveFields::Field::Enum do
           expect(record.allowed_values).to eq(allowed_values)
         end
       end
-    end
-
-    describe "after_create #add_field_to_records" do
-      include_examples "field_value_add", factory
-      include_examples "field_value_add", factory, :required
     end
   end
 end
