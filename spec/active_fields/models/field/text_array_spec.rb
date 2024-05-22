@@ -3,7 +3,9 @@
 RSpec.describe ActiveFields::Field::TextArray do
   factory = :text_array_active_field
 
-  it_behaves_like "active_field", factory: factory
+  it_behaves_like "active_field",
+    factory: factory,
+    available_traits: %i[with_min_length with_max_length with_min_size with_max_size]
 
   include_examples "store_attribute_integer", :min_size, :options, described_class
   include_examples "store_attribute_integer", :max_size, :options, described_class
@@ -151,27 +153,6 @@ RSpec.describe ActiveFields::Field::TextArray do
           end
         end
       end
-    end
-  end
-
-  context "callbacks" do
-    describe "after_create #add_field_to_records" do
-      include_examples "field_value_add", factory
-      include_examples "field_value_add", factory, :with_min_length
-      include_examples "field_value_add", factory, :with_max_length
-      include_examples "field_value_add", factory, :with_min_length, :with_max_length
-      include_examples "field_value_add", factory, :with_min_size
-      include_examples "field_value_add", factory, :with_min_size, :with_min_length
-      include_examples "field_value_add", factory, :with_min_size, :with_max_length
-      include_examples "field_value_add", factory, :with_min_size, :with_min_length, :with_max_length
-      include_examples "field_value_add", factory, :with_max_size
-      include_examples "field_value_add", factory, :with_max_size, :with_min_length
-      include_examples "field_value_add", factory, :with_max_size, :with_max_length
-      include_examples "field_value_add", factory, :with_max_size, :with_min_length, :with_max_length
-      include_examples "field_value_add", factory, :with_min_size, :with_max_size
-      include_examples "field_value_add", factory, :with_min_size, :with_max_size, :with_min_length
-      include_examples "field_value_add", factory, :with_min_size, :with_max_size, :with_max_length
-      include_examples "field_value_add", factory, :with_min_size, :with_max_size, :with_min_length, :with_max_length
     end
   end
 end

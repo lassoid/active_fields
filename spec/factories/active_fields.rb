@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :active_field, class: "ActiveFields::Field" do
     sequence(:name) { |n| "field_#{n}" }
 
-    customizable_type { %w[Post Author].sample }
+    customizable_type { %w[Author Post].sample }
 
     after(:build) do |record|
       record.default_value = TestMethods.active_value_for(record)

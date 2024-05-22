@@ -3,7 +3,9 @@
 RSpec.describe ActiveFields::Field::Boolean do
   factory = :boolean_active_field
 
-  it_behaves_like "active_field", factory: factory
+  it_behaves_like "active_field",
+    factory: factory,
+    available_traits: %i[required nullable]
 
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_boolean", :nullable, :options, described_class
@@ -45,13 +47,6 @@ RSpec.describe ActiveFields::Field::Boolean do
           expect(record.nullable).to be(nullable)
         end
       end
-    end
-
-    describe "after_create #add_field_to_records" do
-      include_examples "field_value_add", factory
-      include_examples "field_value_add", factory, :nullable
-      include_examples "field_value_add", factory, :required
-      include_examples "field_value_add", factory, :required, :nullable
     end
   end
 end

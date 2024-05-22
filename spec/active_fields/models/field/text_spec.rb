@@ -3,7 +3,9 @@
 RSpec.describe ActiveFields::Field::Text do
   factory = :text_active_field
 
-  it_behaves_like "active_field", factory: factory
+  it_behaves_like "active_field",
+    factory: factory,
+    available_traits: %i[required with_min_length with_max_length]
 
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_integer", :min_length, :options, described_class
@@ -169,17 +171,6 @@ RSpec.describe ActiveFields::Field::Text do
           expect(record.required).to be(required)
         end
       end
-    end
-
-    describe "after_create #add_field_to_records" do
-      include_examples "field_value_add", factory
-      include_examples "field_value_add", factory, :with_min_length
-      include_examples "field_value_add", factory, :with_max_length
-      include_examples "field_value_add", factory, :with_min_length, :with_max_length
-      include_examples "field_value_add", factory, :required
-      include_examples "field_value_add", factory, :required, :with_min_length
-      include_examples "field_value_add", factory, :required, :with_max_length
-      include_examples "field_value_add", factory, :required, :with_min_length, :with_max_length
     end
   end
 end

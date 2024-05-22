@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "active_field" do |factory:|
+RSpec.shared_examples "active_field" do |factory:, available_traits:|
   context "validations" do
     subject(:record) { build(factory) }
 
@@ -136,6 +136,36 @@ RSpec.shared_examples "active_field" do |factory:|
             record.value_caster.serialize(value),
           ),
         )
+      end
+    end
+  end
+
+  context "callbacks" do
+    describe "after_create #add_field_to_records" do
+      subject(:create_field) { record.save! }
+
+      let!(:customizable) { [Author, Post].sample.create! }
+
+      available_traits.map { [nil, _1] }.then { _1[0].product(*_1[1..-1]) }.each do |traits_combination|
+        traits_combination = traits_combination.compact
+
+        context "with traits: [#{traits_combination.join(", ")}]" do
+          let(:record) { build(factory, *traits_combination, customizable_type: customizable.class.name) }
+
+          it "creates active_value for customizable" do
+            expect do
+              create_field
+              customizable.reload
+            end.to change { customizable.active_values.size }.by(1)
+          end
+
+          it "sets active_value value" do
+            create_field
+            customizable.reload
+
+            expect(customizable.active_values.take!.value).to eq(record.default_value)
+          end
+        end
       end
     end
   end
