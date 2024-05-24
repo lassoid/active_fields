@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../field"
-
 module ActiveFields
-  class Field
-    class EnumArray < ActiveFields::Field
+  module Field
+    class EnumArray < ActiveFields.config.field_model
       store_accessor :options, :min_size, :max_size, :allowed_values
 
       # attribute :min_size, :integer

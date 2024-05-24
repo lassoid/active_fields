@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../field"
-
 module ActiveFields
-  class Field
-    class IntegerArray < ActiveFields::Field
+  module Field
+    class IntegerArray < ActiveFields.config.field_model
       store_accessor :options, :min_size, :max_size, :min, :max
 
       # attribute :min_size, :integer

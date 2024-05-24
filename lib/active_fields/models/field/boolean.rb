@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../field"
-
 module ActiveFields
-  class Field
-    class Boolean < ActiveFields::Field
+  module Field
+    class Boolean < ActiveFields.config.field_model
       store_accessor :options, :required, :nullable
 
       # attribute :required, :boolean, default: false

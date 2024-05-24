@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../field"
-
 module ActiveFields
-  class Field
-    class Enum < ActiveFields::Field
+  module Field
+    class Enum < ActiveFields.config.field_model
       store_accessor :options, :required, :allowed_values
 
       # attribute :required, :boolean, default: false

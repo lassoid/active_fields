@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
-# Mix-in with a base logic for the active fields value model
 module ActiveFields
+  # Mix-in with a base logic for the active fields value model
   module ValueConcern
     extend ActiveSupport::Concern
 
     included do
       belongs_to :customizable, polymorphic: true, optional: false, inverse_of: :active_values
-      belongs_to :active_field, class_name: "ActiveFields::Field", optional: false, inverse_of: :active_values
+      # rubocop:disable Rails/ReflectionClassName
+      belongs_to :active_field,
+        class_name: ActiveFields.config.field_class,
+        optional: false,
+        inverse_of: :active_values
+      # rubocop:enable Rails/ReflectionClassName
 
       validates :active_field_id, uniqueness: { scope: %i[customizable_id customizable_type] }
       validate :validate_value

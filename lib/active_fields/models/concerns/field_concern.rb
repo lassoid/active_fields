@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
-# Mix-in with a base logic for the active fields model
 module ActiveFields
+  # Mix-in with a base logic for the active fields model
   module FieldConcern
     extend ActiveSupport::Concern
 
     included do
+      # rubocop:disable Rails/ReflectionClassName
       has_many :active_values,
-        class_name: "ActiveFields::Value",
+        class_name: ActiveFields.config.value_class,
         foreign_key: :active_field_id,
         inverse_of: :active_field,
         dependent: :destroy
+      # rubocop:enable Rails/ReflectionClassName
 
       scope :for, ->(customizable_type) { where(customizable_type: customizable_type) }
 
@@ -18,6 +20,7 @@ module ActiveFields
       validates :name, presence: true, uniqueness: { scope: :customizable_type }
       validates :name, format: { with: /\A[a-z0-9_]+\z/ }, allow_blank: true
       validate :validate_default_value
+      validate :validate_customizable_model_allows_type
 
       after_create :add_field_to_records
       after_initialize :set_defaults
@@ -66,6 +69,14 @@ module ActiveFields
           raise ArgumentError
         end
       end
+    end
+
+    def validate_customizable_model_allows_type
+      allowed_types = customizable_model.active_fields_config&.types || []
+      return true if ActiveFields.config.fields.values_at(*allowed_types).include?(type)
+
+      errors.add(:customizable_type, :inclusion)
+      false
     end
 
     def add_field_to_records

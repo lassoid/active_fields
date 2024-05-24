@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../field"
-
 module ActiveFields
-  class Field
-    class Decimal < ActiveFields::Field
+  module Field
+    class Decimal < ActiveFields.config.field_model
       store_accessor :options, :required, :min, :max
 
       # attribute :required, :boolean, default: false

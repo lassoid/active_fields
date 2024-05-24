@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../field"
-
 module ActiveFields
-  class Field
-    class Text < ActiveFields::Field
+  module Field
+    class Text < ActiveFields.config.field_model
       store_accessor :options, :required, :min_length, :max_length
 
       # attribute :required, :boolean, default: false

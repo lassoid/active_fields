@@ -1,20 +1,22 @@
 # frozen_string_literal: true
 
-# Mix-in that adds the active fields functionality to the ActiveRecord model
 module ActiveFields
-  module Customizable
+  # Mix-in that adds the active fields functionality to the ActiveRecord model
+  module CustomizableConcern
     extend ActiveSupport::Concern
 
     included do
       # active_values association for the owner record.
       # We skip built-in autosave because it doesn't work if the owner record isn't changed.
       # Instead, we implement our own autosave callback: `save_changed_active_values`.
+      # rubocop:disable Rails/ReflectionClassName
       has_many :active_values,
-        class_name: "ActiveFields::Value",
+        class_name: ActiveFields.config.value_class,
         as: :customizable,
         inverse_of: :customizable,
         autosave: false,
         dependent: :destroy
+      # rubocop:enable Rails/ReflectionClassName
 
       # Firstly, we build active_values that hasn't been already created.
       # Than, we set values for active_values whose values should be changed
@@ -35,7 +37,7 @@ module ActiveFields
     end
 
     def active_fields
-      ActiveFields::Field.for(model_name.name)
+      ActiveFields.config.field_model.for(model_name.name)
     end
 
     # Convert hash keys to strings for easier access by fields names.

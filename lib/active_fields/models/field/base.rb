@@ -19,9 +19,11 @@
 #  index_active_fields_on_name_and_customizable_type  (name,customizable_type) UNIQUE
 #
 module ActiveFields
-  class Field < ::ActiveRecord::Base
-    self.table_name = "active_fields"
+  module Field
+    class Base < ::ActiveRecord::Base
+      self.table_name = "active_fields"
 
-    include ActiveFields::FieldConcern
+      include ActiveFields::FieldConcern
+    end
   end
 end

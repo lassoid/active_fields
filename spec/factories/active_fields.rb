@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :active_field, class: "ActiveFields::Field" do
+  factory :active_field, class: "ActiveFields::Field::Base" do
     sequence(:name) { |n| "field_#{n}" }
 
     customizable_type { %w[Author Post].sample }
