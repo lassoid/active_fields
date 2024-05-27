@@ -1,9 +1,10 @@
 require:
+  - rubocop-factory_bot
   - rubocop-performance
   - rubocop-rails
   - rubocop-rake
   - rubocop-rspec
-  - rubocop-factory_bot
+  - rubocop-rspec_rails
 
 inherit_gem:
   rubocop-shopify: rubocop.yml
@@ -12,6 +13,8 @@ AllCops:
   TargetRubyVersion: 3.3
   TargetRailsVersion: 7.1
   NewCops: enable
+  Exclude:
+    - "spec/dummy/db/schema.rb"
 
 Layout/EmptyLinesAroundAccessModifier:
   EnforcedStyle: around
