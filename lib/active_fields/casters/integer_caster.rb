@@ -16,7 +16,7 @@ module ActiveFields
       private
 
       def cast(value)
-        super(value)&.to_i
+        super&.to_i
       end
     end
   end

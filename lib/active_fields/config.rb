@@ -7,7 +7,7 @@ module ActiveFields
     attr_accessor :field_class, :value_class, :fields
 
     def initialize
-      @field_class = "ActiveFields::Field::Base"
+      @field_class = "ActiveFields::Field"
       @value_class = "ActiveFields::Value"
       @fields = {
         boolean: "ActiveFields::Field::Boolean",
