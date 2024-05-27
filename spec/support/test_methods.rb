@@ -32,6 +32,22 @@ module TestMethods
     Date.today + random_integer
   end
 
+  def random_active_field_factory
+    %i[
+      boolean_active_field
+      date_active_field
+      date_array_active_field
+      decimal_active_field
+      decimal_array_active_field
+      enum_active_field
+      enum_array_active_field
+      integer_active_field
+      integer_array_active_field
+      text_active_field
+      text_array_active_field
+    ].sample
+  end
+
   def active_value_for(active_field)
     case active_field
     when ActiveFields::Field::Text

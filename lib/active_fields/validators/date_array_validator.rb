@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "base_validator"
-
 module ActiveFields
   module Validators
     class DateArrayValidator < BaseValidator

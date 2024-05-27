@@ -3,12 +3,7 @@
 RSpec.shared_examples "customizable" do
   context "validations" do
     describe "#active_values" do
-      let!(:active_field) do
-        active_field = build(:active_value).active_field
-        active_field.update!(customizable_type: described_class.name)
-
-        active_field
-      end
+      let!(:active_field) { create(random_active_field_factory, customizable_type: described_class.name) }
       let(:value) { active_value_for(active_field) }
       let(:value_errors) { Set.new([:invalid, [:greater_than, count: random_number]]) }
 
@@ -57,12 +52,7 @@ RSpec.shared_examples "customizable" do
   end
 
   context "callbacks" do
-    let!(:active_field) do
-      active_field = build(:active_value).active_field
-      active_field.update!(customizable_type: described_class.name)
-
-      active_field
-    end
+    let!(:active_field) { create(random_active_field_factory, customizable_type: described_class.name) }
 
     describe "before_validation #initialize_active_values" do
       context "new record" do
@@ -193,12 +183,7 @@ RSpec.shared_examples "customizable" do
     end
 
     describe "after_save #save_changed_active_values" do
-      let!(:other_active_field) do
-        active_field = build(:active_value).active_field
-        active_field.update!(customizable_type: described_class.name)
-
-        active_field
-      end
+      let!(:other_active_field) { create(random_active_field_factory, customizable_type: described_class.name) }
       let(:active_values_attributes) do
         {
           active_field.name => active_value_for(active_field),
@@ -256,8 +241,8 @@ RSpec.shared_examples "customizable" do
       let(:record) { described_class.create! }
 
       let!(:active_fields) do
-        author_active_field = build(:active_value).active_field.tap { _1.update!(customizable_type: "Author") }
-        post_active_field = build(:active_value).active_field.tap { _1.update!(customizable_type: "Post") }
+        author_active_field = create(random_active_field_factory, customizable_type: "Author")
+        post_active_field = create(random_active_field_factory, customizable_type: "Post")
 
         [author_active_field, post_active_field]
       end
