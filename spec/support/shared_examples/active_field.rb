@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "active_field" do |factory:, available_traits:|
+RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_class: nil, caster_class: nil|
+  context "superclass" do
+    subject(:record) { build(factory) }
+
+    it { is_expected.to be_a(ActiveFields.config.field_base_model) }
+  end
+
   context "validations" do
     subject(:record) { build(factory) }
 
@@ -90,7 +96,11 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:|
     describe "#value_validator_class" do
       subject(:call_method) { record.value_validator_class }
 
-      it { is_expected.to eq("ActiveFields::Validators::#{record.model_name.name.demodulize}Validator".constantize) }
+      it "returns validator class" do
+        expect(call_method).to eq(
+          (validator_class || "ActiveFields::Validators::#{record.model_name.name.demodulize}Validator").constantize,
+        )
+      end
     end
 
     describe "#value_validator" do
@@ -102,7 +112,11 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:|
     describe "#value_caster_class" do
       subject(:call_method) { record.value_caster_class }
 
-      it { is_expected.to eq("ActiveFields::Casters::#{record.model_name.name.demodulize}Caster".constantize) }
+      it "returns caster class" do
+        expect(call_method).to eq(
+          (caster_class || "ActiveFields::Casters::#{record.model_name.name.demodulize}Caster").constantize,
+        )
+      end
     end
 
     describe "#value_caster" do

@@ -81,7 +81,7 @@ module ActiveFields
 
     def add_field_to_records
       customizable_model.find_each do |record|
-        Value.create!(active_field: self, customizable: record, value: default_value)
+        ActiveFields.config.value_model.create!(active_field: self, customizable: record, value: default_value)
       end
     end
 

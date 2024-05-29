@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module ActiveFields
-  class Field
-    class TextArray < ActiveFields.config.field_model
+  module Field
+    class TextArray < ActiveFields.config.field_base_model
       store_accessor :options, :min_size, :max_size, :min_length, :max_length
 
       # attribute :min_size, :integer

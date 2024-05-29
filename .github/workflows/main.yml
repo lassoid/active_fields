@@ -64,3 +64,6 @@ jobs:
 
     - name: Run tests
       run: bin/rspec
+
+    - name: Run tests with customization
+      run: CHANGE_FIELD_BASE_CLASS=true CHANGE_VALUE_CLASS=true bin/rspec

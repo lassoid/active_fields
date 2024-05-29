@@ -119,6 +119,12 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.before(:suite) do
+    puts "",
+      "Active fields base class: #{ActiveFields.config.field_base_class}",
+      "Active value class: #{ActiveFields.config.value_class}",
+      "Registered active fields: #{ActiveFields.config.fields}",
+      ""
+
     FactoryBot.find_definitions
   end
 end

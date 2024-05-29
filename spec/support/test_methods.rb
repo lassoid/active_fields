@@ -45,6 +45,7 @@ module TestMethods
       integer_array_active_field
       text_active_field
       text_array_active_field
+      ip_field
     ].sample
   end
 
@@ -165,6 +166,11 @@ module TestMethods
       allowed = [true]
       allowed << false unless active_field.required?
       allowed << nil if active_field.nullable?
+
+      allowed.sample
+    when IpField
+      allowed = ["127.0.0.1"]
+      allowed << nil unless active_field.required?
 
       allowed.sample
     else

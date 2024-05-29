@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module ActiveFields
-  class Field
-    class EnumArray < ActiveFields.config.field_model
+  module Field
+    class EnumArray < ActiveFields.config.field_base_model
       store_accessor :options, :min_size, :max_size, :allowed_values
 
       # attribute :min_size, :integer

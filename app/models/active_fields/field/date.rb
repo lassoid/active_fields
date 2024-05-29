@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module ActiveFields
-  class Field
-    class Date < ActiveFields.config.field_model
+  module Field
+    class Date < ActiveFields.config.field_base_model
       store_accessor :options, :required, :min, :max
 
       # attribute :required, :boolean, default: false

@@ -37,7 +37,7 @@ module ActiveFields
     end
 
     def active_fields
-      ActiveFields.config.field_model.for(model_name.name)
+      ActiveFields.config.field_base_model.for(model_name.name)
     end
 
     # Convert hash keys to strings for easier access by fields names.
