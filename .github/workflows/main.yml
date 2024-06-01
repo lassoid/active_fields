@@ -48,6 +48,7 @@ jobs:
           --health-retries 5
     env:
       RAILS_ENV: test
+      CI: true
     steps:
     - name: Checkout code
       uses: actions/checkout@v4

@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
-if ActiveFields.config.field_base_class_changed?
-  RSpec.describe "ActiveFields::Field::Base" do
-    it "is unavailable" do
-      expect do
-        ActiveFields::Field::Base
-      end.to raise_error(NameError)
+RSpec.describe ActiveFields::Field::Base do
+  if ActiveFields.config.field_base_class_changed?
+    it "is a blank class" do
+      expect(described_class.superclass).to eq(Object)
+      expect(described_class.ancestors).not_to include(ActiveFields::FieldConcern)
+    end
+  else
+    it "is a model" do
+      expect(described_class.superclass).to eq(ActiveFields::ApplicationRecord)
+      expect(described_class.ancestors).to include(ActiveFields::FieldConcern)
     end
   end
 end

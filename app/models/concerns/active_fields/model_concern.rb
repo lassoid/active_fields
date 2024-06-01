@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# TODO: specs
 module ActiveFields
   # Mix-in that allows ActiveRecord models to enable active fields
   module ModelConcern

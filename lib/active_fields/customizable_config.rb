@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# TODO: specs
 module ActiveFields
   class CustomizableConfig
     attr_reader :customizable_model, :types

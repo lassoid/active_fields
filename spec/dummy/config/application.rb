@@ -39,5 +39,8 @@ module Dummy
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Uncomment to enable autoloading logs
+    # Rails.autoloaders.log!
   end
 end
