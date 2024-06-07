@@ -6,7 +6,7 @@ module ActiveFields
 
     initializer "active_fields.active_record" do
       ActiveSupport.on_load(:active_record) do
-        include ModelConcern
+        include HasActiveFields
       end
     end
   end

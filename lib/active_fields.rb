@@ -6,6 +6,7 @@ require_relative "active_fields/engine"
 module ActiveFields
   autoload :Config, "active_fields/config"
   autoload :CustomizableConfig, "active_fields/customizable_config"
+  autoload :HasActiveFields, "active_fields/has_active_fields"
 
   module Casters
     autoload :BaseCaster, "active_fields/casters/base_caster"

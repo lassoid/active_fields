@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "customizable" do
+  it "is a customizable" do
+    expect(described_class.ancestors).to include(ActiveFields::CustomizableConcern)
+  end
+
   context "validations" do
     describe "#active_values" do
       let!(:active_field) { create(random_active_field_factory, customizable_type: described_class.name) }

@@ -46,15 +46,3 @@ RSpec/ContextWording:
 
 RSpec/MultipleExpectations:
   Enabled: false
-
-Rails/ApplicationRecord:
-  Enabled: false
-
-Rails/Date:
-  Enabled: false
-
-RSpec/FilePath:
-  Enabled: false
-
-RSpec/SpecFilePathFormat:
-  Enabled: false
