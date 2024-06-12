@@ -118,15 +118,25 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
   context "scopes" do
     describe "#for" do
       let!(:active_fields) do
-        [create(factory, customizable_type: "Author"), create(factory, customizable_type: "Post")]
+        customizable_models_for(described_class.name).map do |customizable_model|
+          create(factory, customizable_type: customizable_model.name)
+        end
       end
 
-      it "returns active_fields for provided model only" do
-        customizable_type = active_fields.sample.customizable_type
+      let!(:other_type_active_fields) do
+        other_allowed_active_field_factories = active_field_factories_for(customizable_type.constantize) - [factory]
+        other_allowed_active_field_factories.map do |active_field_factory|
+          create(active_field_factory, customizable_type: customizable_type)
+        end
+      end
 
+      let(:customizable_type) { active_fields.sample.customizable_type }
+
+      it "returns active_fields for provided model only" do
         expect(described_class.for(customizable_type).to_a)
           .to include(*active_fields.select { |field| field.customizable_type == customizable_type })
           .and exclude(*active_fields.reject { |field| field.customizable_type == customizable_type })
+          .and exclude(*other_type_active_fields)
       end
     end
   end
@@ -199,7 +209,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
     describe "after_create #add_field_to_records" do
       subject(:create_field) { record.save! }
 
-      let!(:customizable) { [Author, Post].sample.create! }
+      let!(:customizable) { customizable_models_for(described_class.name).sample.create! }
 
       available_traits.map { [nil, _1] }.then { _1[0].product(*_1[1..-1]) }.each do |traits_combination|
         traits_combination = traits_combination.compact

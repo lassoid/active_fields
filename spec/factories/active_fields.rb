@@ -4,7 +4,7 @@ FactoryBot.define do
   base_factory = ActiveFields.config.field_base_class_changed? ? :custom_field : :active_field
   base_class_name = ActiveFields.config.field_base_class
   factory base_factory, class: base_class_name do
-    customizable_type { %w[Author Post].sample }
+    customizable_type { TestMethods.customizable_models_for(type).sample.name }
 
     sequence(:name) { |n| "field_#{n}" }
 
@@ -158,11 +158,11 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { Date.today + rand(-10..0) }
+      min { Date.current + rand(-10..0) }
     end
 
     trait :with_max do
-      max { Date.today + rand(0..10) }
+      max { Date.current + rand(0..10) }
     end
   end
 
@@ -178,11 +178,11 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { Date.today + rand(-10..0) }
+      min { Date.current + rand(-10..0) }
     end
 
     trait :with_max do
-      max { Date.today + rand(0..10) }
+      max { Date.current + rand(0..10) }
     end
   end
 

@@ -62,15 +62,12 @@ RSpec.shared_examples "active_value" do |factory:|
       end
 
       context "with active_field" do
-        let(:customizable) { Post.new }
-        let(:record) { build(factory, customizable: customizable) }
-
         before do
           record.active_field.customizable_type = customizable_type
         end
 
         context "when customizable types are equal" do
-          let(:customizable_type) { "Post" }
+          let(:customizable_type) { record.customizable.class.name }
 
           it "doesn't add errors" do
             record.valid?
@@ -80,7 +77,7 @@ RSpec.shared_examples "active_value" do |factory:|
         end
 
         context "when customizable types are different" do
-          let(:customizable_type) { "Author" }
+          let(:customizable_type) { (dummy_models - [record.customizable.class]).sample.name }
 
           it "adds an error" do
             record.valid?

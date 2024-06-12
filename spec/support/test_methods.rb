@@ -29,24 +29,50 @@ module TestMethods
   end
 
   def random_date
-    Date.today + random_integer
+    Date.current + random_integer
+  end
+
+  def dummy_models
+    [Author, Post, Group]
+  end
+
+  def customizable_models_for(active_field_class_name)
+    current_type = ActiveFields.config.fields.key(active_field_class_name)
+
+    dummy_models.select do |model|
+      model.active_fields_config&.types&.include?(current_type)
+    end
+  end
+
+  def active_field_factories_for(customizable_model)
+    return [] if customizable_model.active_fields_config.nil?
+
+    customizable_model.active_fields_config.types.then do |allowed_active_field_types|
+      ActiveFields.config.fields.values_at(*allowed_active_field_types)
+    end.then do |allowed_active_field_models|
+      active_field_factory_mappings.values_at(*allowed_active_field_models)
+    end
   end
 
   def random_active_field_factory
-    %i[
-      boolean_active_field
-      date_active_field
-      date_array_active_field
-      decimal_active_field
-      decimal_array_active_field
-      enum_active_field
-      enum_array_active_field
-      integer_active_field
-      integer_array_active_field
-      text_active_field
-      text_array_active_field
-      ip_field
-    ].sample
+    active_field_factory_mappings.values.sample
+  end
+
+  def active_field_factory_mappings
+    {
+      "ActiveFields::Field::Boolean" => :boolean_active_field,
+      "ActiveFields::Field::Date" => :date_active_field,
+      "ActiveFields::Field::DateArray" => :date_array_active_field,
+      "ActiveFields::Field::Decimal" => :decimal_active_field,
+      "ActiveFields::Field::DecimalArray" => :decimal_array_active_field,
+      "ActiveFields::Field::Enum" => :enum_active_field,
+      "ActiveFields::Field::EnumArray" => :enum_array_active_field,
+      "ActiveFields::Field::Integer" => :integer_active_field,
+      "ActiveFields::Field::IntegerArray" => :integer_array_active_field,
+      "ActiveFields::Field::Text" => :text_active_field,
+      "ActiveFields::Field::TextArray" => :text_array_active_field,
+      "IpField" => :ip_field,
+    }
   end
 
   def active_value_for(active_field)
@@ -142,7 +168,7 @@ module TestMethods
 
       Array.new(rand(min_size..max_size)) { rand(min..max) }
     when ActiveFields::Field::Date
-      min = active_field.min || ((active_field.max || Date.today) - rand(0..10))
+      min = active_field.min || ((active_field.max || Date.current) - rand(0..10))
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10)
 
       allowed = [rand(min..max)]
@@ -150,7 +176,7 @@ module TestMethods
 
       allowed.sample
     when ActiveFields::Field::DateArray
-      min = active_field.min || ((active_field.max || Date.today) - rand(0..10))
+      min = active_field.min || ((active_field.max || Date.current) - rand(0..10))
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10)
 
       min_size = [active_field.min_size, 0].compact.max

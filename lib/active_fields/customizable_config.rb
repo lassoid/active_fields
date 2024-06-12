@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: specs
 module ActiveFields
   class CustomizableConfig
     attr_reader :customizable_model, :types
@@ -10,7 +9,10 @@ module ActiveFields
     end
 
     def types=(value)
-      raise ArgumentError if (value - ActiveFields.config.fields.keys).any?
+      invalid_types = value - ActiveFields.config.fields.keys
+      if invalid_types.any?
+        raise ArgumentError, "undefined ActiveFields types provided for #{customizable_model}: #{invalid_types}"
+      end
 
       @types = value
     end

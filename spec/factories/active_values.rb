@@ -14,7 +14,7 @@ FactoryBot.define do
     skip_create
 
     active_field { association TestMethods.random_active_field_factory }
-    customizable { active_field&.customizable_type&.constantize&.new || [Author, Post].sample.new }
+    customizable { active_field&.customizable_type&.constantize&.new || TestMethods.dummy_models.sample.new }
     value { TestMethods.active_value_for(active_field) if active_field }
   end
 end

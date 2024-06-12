@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: specs
 module ActiveFields
   class Config
     DEFAULT_FIELD_BASE_CLASS = "ActiveFields::Field::Base"
