@@ -31,18 +31,19 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Dependencies
-  spec.add_dependency "activerecord", ">= 6.0"
-  spec.add_dependency "activesupport", ">= 6.0"
+  spec.add_dependency "rails", ">= 6.0"
 
-  spec.add_development_dependency "database_cleaner-active_record"
   spec.add_development_dependency "factory_bot"
   spec.add_development_dependency "pg"
+  spec.add_development_dependency "puma"
   spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "rubocop-factory_bot"
   spec.add_development_dependency "rubocop-performance"
   spec.add_development_dependency "rubocop-rails"
   spec.add_development_dependency "rubocop-rake"
   spec.add_development_dependency "rubocop-rspec"
+  spec.add_development_dependency "rubocop-rspec_rails"
   spec.add_development_dependency "rubocop-shopify"
 end

@@ -1,5 +1,0 @@
-Description:
-    Generates a migration to create ActiveFields tables.
-
-Examples:
-    `bin/rails generate active_fields:install`

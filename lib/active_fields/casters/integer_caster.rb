@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "base_caster"
-
 module ActiveFields
   module Casters
     class IntegerCaster < DecimalCaster
@@ -16,7 +14,7 @@ module ActiveFields
       private
 
       def cast(value)
-        super(value)&.to_i
+        super&.to_i
       end
     end
   end

@@ -1,0 +1,26 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  timeout: 5000
+
+development:
+  <<: *default
+  host: 127.0.0.1
+  user: postgres
+  password: postgres
+  database: active_fields_dummy_development
+
+test:
+  <<: *default
+  host: 127.0.0.1
+  user: postgres
+  password: postgres
+  database: active_fields_dummy_test
+
+production:
+  <<: *default
+  host: 127.0.0.1
+  user: postgres
+  password: postgres
+  database: active_fields_dummy

@@ -1,31 +1,20 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :active_value, class: "ActiveFields::Value" do
-    # We can't manually create an active_value record,
-    # because a record with the same active_field and customizable
-    # is automatically created by customizable or active_field callbacks.
-    # So, to get a new active_value persisted record,
-    # we should create customizable and active_field records
-    # and than fetch active_value record associated with them.
+  factory = ActiveFields.config.value_class_changed? ? :custom_value : :active_value
+  class_name = ActiveFields.config.value_class_name
+
+  # We can't manually create an active_value record,
+  # because a record with the same active_field and customizable
+  # is automatically created by customizable or active_field callbacks.
+  # So, to get a new active_value persisted record,
+  # we should create customizable and active_field records
+  # and than fetch active_value record associated with them.
+  factory factory, class: class_name do
     skip_create
 
-    active_field do
-      association %i[
-        boolean_active_field
-        date_active_field
-        date_array_active_field
-        decimal_active_field
-        decimal_array_active_field
-        enum_active_field
-        enum_array_active_field
-        integer_active_field
-        integer_array_active_field
-        text_active_field
-        text_array_active_field
-      ].sample
-    end
-    customizable { active_field&.customizable_type&.constantize&.new || [Author, Post].sample.new }
+    active_field { association TestMethods.random_active_field_factory }
+    customizable { active_field&.customizable_type&.constantize&.new || TestMethods.dummy_models.sample.new }
     value { TestMethods.active_value_for(active_field) if active_field }
   end
 end

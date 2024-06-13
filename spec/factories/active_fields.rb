@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :active_field, class: "ActiveFields::Field" do
-    sequence(:name) { |n| "field_#{n}" }
+  base_factory = ActiveFields.config.field_base_class_changed? ? :custom_field : :active_field
+  base_class_name = ActiveFields.config.field_base_class_name
+  factory base_factory, class: base_class_name do
+    customizable_type { TestMethods.customizable_models_for(type).sample.name }
 
-    customizable_type { %w[Author Post].sample }
+    sequence(:name) { |n| "field_#{n}" }
 
     after(:build) do |record|
       record.default_value = TestMethods.active_value_for(record)
     end
   end
 
-  factory :text_active_field, parent: :active_field, class: "ActiveFields::Field::Text" do
+  factory :text_active_field, parent: base_factory, class: "ActiveFields::Field::Text" do
     type { "ActiveFields::Field::Text" }
 
     trait :required do
@@ -27,7 +29,7 @@ FactoryBot.define do
     end
   end
 
-  factory :text_array_active_field, parent: :active_field, class: "ActiveFields::Field::TextArray" do
+  factory :text_array_active_field, parent: base_factory, class: "ActiveFields::Field::TextArray" do
     type { "ActiveFields::Field::TextArray" }
 
     trait :with_min_size do
@@ -47,7 +49,7 @@ FactoryBot.define do
     end
   end
 
-  factory :enum_active_field, parent: :active_field, class: "ActiveFields::Field::Enum" do
+  factory :enum_active_field, parent: base_factory, class: "ActiveFields::Field::Enum" do
     type { "ActiveFields::Field::Enum" }
 
     allowed_values { Array.new(rand(1..5)) { TestMethods.random_string } }
@@ -57,7 +59,7 @@ FactoryBot.define do
     end
   end
 
-  factory :enum_array_active_field, parent: :active_field, class: "ActiveFields::Field::EnumArray" do
+  factory :enum_array_active_field, parent: base_factory, class: "ActiveFields::Field::EnumArray" do
     type { "ActiveFields::Field::EnumArray" }
 
     allowed_values do
@@ -76,7 +78,7 @@ FactoryBot.define do
     end
   end
 
-  factory :integer_active_field, parent: :active_field, class: "ActiveFields::Field::Integer" do
+  factory :integer_active_field, parent: base_factory, class: "ActiveFields::Field::Integer" do
     type { "ActiveFields::Field::Integer" }
 
     trait :required do
@@ -92,7 +94,7 @@ FactoryBot.define do
     end
   end
 
-  factory :integer_array_active_field, parent: :active_field, class: "ActiveFields::Field::IntegerArray" do
+  factory :integer_array_active_field, parent: base_factory, class: "ActiveFields::Field::IntegerArray" do
     type { "ActiveFields::Field::IntegerArray" }
 
     trait :with_min_size do
@@ -112,7 +114,7 @@ FactoryBot.define do
     end
   end
 
-  factory :decimal_active_field, parent: :active_field, class: "ActiveFields::Field::Decimal" do
+  factory :decimal_active_field, parent: base_factory, class: "ActiveFields::Field::Decimal" do
     type { "ActiveFields::Field::Decimal" }
 
     trait :required do
@@ -128,7 +130,7 @@ FactoryBot.define do
     end
   end
 
-  factory :decimal_array_active_field, parent: :active_field, class: "ActiveFields::Field::DecimalArray" do
+  factory :decimal_array_active_field, parent: base_factory, class: "ActiveFields::Field::DecimalArray" do
     type { "ActiveFields::Field::DecimalArray" }
 
     trait :with_min_size do
@@ -148,7 +150,7 @@ FactoryBot.define do
     end
   end
 
-  factory :date_active_field, parent: :active_field, class: "ActiveFields::Field::Date" do
+  factory :date_active_field, parent: base_factory, class: "ActiveFields::Field::Date" do
     type { "ActiveFields::Field::Date" }
 
     trait :required do
@@ -156,15 +158,15 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { Date.today + rand(-10..0) }
+      min { Date.current + rand(-10..0) }
     end
 
     trait :with_max do
-      max { Date.today + rand(0..10) }
+      max { Date.current + rand(0..10) }
     end
   end
 
-  factory :date_array_active_field, parent: :active_field, class: "ActiveFields::Field::DateArray" do
+  factory :date_array_active_field, parent: base_factory, class: "ActiveFields::Field::DateArray" do
     type { "ActiveFields::Field::DateArray" }
 
     trait :with_min_size do
@@ -176,15 +178,15 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { Date.today + rand(-10..0) }
+      min { Date.current + rand(-10..0) }
     end
 
     trait :with_max do
-      max { Date.today + rand(0..10) }
+      max { Date.current + rand(0..10) }
     end
   end
 
-  factory :boolean_active_field, parent: :active_field, class: "ActiveFields::Field::Boolean" do
+  factory :boolean_active_field, parent: base_factory, class: "ActiveFields::Field::Boolean" do
     type { "ActiveFields::Field::Boolean" }
 
     trait :required do
@@ -193,6 +195,14 @@ FactoryBot.define do
 
     trait :nullable do
       nullable { true }
+    end
+  end
+
+  factory :ip_field, parent: base_factory, class: "IpField" do
+    type { "IpField" }
+
+    trait :required do
+      required { true }
     end
   end
 end

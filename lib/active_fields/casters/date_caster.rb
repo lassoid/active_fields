@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "base_caster"
-
 module ActiveFields
   module Casters
     class DateCaster < BaseCaster

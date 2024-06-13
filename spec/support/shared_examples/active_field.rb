@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "active_field" do |factory:, available_traits:|
+RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_class: nil, caster_class: nil|
+  it "is a subclass of the configured field base class" do
+    expect(described_class.superclass).to eq(ActiveFields.config.field_base_class)
+  end
+
   context "validations" do
     subject(:record) { build(factory) }
 
@@ -66,20 +70,73 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:|
         end
       end
     end
+
+    describe "#validate_customizable_model_allows_type" do
+      let(:config) { ActiveFields::CustomizableConfig.new(described_class) }
+      let(:type_name) { ActiveFields.config.fields.key(record.type) }
+
+      before do
+        allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
+      end
+
+      context "when customizable_model allows this type" do
+        before do
+          allow(config).to receive(:types).and_return([type_name])
+        end
+
+        it "is valid" do
+          record.valid?
+
+          expect(record.errors.where(:customizable_type)).to be_empty
+        end
+      end
+
+      context "when customizable_model does not allow this type" do
+        before do
+          allow(config).to receive(:types).and_return(ActiveFields.config.fields.keys - [type_name])
+        end
+
+        it "is invalid" do
+          record.valid?
+
+          expect(record.errors.where(:customizable_type, :inclusion)).not_to be_empty
+        end
+      end
+
+      context "when customizable_model does not have active_fields" do
+        let(:config) { nil }
+
+        it "is invalid" do
+          record.valid?
+
+          expect(record.errors.where(:customizable_type, :inclusion)).not_to be_empty
+        end
+      end
+    end
   end
 
   context "scopes" do
     describe "#for" do
       let!(:active_fields) do
-        [create(factory, customizable_type: "Author"), create(factory, customizable_type: "Post")]
+        customizable_models_for(described_class.name).map do |customizable_model|
+          create(factory, customizable_type: customizable_model.name)
+        end
       end
 
-      it "returns active_fields for provided model only" do
-        customizable_type = active_fields.sample.customizable_type
+      let!(:other_type_active_fields) do
+        other_allowed_active_field_factories = active_field_factories_for(customizable_type.constantize) - [factory]
+        other_allowed_active_field_factories.map do |active_field_factory|
+          create(active_field_factory, customizable_type: customizable_type)
+        end
+      end
 
+      let(:customizable_type) { active_fields.sample.customizable_type }
+
+      it "returns active_fields for provided model only" do
         expect(described_class.for(customizable_type).to_a)
           .to include(*active_fields.select { |field| field.customizable_type == customizable_type })
           .and exclude(*active_fields.reject { |field| field.customizable_type == customizable_type })
+          .and exclude(*other_type_active_fields)
       end
     end
   end
@@ -90,7 +147,11 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:|
     describe "#value_validator_class" do
       subject(:call_method) { record.value_validator_class }
 
-      it { is_expected.to eq("ActiveFields::Validators::#{record.model_name.name.demodulize}Validator".constantize) }
+      it "returns validator class" do
+        expect(call_method).to eq(
+          (validator_class || "ActiveFields::Validators::#{record.model_name.name.demodulize}Validator").constantize,
+        )
+      end
     end
 
     describe "#value_validator" do
@@ -102,7 +163,11 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:|
     describe "#value_caster_class" do
       subject(:call_method) { record.value_caster_class }
 
-      it { is_expected.to eq("ActiveFields::Casters::#{record.model_name.name.demodulize}Caster".constantize) }
+      it "returns caster class" do
+        expect(call_method).to eq(
+          (caster_class || "ActiveFields::Casters::#{record.model_name.name.demodulize}Caster").constantize,
+        )
+      end
     end
 
     describe "#value_caster" do
@@ -144,7 +209,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:|
     describe "after_create #add_field_to_records" do
       subject(:create_field) { record.save! }
 
-      let!(:customizable) { [Author, Post].sample.create! }
+      let!(:customizable) { customizable_models_for(described_class.name).sample.create! }
 
       available_traits.map { [nil, _1] }.then { _1[0].product(*_1[1..-1]) }.each do |traits_combination|
         traits_combination = traits_combination.compact

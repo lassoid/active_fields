@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "customizable" do
+  it "is a customizable" do
+    expect(described_class.ancestors).to include(ActiveFields::CustomizableConcern)
+  end
+
   context "validations" do
     describe "#active_values" do
       let!(:active_field) do
-        active_field = build(:active_value).active_field
-        active_field.update!(customizable_type: described_class.name)
-
-        active_field
+        create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
       end
       let(:value) { active_value_for(active_field) }
       let(:value_errors) { Set.new([:invalid, [:greater_than, count: random_number]]) }
@@ -58,10 +59,7 @@ RSpec.shared_examples "customizable" do
 
   context "callbacks" do
     let!(:active_field) do
-      active_field = build(:active_value).active_field
-      active_field.update!(customizable_type: described_class.name)
-
-      active_field
+      create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
     end
 
     describe "before_validation #initialize_active_values" do
@@ -194,10 +192,7 @@ RSpec.shared_examples "customizable" do
 
     describe "after_save #save_changed_active_values" do
       let!(:other_active_field) do
-        active_field = build(:active_value).active_field
-        active_field.update!(customizable_type: described_class.name)
-
-        active_field
+        create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
       end
       let(:active_values_attributes) do
         {
@@ -256,10 +251,11 @@ RSpec.shared_examples "customizable" do
       let(:record) { described_class.create! }
 
       let!(:active_fields) do
-        author_active_field = build(:active_value).active_field.tap { _1.update!(customizable_type: "Author") }
-        post_active_field = build(:active_value).active_field.tap { _1.update!(customizable_type: "Post") }
-
-        [author_active_field, post_active_field]
+        dummy_models.map do |model|
+          active_field_factories_for(model).map do |active_field_factory|
+            create(active_field_factory, customizable_type: model.name)
+          end
+        end.flatten
       end
 
       it "returns active_fields for provided model only" do

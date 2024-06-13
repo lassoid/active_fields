@@ -7,6 +7,21 @@ on:
     branches: ["main"]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.3
+          bundler-cache: true
+
+      - name: Run Rubocop
+        run: bin/rubocop
+
   test:
     runs-on: ubuntu-latest
     name: Ruby ${{ matrix.ruby }}
@@ -14,14 +29,14 @@ jobs:
       matrix:
         ruby:
         - '3.0.7'
-        - '3.1.5'
+        - '3.1.6'
         - '3.2.4'
-        - '3.3.1'
+        - '3.3.3'
     services:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: active_fields_test
+          POSTGRES_DB: active_fields_dummy_test
           PGUSER: postgres # Fixes 'FATAL:  role "root" does not exist'
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -31,6 +46,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+    env:
+      RAILS_ENV: test
+      CI: true
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -41,20 +59,11 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
 
+    - name: Set up database
+      run: bin/rails db:schema:load
+
     - name: Run tests
       run: bin/rspec
 
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Install Ruby and gems
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.3.1
-        bundler-cache: true
-
-    - name: Run Rubocop
-      run: bin/rubocop
+    - name: Run tests with customization
+      run: CHANGE_FIELD_BASE_CLASS=true CHANGE_VALUE_CLASS=true bin/rspec
