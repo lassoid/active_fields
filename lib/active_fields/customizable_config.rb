@@ -16,5 +16,9 @@ module ActiveFields
 
       @types = value
     end
+
+    def types_class_names
+      ActiveFields.config.fields.values_at(*types)
+    end
   end
 end

@@ -120,10 +120,12 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     puts "",
-      "Active fields base class: #{ActiveFields.config.field_base_class}",
-      "Active value class: #{ActiveFields.config.value_class}",
-      "Registered active fields: #{ActiveFields.config.fields}",
-      ""
+      "*** INFO ***",
+      "Active fields base class: #{ActiveFields.config.field_base_class_name}",
+      "Active value class: #{ActiveFields.config.value_class_name}",
+      "Registered active fields:"
+    pp ActiveFields.config.fields
+    puts "*** END INFO ***", ""
 
     FactoryBot.find_definitions
   end

@@ -2,7 +2,7 @@
 
 module ActiveFields
   module Field
-    class IntegerArray < ActiveFields.config.field_base_model
+    class IntegerArray < ActiveFields.config.field_base_class
       store_accessor :options, :min_size, :max_size, :min, :max
 
       # attribute :min_size, :integer

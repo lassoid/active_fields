@@ -2,7 +2,7 @@
 
 module ActiveFields
   module Field
-    class Enum < ActiveFields.config.field_base_model
+    class Enum < ActiveFields.config.field_base_class
       store_accessor :options, :required, :allowed_values
 
       # attribute :required, :boolean, default: false

@@ -2,7 +2,7 @@
 
 module ActiveFields
   module Field
-    class EnumArray < ActiveFields.config.field_base_model
+    class EnumArray < ActiveFields.config.field_base_class
       store_accessor :options, :min_size, :max_size, :allowed_values
 
       # attribute :min_size, :integer

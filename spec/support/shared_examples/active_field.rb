@@ -2,7 +2,7 @@
 
 RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_class: nil, caster_class: nil|
   it "is a subclass of the configured field base class" do
-    expect(described_class.superclass).to eq(ActiveFields.config.field_base_model)
+    expect(described_class.superclass).to eq(ActiveFields.config.field_base_class)
   end
 
   context "validations" do

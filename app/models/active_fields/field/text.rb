@@ -2,7 +2,7 @@
 
 module ActiveFields
   module Field
-    class Text < ActiveFields.config.field_base_model
+    class Text < ActiveFields.config.field_base_class
       store_accessor :options, :required, :min_length, :max_length
 
       # attribute :required, :boolean, default: false

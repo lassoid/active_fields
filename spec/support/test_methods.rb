@@ -45,13 +45,9 @@ module TestMethods
   end
 
   def active_field_factories_for(customizable_model)
-    return [] if customizable_model.active_fields_config.nil?
-
-    customizable_model.active_fields_config.types.then do |allowed_active_field_types|
-      ActiveFields.config.fields.values_at(*allowed_active_field_types)
-    end.then do |allowed_active_field_models|
-      active_field_factory_mappings.values_at(*allowed_active_field_models)
-    end
+    active_field_factory_mappings.values_at(
+      *customizable_model.active_fields_config&.types_class_names,
+    )
   end
 
   def random_active_field_factory

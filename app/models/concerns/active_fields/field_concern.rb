@@ -8,7 +8,7 @@ module ActiveFields
     included do
       # rubocop:disable Rails/ReflectionClassName
       has_many :active_values,
-        class_name: ActiveFields.config.value_class,
+        class_name: ActiveFields.config.value_class_name,
         foreign_key: :active_field_id,
         inverse_of: :active_field,
         dependent: :destroy
@@ -81,7 +81,7 @@ module ActiveFields
 
     def add_field_to_records
       customizable_model.find_each do |record|
-        ActiveFields.config.value_model.create!(active_field: self, customizable: record, value: default_value)
+        ActiveFields.config.value_class.create!(active_field: self, customizable: record, value: default_value)
       end
     end
 

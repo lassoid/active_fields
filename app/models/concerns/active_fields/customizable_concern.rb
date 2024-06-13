@@ -11,7 +11,7 @@ module ActiveFields
       # Instead, we implement our own autosave callback: `save_changed_active_values`.
       # rubocop:disable Rails/ReflectionClassName
       has_many :active_values,
-        class_name: ActiveFields.config.value_class,
+        class_name: ActiveFields.config.value_class_name,
         as: :customizable,
         inverse_of: :customizable,
         autosave: false,
@@ -37,7 +37,7 @@ module ActiveFields
     end
 
     def active_fields
-      ActiveFields.config.field_base_model.for(model_name.name)
+      ActiveFields.config.field_base_class.for(model_name.name)
     end
 
     # Convert hash keys to strings for easier access by fields names.

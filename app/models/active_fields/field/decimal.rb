@@ -2,7 +2,7 @@
 
 module ActiveFields
   module Field
-    class Decimal < ActiveFields.config.field_base_model
+    class Decimal < ActiveFields.config.field_base_class
       store_accessor :options, :required, :min, :max
 
       # attribute :required, :boolean, default: false

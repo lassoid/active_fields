@@ -2,7 +2,7 @@
 
 module ActiveFields
   module Field
-    class Boolean < ActiveFields.config.field_base_model
+    class Boolean < ActiveFields.config.field_base_class
       store_accessor :options, :required, :nullable
 
       # attribute :required, :boolean, default: false

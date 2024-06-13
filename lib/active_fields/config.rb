@@ -2,16 +2,16 @@
 
 module ActiveFields
   class Config
-    DEFAULT_FIELD_BASE_CLASS = "ActiveFields::Field::Base"
-    DEFAULT_VALUE_CLASS = "ActiveFields::Value"
+    DEFAULT_FIELD_BASE_CLASS_NAME = "ActiveFields::Field::Base"
+    DEFAULT_VALUE_CLASS_NAME = "ActiveFields::Value"
 
     include Singleton
 
-    attr_accessor :field_base_class, :value_class, :fields
+    attr_accessor :field_base_class_name, :value_class_name, :fields
 
     def initialize
-      @field_base_class = DEFAULT_FIELD_BASE_CLASS
-      @value_class = DEFAULT_VALUE_CLASS
+      @field_base_class_name = DEFAULT_FIELD_BASE_CLASS_NAME
+      @value_class_name = DEFAULT_VALUE_CLASS_NAME
       @fields = {
         boolean: "ActiveFields::Field::Boolean",
         date: "ActiveFields::Field::Date",
@@ -27,20 +27,20 @@ module ActiveFields
       }
     end
 
-    def field_base_model
-      @field_base_model ||= field_base_class.constantize
+    def field_base_class
+      @field_base_class ||= field_base_class_name.constantize
     end
 
-    def value_model
-      @value_model ||= value_class.constantize
+    def value_class
+      @value_class ||= value_class_name.constantize
     end
 
     def field_base_class_changed?
-      field_base_class != DEFAULT_FIELD_BASE_CLASS
+      field_base_class_name != DEFAULT_FIELD_BASE_CLASS_NAME
     end
 
     def value_class_changed?
-      value_class != DEFAULT_VALUE_CLASS
+      value_class_name != DEFAULT_VALUE_CLASS_NAME
     end
 
     def register_field(type_name, class_name)

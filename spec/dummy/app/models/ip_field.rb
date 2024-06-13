@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IpField < ActiveFields.config.field_base_model
+class IpField < ActiveFields.config.field_base_class
   store_accessor :options, :required
 
   validates :required, exclusion: [nil]

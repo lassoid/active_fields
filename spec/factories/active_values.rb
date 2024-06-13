@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory = ActiveFields.config.value_class_changed? ? :custom_value : :active_value
-  class_name = ActiveFields.config.value_class
+  class_name = ActiveFields.config.value_class_name
 
   # We can't manually create an active_value record,
   # because a record with the same active_field and customizable

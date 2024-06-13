@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   base_factory = ActiveFields.config.field_base_class_changed? ? :custom_field : :active_field
-  base_class_name = ActiveFields.config.field_base_class
+  base_class_name = ActiveFields.config.field_base_class_name
   factory base_factory, class: base_class_name do
     customizable_type { TestMethods.customizable_models_for(type).sample.name }
 
