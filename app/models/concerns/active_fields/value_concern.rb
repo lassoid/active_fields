@@ -14,7 +14,7 @@ module ActiveFields
         inverse_of: :active_values
       # rubocop:enable Rails/ReflectionClassName
 
-      validates :active_field_id, uniqueness: { scope: %i[customizable_id customizable_type] }
+      validates :active_field, uniqueness: { scope: :customizable }
       validate :validate_value
       validate :validate_customizable_allowed
     end

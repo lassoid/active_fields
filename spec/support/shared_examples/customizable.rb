@@ -26,8 +26,8 @@ RSpec.shared_examples "customizable" do
           record.valid?
 
           active_value = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
-          expect(record.errors.where(:active_values, :invalid)).not_to be_empty
           value_errors.each do |error|
+            expect(record.errors.added?(:"active_values.value", *error)).to be(true)
             expect(active_value.errors.added?(:value, *error)).to be(true)
           end
         end
@@ -42,14 +42,19 @@ RSpec.shared_examples "customizable" do
           allow(validator).to receive(:validate).with(value).and_return(value_errors.empty?)
 
           record.active_values_attributes = { active_field.name => value }
+
+          # Force any active_values change,
+          # because association validation won't be executed at all if `value` remains the same.
+          record.active_values.each { _1.updated_at = 1.second.after(_1.updated_at) }
         end
 
         it "validates" do
           record.valid?
 
           active_value = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
-          expect(record.errors.where(:active_values, :invalid)).not_to be_empty
+
           value_errors.each do |error|
+            expect(record.errors.added?(:"active_values.value", *error)).to be(true)
             expect(active_value.errors.added?(:value, *error)).to be(true)
           end
         end
@@ -190,7 +195,9 @@ RSpec.shared_examples "customizable" do
       end
     end
 
-    describe "after_save #save_changed_active_values" do
+    describe "active_fields autosave" do
+      subject(:update_active_fields) { record.update!(active_values_attributes: active_values_attributes) }
+
       let!(:other_active_field) do
         create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
       end
@@ -201,15 +208,11 @@ RSpec.shared_examples "customizable" do
         }
       end
 
-      before do
-        record.active_values_attributes = active_values_attributes
-      end
-
       context "new record" do
         let(:record) { described_class.new }
 
         it "saves active_values with provided values" do
-          record.save!
+          update_active_fields
           record.reload
 
           changed_value = record.active_values.find { _1.active_field_id == active_field.id }
@@ -217,7 +220,7 @@ RSpec.shared_examples "customizable" do
         end
 
         it "saves active_values without provided values" do
-          record.save!
+          update_active_fields
           record.reload
 
           not_changed_value = record.active_values.find { _1.active_field_id == other_active_field.id }
@@ -229,7 +232,7 @@ RSpec.shared_examples "customizable" do
         let!(:record) { described_class.create! }
 
         it "saves active_values with provided values" do
-          record.save!
+          update_active_fields
           record.reload
 
           changed_value = record.active_values.find { _1.active_field_id == active_field.id }
@@ -238,7 +241,7 @@ RSpec.shared_examples "customizable" do
 
         it "doesn't save active_values without provided values" do
           expect do
-            record.save!
+            update_active_fields
             record.reload
           end.to not_change { record.active_values.find { _1.active_field_id == other_active_field.id }.value }
         end

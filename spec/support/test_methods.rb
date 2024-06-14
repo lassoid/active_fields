@@ -191,7 +191,7 @@ module TestMethods
 
       allowed.sample
     when IpField
-      allowed = ["127.0.0.1"]
+      allowed = [Array.new(4) { rand(256) }.join(".")]
       allowed << nil unless active_field.required?
 
       allowed.sample
