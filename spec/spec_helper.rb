@@ -5,7 +5,11 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "dummy/config/environment"
 ActiveRecord::Migrator.migrations_paths = [File.expand_path("dummy/db/migrate", __dir__)]
 ActiveRecord::Migrator.migrations_paths << File.expand_path("../db/migrate", __dir__)
-require "rails/test_help"
+
+# Prevent database truncation if the environment is production
+abort("The Rails environment is running in production mode!") if Rails.env.production?
+
+require "rails/testing/maintain_test_schema"
 
 require "rspec/rails"
 require "factory_bot"

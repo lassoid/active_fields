@@ -6,29 +6,19 @@ module ActiveFields
     extend ActiveSupport::Concern
 
     included do
-      # active_values association for the owner record.
-      # We skip built-in autosave because it doesn't work if the owner record isn't changed.
-      # Instead, we implement our own autosave callback: `save_changed_active_values`.
       # rubocop:disable Rails/ReflectionClassName
       has_many :active_values,
         class_name: ActiveFields.config.value_class_name,
         as: :customizable,
         inverse_of: :customizable,
-        autosave: false,
+        autosave: true,
         dependent: :destroy
       # rubocop:enable Rails/ReflectionClassName
 
-      # Firstly, we build active_values that hasn't been already created.
+      # Firstly, we build active_values that doesn't exist.
       # Than, we set values for active_values whose values should be changed
       # according to `active_values_attributes`.
       before_validation :initialize_active_values
-
-      # Save all changed active_values on the owner record save.
-      after_save :save_changed_active_values
-
-      # We always validate active_values on the owner record change,
-      # as if they are just an ordinary record columns.
-      validates_associated :active_values
 
       # This virtual attribute is used for setting active_values values.
       # Keys are active_fields names,
@@ -62,19 +52,6 @@ module ActiveFields
         next unless active_values_attributes.key?(active_field.name)
 
         active_value.value = active_values_attributes[active_field.name]
-      end
-    end
-
-    def save_changed_active_values
-      active_values.each do |active_value|
-        next unless active_value.new_record? || active_value.changed?
-
-        # For new records association id isn't set right, so we force reassignment of the customizable
-        active_value.customizable = self
-
-        # Do not validate active values twice,
-        # because they have already been validated by `validates_associated`.
-        active_value.save!(validate: false)
       end
     end
 
