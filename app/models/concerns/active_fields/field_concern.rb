@@ -39,7 +39,7 @@ module ActiveFields
     end
 
     def value_caster
-      value_caster_class.new
+      value_caster_class.new(self)
     end
 
     def customizable_model

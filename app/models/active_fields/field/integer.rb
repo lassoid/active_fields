@@ -14,7 +14,7 @@ module ActiveFields
 
       %i[required].each do |column|
         define_method(column) do
-          Casters::BooleanCaster.new.deserialize(super())
+          Casters::BooleanCaster.new(nil).deserialize(super())
         end
 
         define_method(:"#{column}?") do
@@ -22,17 +22,17 @@ module ActiveFields
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::BooleanCaster.new.serialize(other))
+          super(Casters::BooleanCaster.new(nil).serialize(other))
         end
       end
 
       %i[min max].each do |column|
         define_method(column) do
-          Casters::IntegerCaster.new.deserialize(super())
+          Casters::IntegerCaster.new(nil).deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::IntegerCaster.new.serialize(other))
+          super(Casters::IntegerCaster.new(nil).serialize(other))
         end
       end
 

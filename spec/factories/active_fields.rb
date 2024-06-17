@@ -128,6 +128,10 @@ FactoryBot.define do
     trait :with_max do
       max { rand(0.0..10.0) }
     end
+
+    trait :with_precision do
+      precision { rand(0..10) }
+    end
   end
 
   factory :decimal_array_active_field, parent: base_factory, class: "ActiveFields::Field::DecimalArray" do
@@ -147,6 +151,10 @@ FactoryBot.define do
 
     trait :with_max do
       max { rand(0.0..10.0) }
+    end
+
+    trait :with_precision do
+      precision { rand(0..10) }
     end
   end
 

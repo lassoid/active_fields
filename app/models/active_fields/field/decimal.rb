@@ -3,18 +3,20 @@
 module ActiveFields
   module Field
     class Decimal < ActiveFields.config.field_base_class
-      store_accessor :options, :required, :min, :max
+      store_accessor :options, :required, :min, :max, :precision
 
       # attribute :required, :boolean, default: false
       # attribute :min, :decimal
       # attribute :max, :decimal
+      # attribute :precision, :integer
 
       validates :required, exclusion: [nil]
       validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
+      validates :precision, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
 
       %i[required].each do |column|
         define_method(column) do
-          Casters::BooleanCaster.new.deserialize(super())
+          Casters::BooleanCaster.new(nil).deserialize(super())
         end
 
         define_method(:"#{column}?") do
@@ -22,17 +24,27 @@ module ActiveFields
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::BooleanCaster.new.serialize(other))
+          super(Casters::BooleanCaster.new(nil).serialize(other))
         end
       end
 
       %i[min max].each do |column|
         define_method(column) do
-          Casters::DecimalCaster.new.deserialize(super())
+          Casters::DecimalCaster.new(nil).deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::DecimalCaster.new.serialize(other))
+          super(Casters::DecimalCaster.new(nil).serialize(other))
+        end
+      end
+
+      %i[precision].each do |column|
+        define_method(column) do
+          Casters::IntegerCaster.new(nil).deserialize(super())
+        end
+
+        define_method(:"#{column}=") do |other|
+          super(Casters::IntegerCaster.new(nil).serialize(other))
         end
       end
 

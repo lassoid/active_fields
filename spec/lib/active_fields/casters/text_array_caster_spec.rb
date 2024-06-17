@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::TextArrayCaster do
-  let(:object) { described_class.new }
+  factory = :text_array_active_field
+  let(:object) { described_class.new(active_field) }
+  let(:active_field) { build(factory) }
 
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }
