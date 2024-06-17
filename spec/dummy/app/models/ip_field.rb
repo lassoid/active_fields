@@ -7,7 +7,7 @@ class IpField < ActiveFields.config.field_base_class
 
   %i[required].each do |column|
     define_method(column) do
-      ActiveFields::Casters::BooleanCaster.new.deserialize(super())
+      ActiveFields::Casters::BooleanCaster.new(nil).deserialize(super())
     end
 
     define_method(:"#{column}?") do
@@ -15,7 +15,7 @@ class IpField < ActiveFields.config.field_base_class
     end
 
     define_method(:"#{column}=") do |other|
-      super(ActiveFields::Casters::BooleanCaster.new.serialize(other))
+      super(ActiveFields::Casters::BooleanCaster.new(nil).serialize(other))
     end
   end
 

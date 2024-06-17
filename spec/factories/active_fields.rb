@@ -122,11 +122,15 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { rand(-10.0..0.0) }
+      min { rand(-10.0..0.0).then { precision ? _1.round(precision) : _1 } }
     end
 
     trait :with_max do
-      max { rand(0.0..10.0) }
+      max { rand(0.0..10.0).then { precision ? _1.round(precision) : _1 } }
+    end
+
+    trait :with_precision do
+      precision { rand(0..10) }
     end
   end
 
@@ -142,11 +146,15 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { rand(-10.0..0.0) }
+      min { rand(-10.0..0.0).then { precision ? _1.round(precision) : _1 } }
     end
 
     trait :with_max do
-      max { rand(0.0..10.0) }
+      max { rand(0.0..10.0).then { precision ? _1.round(precision) : _1 } }
+    end
+
+    trait :with_precision do
+      precision { rand(0..10) }
     end
   end
 
