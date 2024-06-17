@@ -146,7 +146,7 @@ module TestMethods
       min = active_field.min || ((active_field.max || 0) - rand(0.0..10.0))
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0.0..10.0)
 
-      allowed = [rand(min..max).then { active_field.precision ? _1.round(active_field.precision) : _1 }]
+      allowed = [rand(min..max).then { active_field.precision ? _1.truncate(active_field.precision) : _1 }]
       allowed << nil unless active_field.required?
 
       allowed.sample
@@ -163,7 +163,7 @@ module TestMethods
         end
 
       Array.new(rand(min_size..max_size)) do
-        rand(min..max).then { active_field.precision ? _1.round(active_field.precision) : _1 }
+        rand(min..max).then { active_field.precision ? _1.truncate(active_field.precision) : _1 }
       end
     when ActiveFields::Field::Date
       min = active_field.min || ((active_field.max || Date.current) - rand(0..10))

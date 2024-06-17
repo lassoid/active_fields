@@ -15,7 +15,7 @@ module ActiveFields
 
       def cast(value)
         casted = BigDecimal(value, 0, exception: false)
-        casted = casted.round(active_field.precision) if casted && active_field&.precision
+        casted = casted.truncate(active_field.precision) if casted && active_field&.precision
 
         casted
       end

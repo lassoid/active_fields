@@ -64,31 +64,31 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       context "when integer" do
         let(:value) { random_integer }
 
-        it { is_expected.to eq(value.to_d.round(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
       end
 
       context "when float" do
         let(:value) { random_float }
 
-        it { is_expected.to eq(value.to_d.round(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
       end
 
       context "when big decimal" do
         let(:value) { random_decimal }
 
-        it { is_expected.to eq(value.round(active_field.precision)) }
+        it { is_expected.to eq(value.truncate(active_field.precision)) }
       end
 
       context "when integer string" do
         let(:value) { random_integer.to_s }
 
-        it { is_expected.to eq(value.to_d.round(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
       end
 
       context "when decimal string" do
         let(:value) { random_float.to_s }
 
-        it { is_expected.to eq(value.to_d.round(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
       end
     end
   end
@@ -152,31 +152,31 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       context "when integer" do
         let(:value) { random_integer }
 
-        it { is_expected.to eq(value.to_d.round(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
       end
 
       context "when float" do
         let(:value) { random_float }
 
-        it { is_expected.to eq(value.to_d.round(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
       end
 
       context "when big decimal" do
         let(:value) { random_decimal }
 
-        it { is_expected.to eq(value.round(active_field.precision)) }
+        it { is_expected.to eq(value.truncate(active_field.precision)) }
       end
 
       context "when integer string" do
         let(:value) { random_integer.to_s }
 
-        it { is_expected.to eq(value.to_d.round(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
       end
 
       context "when decimal string" do
         let(:value) { random_float.to_s }
 
-        it { is_expected.to eq(value.to_d.round(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
       end
     end
   end
