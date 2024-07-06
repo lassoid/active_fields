@@ -2,7 +2,7 @@
 
 module ActiveFields
   module Casters
-    class IntegerCaster < DecimalCaster
+    class IntegerCaster < BaseCaster
       def serialize(value)
         cast(value)
       end
@@ -14,7 +14,7 @@ module ActiveFields
       private
 
       def cast(value)
-        super&.to_i
+        BigDecimal(value, 0, exception: false)&.to_i
       end
     end
   end

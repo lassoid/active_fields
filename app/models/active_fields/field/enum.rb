@@ -13,7 +13,7 @@ module ActiveFields
 
       %i[required].each do |column|
         define_method(column) do
-          Casters::BooleanCaster.new.deserialize(super())
+          Casters::BooleanCaster.new(nil).deserialize(super())
         end
 
         define_method(:"#{column}?") do
@@ -21,17 +21,17 @@ module ActiveFields
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::BooleanCaster.new.serialize(other))
+          super(Casters::BooleanCaster.new(nil).serialize(other))
         end
       end
 
       %i[allowed_values].each do |column|
         define_method(column) do
-          Casters::TextArrayCaster.new.deserialize(super())
+          Casters::TextArrayCaster.new(nil).deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::TextArrayCaster.new.serialize(other))
+          super(Casters::TextArrayCaster.new(nil).serialize(other))
         end
       end
 
