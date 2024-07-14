@@ -1,0 +1,19 @@
+<%= form_with(model: author) do |f| %>
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :group_id %>
+    <%= f.collection_select :group_id, Group.order(:id), :id, :name, prompt: true %>
+  </div>
+
+  <div>
+    TODO: active fields
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

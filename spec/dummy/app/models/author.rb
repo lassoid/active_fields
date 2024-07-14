@@ -4,5 +4,5 @@ class Author < ApplicationRecord
   has_active_fields
 
   belongs_to :group, optional: true, inverse_of: :authors
-  has_many :posts, inverse_of: :author
+  has_many :posts, inverse_of: :author, dependent: :destroy
 end

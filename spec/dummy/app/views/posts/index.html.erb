@@ -1,0 +1,29 @@
+<h1>Posts</h1>
+
+<%= link_to "New post", new_post_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @posts.each do |post| %>
+      <tr>
+        <th><%= link_to "Edit", edit_post_path(post) %></th>
+        <th><%= post.id %></th>
+        <th><%= post.title %></th>
+        <th><%= post.author&.name %></th>
+        <th><%= button_to "Destroy", post_path(post), method: :delete %></th>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div><%= link_to "Back", root_path %></div>
+

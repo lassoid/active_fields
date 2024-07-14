@@ -1,0 +1,24 @@
+<%= form_with(model: post) do |f| %>
+  <div>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </div>
+
+  <div>
+    <%= f.label :body %>
+    <%= f.text_area :body %>
+  </div>
+
+  <div>
+    <%= f.label :author_id %>
+    <%= f.collection_select :author_id, Author.order(:id), :id, :name, prompt: true %>
+  </div>
+
+  <div>
+    TODO: active fields
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

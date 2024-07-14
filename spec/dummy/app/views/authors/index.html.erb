@@ -1,0 +1,28 @@
+<h1>Authors</h1>
+
+<%= link_to "New author", new_author_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Group</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @authors.each do |author| %>
+      <tr>
+        <th><%= link_to "Edit", edit_author_path(author) %></th>
+        <th><%= author.id %></th>
+        <th><%= author.name %></th>
+        <th><%= author.group&.name %></th>
+        <th><%= button_to "Destroy", author_path(author), method: :delete %></th>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div><%= link_to "Back", root_path %></div>
