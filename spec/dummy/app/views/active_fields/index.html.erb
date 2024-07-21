@@ -1,0 +1,32 @@
+<h1>Active Fields</h1>
+
+<%- ActiveFields.config.fields.keys.each do |field_type| %>
+  <div><%= link_to "New (#{field_type})", new_active_field_path(type: field_type) %></div>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Customizable type</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @active_fields.each do |active_field| %>
+      <tr>
+        <th><%= link_to "Edit", edit_active_field_path(active_field) %></th>
+        <th><%= active_field.id %></th>
+        <th><%= active_field.name %></th>
+        <th><%= active_field.type %></th>
+        <th><%= active_field.customizable_type %></th>
+        <th><%= button_to "Destroy", active_field_path(active_field), method: :delete %></th>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div><%= link_to "Back", root_path %></div>

@@ -1,0 +1,25 @@
+<%= form_with(model: active_field, scope: :active_field, url: active_fields_path) do |f| %>
+  <div>
+    <%= f.label :customizable_type %>
+    <%= f.select :customizable_type, ["TODO"] %>
+  </div>
+
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :required %>
+    <%= f.check_box :required %>
+  </div>
+
+  <div>
+    <%= f.label :default_value %>
+    <%= f.text_field :default_value %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

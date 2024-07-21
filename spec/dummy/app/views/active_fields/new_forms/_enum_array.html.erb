@@ -1,0 +1,35 @@
+<%= form_with(model: active_field, scope: :active_field, url: active_fields_path) do |f| %>
+  <div>
+    <%= f.label :customizable_type %>
+    <%= f.select :customizable_type, ["TODO"] %>
+  </div>
+
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :min_size %>
+    <%= f.number_field :min_size %>
+  </div>
+
+  <div>
+    <%= f.label :max_size %>
+    <%= f.number_field :max_size %>
+  </div>
+
+  <div>
+    <%= f.label :allowed_values %>
+    <%= "TODO" %>
+  </div>
+
+  <div>
+    <%= f.label :default_value %>
+    <%= "TODO" %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

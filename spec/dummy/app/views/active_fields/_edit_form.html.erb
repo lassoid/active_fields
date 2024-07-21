@@ -1,0 +1,10 @@
+<%= form_with(model: active_field, scope: :active_field, url: active_field_path(active_field)) do |f| %>
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>
