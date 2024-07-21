@@ -75,12 +75,9 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       let(:config) { ActiveFields::CustomizableConfig.new(described_class) }
       let(:type_name) { ActiveFields.config.fields.key(record.type) }
 
-      before do
-        allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
-      end
-
       context "when customizable_model allows this type" do
         before do
+          allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
           allow(config).to receive(:types).and_return([type_name])
         end
 
@@ -93,6 +90,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
 
       context "when customizable_model does not allow this type" do
         before do
+          allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
           allow(config).to receive(:types).and_return(ActiveFields.config.fields.keys - [type_name])
         end
 
@@ -104,7 +102,21 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       end
 
       context "when customizable_model does not have active_fields" do
-        let(:config) { nil }
+        before do
+          allow(record.customizable_model).to receive(:active_fields_config).and_return(nil)
+        end
+
+        it "is invalid" do
+          record.valid?
+
+          expect(record.errors.where(:customizable_type, :inclusion)).not_to be_empty
+        end
+      end
+
+      context "when customizable_type is invalid" do
+        before do
+          record.customizable_type = "invalid const"
+        end
 
         it "is invalid" do
           record.valid?
@@ -180,6 +192,14 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       subject(:call_method) { record.customizable_model }
 
       it { is_expected.to eq(record.customizable_type.constantize) }
+
+      context "when invalid" do
+        before do
+          record.customizable_type = "invalid const"
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     describe "#default_value" do

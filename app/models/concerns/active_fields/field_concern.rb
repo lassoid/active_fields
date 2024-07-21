@@ -43,7 +43,7 @@ module ActiveFields
     end
 
     def customizable_model
-      customizable_type.constantize
+      customizable_type.safe_constantize
     end
 
     def default_value=(v)
@@ -72,7 +72,7 @@ module ActiveFields
     end
 
     def validate_customizable_model_allows_type
-      allowed_types = customizable_model.active_fields_config&.types || []
+      allowed_types = customizable_model&.active_fields_config&.types || []
       return true if ActiveFields.config.fields.values_at(*allowed_types).include?(type)
 
       errors.add(:customizable_type, :inclusion)
