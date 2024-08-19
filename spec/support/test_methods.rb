@@ -37,10 +37,8 @@ module TestMethods
   end
 
   def customizable_models_for(active_field_class_name)
-    current_type = ActiveFields.config.fields.key(active_field_class_name)
-
     dummy_models.select do |model|
-      model.active_fields_config&.types&.include?(current_type)
+      model.active_fields_config&.types_class_names&.include?(active_field_class_name)
     end
   end
 

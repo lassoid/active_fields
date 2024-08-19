@@ -5,9 +5,6 @@ module ActiveFields
     class Enum < ActiveFields.config.field_base_class
       store_accessor :options, :required, :allowed_values
 
-      # attribute :required, :boolean, default: false
-      # attribute :allowed_values, :string, array: true, default: []
-
       validates :required, exclusion: [nil]
       validate :validate_allowed_values
 

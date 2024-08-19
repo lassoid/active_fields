@@ -45,6 +45,10 @@ class AuthorsController < ApplicationController
   end
 
   def author_params
-    params.require(:author).permit(:name, :group_id, active_fields: active_fields_permitted_attributes(@author))
+    params.require(:author).permit(
+      :name,
+      :group_id,
+      active_values_attributes: active_fields_permitted_attributes(@author),
+    )
   end
 end

@@ -1,0 +1,20 @@
+.error_explanation {
+    background-color: red;
+}
+
+.field_with_errors {
+    display: inline;
+    background-color: red;
+}
+
+.d-none {
+    display: none;
+}
+
+.form-input {
+    margin-bottom: 1.5em;
+}
+
+.form-array-input-group {
+    margin-bottom: 0.5em;
+}

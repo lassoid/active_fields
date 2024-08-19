@@ -3,18 +3,13 @@
 module ActiveFields
   module Field
     class IntegerArray < ActiveFields.config.field_base_class
-      store_accessor :options, :min_size, :max_size, :min, :max
+      include FieldArrayConcern
 
-      # attribute :min_size, :integer
-      # attribute :max_size, :integer
-      # attribute :min, :integer
-      # attribute :max, :integer
+      store_accessor :options, :min, :max
 
-      validates :min_size, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
-      validates :max_size, comparison: { greater_than_or_equal_to: ->(r) { r.min_size || 0 } }, allow_nil: true
       validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
 
-      %i[min_size max_size min max].each do |column|
+      %i[min max].each do |column|
         define_method(column) do
           Casters::IntegerCaster.new(nil).deserialize(super())
         end

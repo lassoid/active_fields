@@ -45,6 +45,11 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    params.require(:post).permit(:title, :body, :author_id, active_fields: active_fields_permitted_attributes(@post))
+    params.require(:post).permit(
+      :title,
+      :body,
+      :author_id,
+      active_values_attributes: active_fields_permitted_attributes(@post),
+    )
   end
 end

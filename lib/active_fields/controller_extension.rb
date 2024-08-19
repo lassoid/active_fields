@@ -8,7 +8,7 @@ module ActiveFields
     private
 
     def active_fields_permitted_attributes(record)
-      record.active_fields.map { |field| field.array? ? { name => [] } : name }
+      record.active_fields.map { |field| field.array? ? { field.name => [] } : field.name }
     end
   end
 end

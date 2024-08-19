@@ -1,0 +1,11 @@
+<% if record.errors.any? %>
+  <div class="error_explanation">
+    <div><%= pluralize(record.errors.count, "error") %> prohibited this record from being saved:</div>
+
+    <ul>
+      <% record.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

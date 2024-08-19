@@ -1,35 +1,39 @@
 <%= form_with(model: active_field, scope: :active_field, url: active_fields_path) do |f| %>
-  <div>
+  <%= render partial: "shared/form_errors", locals: { record: active_field } %>
+
+  <%= f.hidden_field :type, { name: "type", value: active_field.type_name } %>
+
+  <div class="form-input">
     <%= f.label :customizable_type %>
-    <%= f.select :customizable_type, ["TODO"] %>
+    <%= f.select :customizable_type, %w[Author] %>
   </div>
 
-  <div>
+  <div class="form-input">
     <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
 
-  <div>
+  <div class="form-input">
     <%= f.label :required %>
     <%= f.check_box :required %>
   </div>
 
-  <div>
+  <div class="form-input">
     <%= f.label :min %>
     <%= f.number_field :min %>
   </div>
 
-  <div>
+  <div class="form-input">
     <%= f.label :max %>
     <%= f.number_field :max %>
   </div>
 
-  <div>
+  <div class="form-input">
     <%= f.label :default_value %>
     <%= f.number_field :default_value %>
   </div>
 
-  <div>
+  <div class="form-input">
     <%= f.submit %>
   </div>
 <% end %>

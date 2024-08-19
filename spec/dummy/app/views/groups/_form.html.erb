@@ -1,10 +1,12 @@
 <%= form_with(model: group) do |f| %>
-  <div>
+  <%= render partial: "shared/form_errors", locals: { record: group } %>
+
+  <div class="form-input">
     <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
 
-  <div>
+  <div class="form-input">
     <%= f.submit %>
   </div>
 <% end %>

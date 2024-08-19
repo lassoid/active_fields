@@ -26,6 +26,8 @@ module ActiveFields
       after_initialize :set_defaults
     end
 
+    def array? = false
+
     def value_validator_class
       @value_validator_class ||= "ActiveFields::Validators::#{model_name.name.demodulize}Validator".constantize
     end
@@ -54,6 +56,10 @@ module ActiveFields
       value_caster.deserialize(super)
     end
 
+    def type_name
+      ActiveFields.config.fields.key(type)
+    end
+
     private
 
     def validate_default_value
@@ -72,8 +78,8 @@ module ActiveFields
     end
 
     def validate_customizable_model_allows_type
-      allowed_types = customizable_model&.active_fields_config&.types || []
-      return true if ActiveFields.config.fields.values_at(*allowed_types).include?(type)
+      allowed_types = customizable_model&.active_fields_config&.types_class_names || []
+      return true if allowed_types.include?(type)
 
       errors.add(:customizable_type, :inclusion)
       false

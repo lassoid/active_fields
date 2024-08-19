@@ -3,25 +3,11 @@
 module ActiveFields
   module Field
     class EnumArray < ActiveFields.config.field_base_class
-      store_accessor :options, :min_size, :max_size, :allowed_values
+      include FieldArrayConcern
 
-      # attribute :min_size, :integer
-      # attribute :max_size, :integer
-      # attribute :allowed_values, :string, array: true, default: []
+      store_accessor :options, :allowed_values
 
-      validates :min_size, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
-      validates :max_size, comparison: { greater_than_or_equal_to: ->(r) { r.min_size || 0 } }, allow_nil: true
       validate :validate_allowed_values
-
-      %i[min_size max_size].each do |column|
-        define_method(column) do
-          Casters::IntegerCaster.new(nil).deserialize(super())
-        end
-
-        define_method(:"#{column}=") do |other|
-          super(Casters::IntegerCaster.new(nil).serialize(other))
-        end
-      end
 
       %i[allowed_values].each do |column|
         define_method(column) do

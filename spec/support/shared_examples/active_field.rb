@@ -73,12 +73,11 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
 
     describe "#validate_customizable_model_allows_type" do
       let(:config) { ActiveFields::CustomizableConfig.new(described_class) }
-      let(:type_name) { ActiveFields.config.fields.key(record.type) }
 
       context "when customizable_model allows this type" do
         before do
           allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
-          allow(config).to receive(:types).and_return([type_name])
+          allow(config).to receive(:types_class_names).and_return([record.type])
         end
 
         it "is valid" do
@@ -91,7 +90,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       context "when customizable_model does not allow this type" do
         before do
           allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
-          allow(config).to receive(:types).and_return(ActiveFields.config.fields.keys - [type_name])
+          allow(config).to receive(:types_class_names).and_return(ActiveFields.config.fields.values - [record.type])
         end
 
         it "is invalid" do
@@ -222,6 +221,12 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
           ),
         )
       end
+    end
+
+    describe "#type_name" do
+      subject(:call_method) { record.type_name }
+
+      it { is_expected.to eq(ActiveFields.config.fields.key(record.type)) }
     end
   end
 
