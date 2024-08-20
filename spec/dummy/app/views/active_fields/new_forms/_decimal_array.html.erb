@@ -25,12 +25,12 @@
 
   <div class="form-input">
     <%= f.label :min %>
-    <%= f.number_field :min, step: 0.1 %>
+    <%= f.number_field :min, step: "any" %>
   </div>
 
   <div class="form-input">
     <%= f.label :max %>
-    <%= f.number_field :max, step: 0.1 %>
+    <%= f.number_field :max, step: "any" %>
   </div>
 
   <div class="form-input">
@@ -44,7 +44,7 @@
       name: :default_value,
       value: active_field.default_value,
       field_method: :number_field,
-      field_opts: { step: 0.1 },
+      field_opts: { step: "any" },
     }
   %>
 
