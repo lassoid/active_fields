@@ -45,10 +45,17 @@ class AuthorsController < ApplicationController
   end
 
   def author_params
-    params.require(:author).permit(
+    active_fields_permitted = active_fields_permitted_attributes(@author)
+    permitted_params = params.require(:author).permit(
       :name,
       :group_id,
-      active_values_attributes: active_fields_permitted_attributes(@author),
+      active_values_attributes: active_fields_permitted,
     )
+    permitted_params[:active_values_attributes] = compact_array_params(
+      permitted_params[:active_values_attributes],
+      active_fields_permitted,
+    )
+
+    permitted_params
   end
 end

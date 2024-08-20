@@ -40,11 +40,19 @@ class ActiveFieldsController < ApplicationController
   private
 
   def active_field_create_params(model_class)
-    params.require(:active_field).permit(policy(model_class).permitted_attributes_for_create)
+    permitted = policy(model_class).permitted_attributes_for_create
+    compact_array_params(
+      params.require(:active_field).permit(permitted),
+      permitted,
+    )
   end
 
   def active_field_update_params(model_class)
-    params.require(:active_field).permit(policy(model_class).permitted_attributes_for_update)
+    permitted = policy(model_class).permitted_attributes_for_update
+    compact_array_params(
+      params.require(:active_field).permit(permitted),
+      permitted,
+    )
   end
 
   def set_active_field

@@ -45,11 +45,18 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    params.require(:post).permit(
+    active_fields_permitted = active_fields_permitted_attributes(@post)
+    permitted_params = params.require(:post).permit(
       :title,
       :body,
       :author_id,
-      active_values_attributes: active_fields_permitted_attributes(@post),
+      active_values_attributes: active_fields_permitted,
     )
+    permitted_params[:active_values_attributes] = compact_array_params(
+      permitted_params[:active_values_attributes],
+      active_fields_permitted,
+    )
+
+    permitted_params
   end
 end
