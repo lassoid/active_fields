@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ActiveFields
-  # TODO: desc
+  # Controller mix-in that adds some useful helper methods
   module ControllerExtension
     extend ActiveSupport::Concern
 

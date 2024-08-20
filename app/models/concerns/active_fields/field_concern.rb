@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ActiveFields
-  # Mix-in with a base logic for the active fields model
+  # Model mix-in with a base logic for the active fields model
   module FieldConcern
     extend ActiveSupport::Concern
 

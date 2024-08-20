@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ActiveFields
-  # Mix-in that adds array functionality to the active fields model
+  # Model mix-in that adds array functionality to the active fields model
   module FieldArrayConcern
     extend ActiveSupport::Concern
 
