@@ -146,8 +146,10 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       it "returns active_fields for provided model only" do
         expect(described_class.for(customizable_type).to_a)
           .to include(*active_fields.select { |field| field.customizable_type == customizable_type })
-          .and exclude(*active_fields.reject { |field| field.customizable_type == customizable_type })
-          .and exclude(*other_type_active_fields)
+          .and exclude(
+            *active_fields.reject { |field| field.customizable_type == customizable_type },
+            *other_type_active_fields,
+          )
       end
     end
   end
