@@ -5,10 +5,6 @@ module ActiveFields
     class Text < ActiveFields.config.field_base_class
       store_accessor :options, :required, :min_length, :max_length
 
-      # attribute :required, :boolean, default: false
-      # attribute :min_length, :integer
-      # attribute :max_length, :integer
-
       validates :required, exclusion: [nil]
       validates :min_length, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
       validates :max_length, comparison: { greater_than_or_equal_to: ->(r) { r.min_length || 0 } }, allow_nil: true

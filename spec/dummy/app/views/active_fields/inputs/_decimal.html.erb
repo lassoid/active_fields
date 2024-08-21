@@ -1,0 +1,4 @@
+<div class="form-input">
+  <%= form.label active_field.name %>
+  <%= form.number_field active_field.name, { value: active_value&.value, min: active_field.min, max: active_field.max, step: "any" } %>
+</div>

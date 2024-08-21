@@ -26,8 +26,14 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
       it { is_expected.to eq(value.map(&:to_s)) }
     end
 
+    context "when array with blank strings" do
+      let(:value) { ["", "   "] }
+
+      it { is_expected.to eq([nil, nil]) }
+    end
+
     context "when array of strings" do
-      let(:value) { ["", random_string] }
+      let(:value) { [random_string, random_string] }
 
       it { is_expected.to eq(value) }
     end
@@ -60,8 +66,14 @@ RSpec.describe ActiveFields::Casters::EnumArrayCaster do
       it { is_expected.to eq(value.map(&:to_s)) }
     end
 
+    context "when array with blank strings" do
+      let(:value) { ["", "   "] }
+
+      it { is_expected.to eq([nil, nil]) }
+    end
+
     context "when array of strings" do
-      let(:value) { ["", random_string] }
+      let(:value) { [random_string, random_string] }
 
       it { is_expected.to eq(value) }
     end

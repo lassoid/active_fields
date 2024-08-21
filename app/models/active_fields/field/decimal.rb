@@ -5,11 +5,6 @@ module ActiveFields
     class Decimal < ActiveFields.config.field_base_class
       store_accessor :options, :required, :min, :max, :precision
 
-      # attribute :required, :boolean, default: false
-      # attribute :min, :decimal
-      # attribute :max, :decimal
-      # attribute :precision, :integer
-
       validates :required, exclusion: [nil]
       validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
       validates :precision, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true

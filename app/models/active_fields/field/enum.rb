@@ -5,9 +5,6 @@ module ActiveFields
     class Enum < ActiveFields.config.field_base_class
       store_accessor :options, :required, :allowed_values
 
-      # attribute :required, :boolean, default: false
-      # attribute :allowed_values, :string, array: true, default: []
-
       validates :required, exclusion: [nil]
       validate :validate_allowed_values
 
@@ -40,15 +37,27 @@ module ActiveFields
       def validate_allowed_values
         if allowed_values.nil?
           errors.add(:allowed_values, :blank)
-        elsif allowed_values.is_a?(Array)
-          if allowed_values.empty?
-            errors.add(:allowed_values, :blank)
-          elsif allowed_values.any? { !_1.is_a?(String) }
-            errors.add(:allowed_values, :invalid)
-          end
-        else
-          errors.add(:allowed_values, :invalid)
+          return false
         end
+
+        unless allowed_values.is_a?(Array)
+          errors.add(:allowed_values, :invalid)
+          return false
+        end
+
+        if allowed_values.empty?
+          errors.add(:allowed_values, :blank)
+          return false
+        end
+
+        allowed_values.each do |value_element|
+          if value_element.blank?
+            errors.add(:allowed_values, :invalid)
+            return false
+          end
+        end
+
+        true
       end
 
       def set_defaults

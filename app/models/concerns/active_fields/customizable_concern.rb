@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ActiveFields
-  # Mix-in that adds the active fields functionality to the ActiveRecord model
+  # Model mix-in that adds the active fields functionality to the customizable model
   module CustomizableConcern
     extend ActiveSupport::Concern
 

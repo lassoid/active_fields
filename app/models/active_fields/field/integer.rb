@@ -5,10 +5,6 @@ module ActiveFields
     class Integer < ActiveFields.config.field_base_class
       store_accessor :options, :required, :min, :max
 
-      # attribute :required, :boolean, default: false
-      # attribute :min, :integer
-      # attribute :max, :integer
-
       validates :required, exclusion: [nil]
       validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
 

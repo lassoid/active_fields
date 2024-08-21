@@ -1,0 +1,49 @@
+<%= form_with(model: active_field, scope: :active_field, url: active_fields_path) do |f| %>
+  <%= render partial: "shared/form_errors", locals: { record: active_field } %>
+
+  <%= f.hidden_field :type, { name: "type", value: active_field.type_name } %>
+
+  <div class="form-input">
+    <%= f.label :customizable_type %>
+    <%= f.select :customizable_type, %w[Author] %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :min_size %>
+    <%= f.number_field :min_size %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :max_size %>
+    <%= f.number_field :max_size %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :min_length %>
+    <%= f.number_field :min_length %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :max_length %>
+    <%= f.number_field :max_length %>
+  </div>
+
+  <%=
+    render partial: "shared/array_input", locals: {
+      form: f,
+      name: :default_value,
+      value: active_field.default_value,
+      field_method: :text_field,
+      field_opts: {},
+    }
+  %>
+
+  <div class="form-input">
+    <%= f.submit %>
+  </div>
+<% end %>

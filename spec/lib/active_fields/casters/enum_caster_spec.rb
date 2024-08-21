@@ -32,10 +32,10 @@ RSpec.describe ActiveFields::Casters::EnumCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when empty string" do
-      let(:value) { "" }
+    context "when blank string" do
+      let(:value) { ["  ", ""].sample }
 
-      it { is_expected.to eq(value) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -66,10 +66,10 @@ RSpec.describe ActiveFields::Casters::EnumCaster do
       it { is_expected.to eq(value) }
     end
 
-    context "when empty string" do
-      let(:value) { "" }
+    context "when blank string" do
+      let(:value) { ["  ", ""].sample }
 
-      it { is_expected.to eq(value) }
+      it { is_expected.to be_nil }
     end
   end
 end
