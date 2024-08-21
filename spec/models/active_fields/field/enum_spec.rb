@@ -48,7 +48,7 @@ RSpec.describe ActiveFields::Field::Enum do
         end
       end
 
-      context "when allowed_values contains blank string" do
+      context "when allowed_values contains a blank string" do
         let(:allowed_values) { [random_string, "   "] }
 
         it "is invalid" do

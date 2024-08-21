@@ -41,7 +41,7 @@ RSpec.describe ActiveFields::Field::EnumArray do
         end
       end
 
-      context "when allowed_values contains not a string" do
+      context "when allowed_values contains nil" do
         let(:allowed_values) { [random_string, nil] }
 
         it "is invalid" do
@@ -51,8 +51,18 @@ RSpec.describe ActiveFields::Field::EnumArray do
         end
       end
 
+      context "when allowed_values contains a blank string" do
+        let(:allowed_values) { [random_string, "   "] }
+
+        it "is invalid" do
+          record.valid?
+
+          expect(record.errors.where(:allowed_values, :invalid)).not_to be_empty
+        end
+      end
+
       context "when allowed_values is an array of strings" do
-        let(:allowed_values) { ["", random_string] }
+        let(:allowed_values) { [random_string, random_string] }
 
         it "is valid" do
           record.valid?

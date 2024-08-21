@@ -11,17 +11,21 @@ module ActiveFields
         @errors = Set.new
       end
 
+      # Performs the validation and adds errors to the `errors` list.
+      # Returns `true` if no errors are found, `false` otherwise.
       def validate(value)
         perform_validation(value)
         valid?
       end
 
+      # Returns `true` if no errors are found, `false` otherwise.
       def valid?
         errors.empty?
       end
 
       private
 
+      # Performs the validation. If there are any errors, it should save them in `errors`.
       def perform_validation(value)
         raise NotImplementedError
       end
