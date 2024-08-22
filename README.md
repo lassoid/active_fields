@@ -9,9 +9,9 @@ enabling the addition of custom fields to any model at runtime without requiring
 
 ## Key Concepts
 
-- **Active Field**: A record with the definition of a field.
+- **Active Field**: A record with the definition of a custom field.
 - **Active Value**: A record that stores the value of an _Active Field_ for a specific _Customizable_.
-- **Customizable**: A record that has associated _Active Fields_.
+- **Customizable**: A record that has custom fields.
 
 ## Models Structure
 
@@ -215,12 +215,12 @@ classDiagram
     ActiveField <|-- TextArray
 ```
 
-### Base fields attributes
+### Fields Base Attributes
 - `name`(`string`)
 - `type`(`string`)
 - `customizable_type`(`string`)
 
-### Specific fields info
+### Field Types Summary
 
 | Active Field model                  | Type name       | Attributes                              | Options                                                                                                                                                                                                                                                                                             |
 |-------------------------------------|-----------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -235,7 +235,7 @@ classDiagram
 | `ActiveFields::Field::IntegerArray` | `integer_array` | `default_value`<br>(`array[integer]`)   | `min`(`integer`) - minimum value allowed, for each element<br>`max`(`integer`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                |
 | `ActiveFields::Field::Text`         | `text`          | `default_value`<br>(`string` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>`min_length`(`integer`) - minimum value length allowed<br>`max_length`(`integer`) - maximum value length allowed                                                                                                                             |
 | `ActiveFields::Field::TextArray`    | `text_array`    | `default_value`<br>(`array[string]`)    | `min_length`(`integer`) - minimum value length allowed, for each element<br>`max_length`(`integer`) - maximum value length allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                    |
-| Your custom class can be here       | ...             | ...                                     | ...                                                                                                                                                                                                                                                                                                 |
+| _Your custom class can be here_     | _..._           | _..._                                   | _..._                                                                                                                                                                                                                                                                                               |
 
 **Note:** Options marked with **\*** are mandatory.
 
@@ -243,7 +243,7 @@ classDiagram
 
 ### Limiting Field Types for a Customizable
 
-You can restrict the allowed field types for a _Customizable_ by passing _type names_ to the `types` argument in the `has_active_fields` method:
+You can restrict the allowed _Active Field_ types for a _Customizable_ by passing _type names_ to the `types` argument in the `has_active_fields` method:
 
 ```ruby
 class Post < ApplicationRecord
@@ -300,10 +300,10 @@ end
 
 ### Adding Custom Field Types
 
-To add a custom field type, create a subclass of the `ActiveFields.config.field_base_class` 
+To add a custom _Active Field_ type, create a subclass of the `ActiveFields.config.field_base_class` 
 and register it in the global configuration.
 
-The _first_ argument should be the field _type name_ and the _second_ should be the field _class name_.
+**Note:** The _first_ argument should be the field _type name_ and the _second_ should be the field _class name_.
 
 ```ruby
 # config/initializers/active_fields.rb
@@ -327,7 +327,7 @@ class IpField < ActiveFields.config.field_base_class
 end
 ```
 
-For each custom field type, you must also define a **validator** and a **caster**:
+For each custom _Active Field_ type, you must also define a **validator** and a **caster**:
 
 #### Validator
 
@@ -399,7 +399,7 @@ class IpCaster < ActiveFields::Casters::BaseCaster
 end
 ```
 
-To create an array field type, include the `ActiveFields::FieldArrayConcern` mix-in in your field model
+To create a custom array _Active Field_ type, include the `ActiveFields::FieldArrayConcern` mix-in in your model
 and register it in global configuration as usual.
 This will add `min_size` and `max_size` options, as well as some important internal methods such as `array?`.
 
@@ -424,26 +424,26 @@ end
 active_field = ActiveFields::Field::Boolean.take
 
 # Associations:
-active_field.active_values # `has_many` association with Active Values associated with this field
+active_field.active_values # `has_many` association with Active Values associated with this Active Field
 
 # Attributes:
-active_field.type # Class name of the field (used for STI)
-active_field.customizable_type # Name of the Customizable model the field is registered to
-active_field.name # Identifier for the field, it should be unique in scope of customizable_type
-active_field.default_value # Default value for all Active Values associated with this field
-active_field.options # A hash (json) containing type-specific attributes for the field
+active_field.type # Class name of this Active Field (utilizing STI)
+active_field.customizable_type # Name of the Customizable model this Active Field is registered to
+active_field.name # Identifier of this Active Field, it should be unique in scope of customizable_type
+active_field.default_value # Default value for all Active Values associated with this Active Field
+active_field.options # A hash (json) containing type-specific attributes for this Active Field
 
 # Methods:
-active_field.array? # Returns whether the field is an array
+active_field.array? # Returns whether the Active Field type is an array
 active_field.value_validator_class # Class used for values validation
 active_field.value_validator # Validator object that performs values validation
 active_field.value_caster_class # Class used for values casting
 active_field.value_caster # Caster object that performs values casting
 active_field.customizable_model # Customizable model class
-active_field.type_name # Name identifying the field type instead of class names
+active_field.type_name # Identifier of the type of this Active Field (instead of class name)
 
 # Scopes:
-ActiveFields::Field::Boolean.for("Author") # Retrieves fields registered for the specified Customizable type
+ActiveFields::Field::Boolean.for("Author") # Collection of Active Fields registered for the specified Customizable type
 ```
 
 ### Values API
@@ -468,32 +468,32 @@ customizable = Author.take
 customizable.active_values # `has_many` association with Active Values linked to this Customizable
 
 # Methods:
-customizable.active_fields # Collection of fields registered for this record
+customizable.active_fields # Collection of Active Fields registered for this record
 customizable.active_values_attributes = { "boolean_field_name" => true } # Setter to create or update Active Values upon saving the Customizable
 ```
 
-### Global config
+### Global Config
 
 ```ruby
 ActiveFields.config # Access the plugin's global configuration
-ActiveFields.config.fields # Registered Active Fields (type_name => field_class)
+ActiveFields.config.fields # Registered Active Fields types (type_name => field_class)
 ActiveFields.config.field_base_class # Base class for all Active Fields
 ActiveFields.config.field_base_class_name # Name of the Active Fields base class
 ActiveFields.config.value_class # Active Values class
 ActiveFields.config.value_class_name # Name of the Active Values class
 ActiveFields.config.field_base_class_changed? # Check if the Active Fields base class has changed
 ActiveFields.config.value_class_changed? # Check if the Active Values class has changed
-ActiveFields.config.register_field(:ip, "IpField") # Register a custom field type
+ActiveFields.config.register_field(:ip, "IpField") # Register a custom Active Field type
 ```
 
-### Customizable config
+### Customizable Config
 
 ```ruby
 customizable_model = Author
 customizable_model.active_fields_config # Access the Customizable's configuration
 customizable_model.active_fields_config.customizable_model # The Customizable model itself
-customizable_model.active_fields_config.types # Allowed field types (e.g., `[:boolean]`)
-customizable_model.active_fields_config.types_class_names # Allowed field class names (e.g., `[ActiveFields::Field::Boolean]`)
+customizable_model.active_fields_config.types # Allowed Active Field types (e.g., `[:boolean]`)
+customizable_model.active_fields_config.types_class_names # Allowed Active Field class names (e.g., `[ActiveFields::Field::Boolean]`)
 ```
 
 ### Helper
