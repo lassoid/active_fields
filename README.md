@@ -428,7 +428,13 @@ For an example, refer to the [locales file](https://github.com/lassoid/active_fi
 
 ## Current Restrictions
 
-1. Updating _Active Fields_ options may be unsafe.
+1. Only _PostgreSQL_ is fully supported.
+
+   The gem is tested exclusively with _PostgreSQL_. Support for other databases is not guaranteed.
+
+   However, you can give it a try! :)
+
+2. Updating _Active Fields_ options may be unsafe.
 
    This could cause existing _Active Values_ to become invalid,
    leading to the associated _Customizables_ also becoming invalid,
