@@ -9,9 +9,9 @@ enabling the addition of custom fields to any model at runtime without requiring
 
 ## Key Concepts
 
-- **Customizable**: A record that has associated _Active Fields_.
 - **Active Field**: A record with the definition of a field.
 - **Active Value**: A record that stores the value of an _Active Field_ for a specific _Customizable_.
+- **Customizable**: A record that has associated _Active Fields_.
 
 ## Models Structure
 
@@ -71,6 +71,46 @@ such as booleans, strings, numbers, arrays, etc.
     - Add inputs for _Active Values_ in _Customizable_ forms.
     - Permit _Active Values_ parameters in _Customizable_ controllers.
 
+        Use the helper method `active_fields_permitted_attributes` to pass necessary filters to the `permit` method,
+        allowing all _Active Values_ for a given _Customizable_ to be permitted.
+        This helper is available by default in _controllers_.
+        If you need to use it in other places (e.g., in _policies_), simply include `ActiveFields::Helper` wherever it's needed.
+
+        ```ruby
+        # In a controller
+        class AuthorsController
+          # ...
+      
+          def author_params
+            params.require(:author).permit(
+              :name,
+              :group_id,
+              active_values_attributes: active_fields_permitted_attributes(@author),
+            )
+          end
+        end
+      
+        # In a policy
+        class AuthorPolicy < ApplicationPolicy
+          include ActiveFields::Helper
+      
+          # ...
+
+          def permitted_attributes
+            [
+              :name,
+              :group_id,
+              active_values_attributes: active_fields_permitted_attributes(record),
+            ]
+          end
+        end
+        ```
+
+        **Note:** By default, Rails form fields insert an empty string into array (multiple) parameters.
+        You’ll need to remove these empty strings manually. 
+        Here’s [one possible solution](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/authors_controller.rb#L47) 
+        for handling this case.
+
    You can find a detailed [example](https://github.com/lassoid/active_fields/tree/main/spec/dummy) 
    of how to implement this in a full-stack Rails application.
    Feel free to explore the source code and run it locally:
@@ -82,7 +122,7 @@ such as booleans, strings, numbers, arrays, etc.
 
 ## Field Types
 
-The plugin comes with a structured set of _Active Field_ types:
+The plugin comes with a structured set of _Active Fields_ types:
 
 ```mermaid
 classDiagram
@@ -191,7 +231,7 @@ classDiagram
 
 ### Limiting Field Types for a Customizable
 
-You can restrict the allowed field types for a customizable by passing a `types` argument to the `has_active_fields` method:
+You can restrict the allowed field types for a _Customizable_ by passing a `types` argument to the `has_active_fields` method:
 
 ```ruby
 class Post < ApplicationRecord
@@ -210,9 +250,9 @@ active_field.errors.messages #=> {:customizable_type=>["is not included in the l
 
 ### Customizing Internal Model Classes
 
-You can extend the functionality of Active Fields and Active Values by changing their classes.
-By default, Active Fields inherit from `ActiveFields::Field::Base` (using STI),
-and Active Values is `ActiveFields::Value`.
+You can extend the functionality of _Active Fields_ and _Active Values_ by changing their classes.
+By default, _Active Fields_ inherit from `ActiveFields::Field::Base` (using STI),
+and _Active Values_ is `ActiveFields::Value`.
 You can include the mix-ins `ActiveFields::FieldConcern` and `ActiveFields::ValueConcern`
 in your custom models to add the necessary functionality.
 
@@ -248,23 +288,8 @@ end
 
 ### Registering Custom Field Types
 
-You can create a custom field type by subclassing the `ActiveFields.config.field_base_class`
-and registering the field type in the global configuration.
-
-You should also declare a **validator** and a **caster** for each custom field model you create.
-
-**Validator** should inherit from `ActiveFields::Validators::BaseValidator` 
-and implement a method `perform_validation`, that performs the validation and pushes all errors to the `errors` set.
-All errors from `errors` will be then added to corresponding _Active value_ and _Customizable_ records.
-Each error should match the format of arguments to _ActiveModel_ `errors.add` method.
-
-```ruby
-errors << :invalid # type only
-errors << [:greater_than_or_equal_to, count: 2] # type with options
-```
-
-**Caster** should inherit from `ActiveFields::Casters::BaseCaster`
-and implement methods `serialize` (used in value setter) and `deserialize` (used in value getter).
+To add a custom field type, create a subclass of the `ActiveFields.config.field_base_class` 
+and register it in the global configuration:
 
 ```ruby
 # config/initializers/active_fields.rb
@@ -274,17 +299,35 @@ end
 
 # app/models/ip_field.rb
 class IpField < ActiveFields.config.field_base_class
-  store_accessor :options, :required, :strip # Store specific attributes in `options`
-
-  def value_validator_class = IpValidator
-  def value_caster_class = IpCaster
+  # Store specific attributes in `options`
+  store_accessor :options, :required, :strip
 
   private
 
+  # This method allows you to assign default values to your attributes.
+  # It is automatically executed within the `after_initialize` callback.
   def set_defaults
     self.required ||= false
     self.strip ||= true
   end
+end
+```
+
+For each custom field type, you must also define a **validator** and a **caster**:
+
+#### Validator
+
+Inherit from the `ActiveFields::Validators::BaseValidator` and implement the `perform_validation` method.
+This method is responsible for validating the field’s value and adding any errors to the `errors` set.
+These errors will then propagate to the associated _Active Value_ and _Customizable_ records.
+Each error should be aligned with the arguments of the _ActiveModel_ `errors.add` method.
+
+```ruby
+# app/models/ip_field.rb
+class IpField < ActiveFields.config.field_base_class
+  # ...
+  def value_validator_class = IpValidator
+  # ...
 end
 
 # lib/ip_validator.rb (or anywhere you want)
@@ -293,19 +336,40 @@ class IpValidator < ActiveFields::Validators::BaseValidator
 
   def perform_validation(value)
     if value.nil?
-      errors << :required if active_field.required
+      # active_field record is available!
+      if active_field.required
+        errors << :required # type only
+      end
     elsif value.is_a?(String)
-      errors << :invalid unless value.match?(Resolv::IPv4::Regex)
+      unless value.match?(Resolv::IPv4::Regex)
+        errors << [:invalid, message: "doesn't match the IPv4 format"] # type with options    
+      end
     else
       errors << :invalid
     end
   end
+end                                                               
+```
+
+#### Caster
+
+Inherit from ActiveFields::Casters::BaseCaster and implement the `serialize` method (used when setting a value)
+and the `deserialize` method (used when retrieving a value).
+These methods handle the conversion of values to and from the database format.
+
+```ruby
+# app/models/ip_field.rb
+class IpField < ActiveFields.config.field_base_class
+  # ...
+  def value_caster_class = IpCaster
+  # ...
 end
 
 # lib/ip_caster.rb (or anywhere you want)
 class IpCaster < ActiveFields::Casters::BaseCaster
   def serialize(value)
     value = value&.to_s
+    # active_field record is available!
     value = value&.strip if active_field.strip
 
     value
@@ -313,6 +377,7 @@ class IpCaster < ActiveFields::Casters::BaseCaster
 
   def deserialize(value)
     value = value&.to_s
+    # active_field record is available too!
     value = value&.strip if active_field.strip
 
     value
@@ -320,14 +385,19 @@ class IpCaster < ActiveFields::Casters::BaseCaster
 end
 ```
 
-To create an array field type, include the ActiveFields::FieldArrayConcern mix-in in your field model.
+To create an array field type, include the `ActiveFields::FieldArrayConcern` mix-in in your field model
+and register it in global configuration as usual.
 This will add `min_size` and `max_size` options, as well as some important internal methods such as `array?`.
 
 ```ruby
+# config/initializers/active_fields.rb
+ActiveFields.configure do |config|
+  config.register_field :ip_array, "IpArrayField"
+end
+
 # app/models/ip_array_field.rb
 class IpArrayField < ActiveFields.config.field_base_class
-  include ActiveFields::FieldArrayConcern # Include functionality for array fields
-
+  include ActiveFields::FieldArrayConcern
   # ...
 end
 ```
@@ -344,8 +414,8 @@ active_field.active_values # `has_many` association with values associated with 
 
 # Attributes:
 active_field.type # Class name of the field (used for STI)
-active_field.customizable_type # Name of the customizable model the field is registered to
-active_field.name # Unique identifier for the field within its customizable_type
+active_field.customizable_type # Name of the Customizable model the field is registered to
+active_field.name # Identifier for the field, it should be unique in scope of customizable_type
 active_field.default_value # Default value for all instances of this field
 active_field.options # A hash (json) containing type-specific attributes for the field
 
@@ -359,7 +429,7 @@ active_field.customizable_model # Customizable model class
 active_field.type_name # Name identifying the field type without using class names
 
 # Scopes:
-ActiveFields::Field::Boolean.for("Author") # Retrieves fields registered for the specified customizable type
+ActiveFields::Field::Boolean.for("Author") # Retrieves fields registered for the specified Customizable type
 ```
 
 ### Values API
@@ -368,11 +438,11 @@ ActiveFields::Field::Boolean.for("Author") # Retrieves fields registered for the
 active_value = ActiveFields::Value.take
 
 # Associations:
-active_value.active_field # `belongs_to` association with the associated field
-active_value.customizable # `belongs_to` association with the associated customizable
+active_value.active_field # `belongs_to` association with the associated Active Field
+active_value.customizable # `belongs_to` association with the associated Customizable
 
 # Attributes:
-active_value.value # The stored value for this active value
+active_value.value # The stored value for this Active Value
 ```
 
 ### Customizable API
@@ -381,11 +451,11 @@ active_value.value # The stored value for this active value
 customizable = Author.take
 
 # Associations:
-customizable.active_values # `has_many` association with values linked to this customizable
+customizable.active_values # `has_many` association with values linked to this Customizable
 
 # Methods:
 customizable.active_fields # Collection of fields registered for this record
-customizable.active_values_attributes = { "boolean_field_name" => true } # Setter to create or update active values upon saving the customizable
+customizable.active_values_attributes = { "boolean_field_name" => true } # Setter to create or update Active Values upon saving the Customizable
 ```
 
 ### Global config
@@ -406,17 +476,19 @@ ActiveFields.config.register_field(:ip, "IpField") # Register a custom field typ
 
 ```ruby
 customizable_model = Author
-customizable_model.active_fields_config # Access the customizable's configuration
-customizable_model.active_fields_config.customizable_model # The customizable model itself
+customizable_model.active_fields_config # Access the Customizable's configuration
+customizable_model.active_fields_config.customizable_model # The Customizable model itself
 customizable_model.active_fields_config.types # Allowed field types (e.g., `[:boolean]`)
 customizable_model.active_fields_config.types_class_names # Allowed field class names (e.g., `[ActiveFields::Field::Boolean]`)
 ```
 
-### Controller helpers
+### Helper
 
 ```ruby
+include ActiveFields::Helper
+
 customizable = Author.take
-active_fields_permitted_attributes(customizable) # Active fields params permit format
+active_fields_permitted_attributes(customizable) # Filters for the `permit` method to allow all Active Values attributes
 #=> [:birthdate, { interested_products: [] }]
 ```
 
