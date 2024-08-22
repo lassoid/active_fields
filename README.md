@@ -31,7 +31,7 @@ classDiagram
         + json value
     }
     class Customizable {
-        This is your model
+        // This is your model
     }
 ```
 
@@ -72,7 +72,7 @@ such as booleans, strings, numbers, arrays, etc.
     - Permit _Active Values_ parameters in _Customizable_ controllers.
 
         Use the helper method `active_fields_permitted_attributes` to pass necessary filters to the `permit` method,
-        allowing all _Active Values_ for a given _Customizable_ to be permitted.
+        allowing all _Active Values_ for a given _Customizable_ to be correctly permitted.
         This helper is available by default in _controllers_.
         If you need to use it in other places (e.g., in _policies_), simply include `ActiveFields::Helper` wherever it's needed.
 
