@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module ActiveFields
-  # Controller mix-in that adds some useful helper methods
-  module ControllerExtension
+  # Mix-in that adds some useful helper methods
+  module Helper
     extend ActiveSupport::Concern
 
     private
