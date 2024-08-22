@@ -215,26 +215,27 @@ classDiagram
     ActiveField <|-- TextArray
 ```
 
-**Base** fields attributes:
+### Base fields attributes
 - `name`(`string`)
 - `type`(`string`)
 - `customizable_type`(`string`)
 
-**Specific** fields attributes:
+### Specific fields info
 
-| Field Type   | Attributes                          | Options                                                                                                                                                                                                                                                                                             |
-|--------------|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Boolean      | `default_value`(`boolean` or `nil`) | `required`(`boolean`) - the value must not be `false`<br>`nullable`(`boolean`) - the value could be `nil`                                                                                                                                                                                           |
-| Date         | `default_value`(`date` or `nil`)    | `required`(`boolean`) - the value must not be `nil`<br>`min`(`date`) - minimum value allowed<br>`max`(`date`) - maximum value allowed                                                                                                                                                               |
-| DateArray    | `default_value`(`array[date]`)      | `min`(`date`) - minimum value allowed, for each element<br>`max`(`date`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                      |
-| Decimal      | `default_value`(`decimal` or `nil`) | `required`(`boolean`) - the value must not be `nil`<br>`min`(`decimal`) - minimum value allowed<br>`max`(`decimal`) - maximum value allowed<br>`precision`(`integer`) - the precision for value rounding                                                                                            |
-| DecimalArray | `default_value`(`array[decimal]`)   | `min`(`decimal`) - minimum value allowed, for each element<br>`max`(`decimal`) - maximum value allowed, for each element<br>`precision`(`integer`) - the precision for value rounding, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size |
-| Enum         | `default_value`(`string` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>**\*** `allowed_values`(`array[string]`) - a list of allowed values                                                                                                                                                                           |
-| EnumArray    | `default_value`(`array[string]`)    | **\*** `allowed_values`(`array[string]`) - a list of allowed values<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                                                                      |
-| Integer      | `default_value`(`integer` or `nil`) | `required`(`boolean`) - the value must not be `nil`<br>`min`(`integer`) - minimum value allowed<br>`max`(`integer`) - maximum value allowed                                                                                                                                                         |
-| IntegerArray | `default_value`(`array[integer]`)   | `min`(`integer`) - minimum value allowed, for each element<br>`max`(`integer`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                |
-| Text         | `default_value`(`string` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>`min_length`(`integer`) - minimum value length allowed<br>`max_length`(`integer`) - maximum value length allowed                                                                                                                             |
-| TextArray    | `default_value`(`array[string]`)    | `min_length`(`integer`) - minimum value length allowed, for each element<br>`max_length`(`integer`) - maximum value length allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                    |
+| Active Field model                  | Type name       | Attributes                          | Options                                                                                                                                                                                                                                                                                             |
+|-------------------------------------|-----------------|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ActiveFields::Field::Boolean`      | `boolean`       | `default_value`(`boolean` or `nil`) | `required`(`boolean`) - the value must not be `false`<br>`nullable`(`boolean`) - the value could be `nil`                                                                                                                                                                                           |
+| `ActiveFields::Field::Date`         | `date`          | `default_value`(`date` or `nil`)    | `required`(`boolean`) - the value must not be `nil`<br>`min`(`date`) - minimum value allowed<br>`max`(`date`) - maximum value allowed                                                                                                                                                               |
+| `ActiveFields::Field::DateArray`    | `date_array`    | `default_value`(`array[date]`)      | `min`(`date`) - minimum value allowed, for each element<br>`max`(`date`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                      |
+| `ActiveFields::Field::Decimal`      | `decimal`       | `default_value`(`decimal` or `nil`) | `required`(`boolean`) - the value must not be `nil`<br>`min`(`decimal`) - minimum value allowed<br>`max`(`decimal`) - maximum value allowed<br>`precision`(`integer`) - the precision for value rounding                                                                                            |
+| `ActiveFields::Field::DecimalArray` | `decimal_array` | `default_value`(`array[decimal]`)   | `min`(`decimal`) - minimum value allowed, for each element<br>`max`(`decimal`) - maximum value allowed, for each element<br>`precision`(`integer`) - the precision for value rounding, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size |
+| `ActiveFields::Field::Enum`         | `enum`          | `default_value`(`string` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>**\***`allowed_values`(`array[string]`) - a list of allowed values                                                                                                                                                                           |
+| `ActiveFields::Field::EnumArray`    | `enum_array`    | `default_value`(`array[string]`)    | **\***`allowed_values`(`array[string]`) - a list of allowed values<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                                                                      |
+| `ActiveFields::Field::Integer`      | `integer`       | `default_value`(`integer` or `nil`) | `required`(`boolean`) - the value must not be `nil`<br>`min`(`integer`) - minimum value allowed<br>`max`(`integer`) - maximum value allowed                                                                                                                                                         |
+| `ActiveFields::Field::IntegerArray` | `integer_array` | `default_value`(`array[integer]`)   | `min`(`integer`) - minimum value allowed, for each element<br>`max`(`integer`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                |
+| `ActiveFields::Field::Text`         | `text`          | `default_value`(`string` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>`min_length`(`integer`) - minimum value length allowed<br>`max_length`(`integer`) - maximum value length allowed                                                                                                                             |
+| `ActiveFields::Field::TextArray`    | `text_array`    | `default_value`(`array[string]`)    | `min_length`(`integer`) - minimum value length allowed, for each element<br>`max_length`(`integer`) - maximum value length allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                    |
+| Your custom class can be here       | ...             | ...                                 | ...                                                                                                                                                                                                                                                                                                 |
 
 **Note:** Options marked with **\*** are mandatory.
 
@@ -242,11 +243,11 @@ classDiagram
 
 ### Limiting Field Types for a Customizable
 
-You can restrict the allowed field types for a _Customizable_ by passing a `types` argument to the `has_active_fields` method:
+You can restrict the allowed field types for a _Customizable_ by passing _type names_ to the `types` argument in the `has_active_fields` method:
 
 ```ruby
 class Post < ApplicationRecord
-  has_active_fields types: %i[boolean ip]
+  has_active_fields types: %i[boolean date_array integer your_custom_field_type_name]
   # ...
 end
 ```
@@ -262,9 +263,9 @@ active_field.errors.messages #=> {:customizable_type=>["is not included in the l
 ### Customizing Internal Model Classes
 
 You can extend the functionality of _Active Fields_ and _Active Values_ by changing their classes.
-By default, _Active Fields_ inherit from `ActiveFields::Field::Base` (using STI),
-and _Active Values_ is `ActiveFields::Value`.
-You can include the mix-ins `ActiveFields::FieldConcern` and `ActiveFields::ValueConcern`
+By default, _Active Fields_ inherit from `ActiveFields::Field::Base` (utilizing STI),
+and _Active Values_ class is `ActiveFields::Value`.
+You should include the mix-ins `ActiveFields::FieldConcern` and `ActiveFields::ValueConcern`
 in your custom models to add the necessary functionality.
 
 ```ruby
@@ -297,10 +298,12 @@ class CustomValue < ApplicationRecord
 end
 ```
 
-### Registering Custom Field Types
+### Adding Custom Field Types
 
 To add a custom field type, create a subclass of the `ActiveFields.config.field_base_class` 
-and register it in the global configuration:
+and register it in the global configuration.
+
+The _first_ argument should be the field _type name_ and the _second_ should be the field _class name_.
 
 ```ruby
 # config/initializers/active_fields.rb
@@ -328,9 +331,9 @@ For each custom field type, you must also define a **validator** and a **caster*
 
 #### Validator
 
-Inherit from the `ActiveFields::Validators::BaseValidator` and implement the `perform_validation` method.
-This method is responsible for validating the field’s value and adding any errors to the `errors` set.
-These errors will then propagate to the associated _Active Value_ and _Customizable_ records.
+Create a class that inherits from `ActiveFields::Validators::BaseValidator` and implements the `perform_validation` method.
+This method is responsible for validating `active_field.default_value` and `active_value.value`, and adding any errors to the `errors` set.
+These errors will then propagate to the corresponding record.
 Each error should be aligned with the arguments of the _ActiveModel_ `errors.add` method.
 
 ```ruby
@@ -364,9 +367,9 @@ end
 
 #### Caster
 
-Inherit from ActiveFields::Casters::BaseCaster and implement the `serialize` method (used when setting a value)
-and the `deserialize` method (used when retrieving a value).
-These methods handle the conversion of values to and from the database format.
+Create a class that inherits from `ActiveFields::Casters::BaseCaster` 
+and implements methods `serialize` (used when setting a value) and `deserialize` (used when retrieving a value).
+These methods handle the conversion of `active_field.default_value` and `active_value.value`.
 
 ```ruby
 # app/models/ip_field.rb
@@ -421,23 +424,23 @@ end
 active_field = ActiveFields::Field::Boolean.take
 
 # Associations:
-active_field.active_values # `has_many` association with values associated with this field
+active_field.active_values # `has_many` association with Active Values associated with this field
 
 # Attributes:
 active_field.type # Class name of the field (used for STI)
 active_field.customizable_type # Name of the Customizable model the field is registered to
 active_field.name # Identifier for the field, it should be unique in scope of customizable_type
-active_field.default_value # Default value for all instances of this field
+active_field.default_value # Default value for all Active Values associated with this field
 active_field.options # A hash (json) containing type-specific attributes for the field
 
 # Methods:
 active_field.array? # Returns whether the field is an array
-active_field.value_validator_class # Class used for value validation
-active_field.value_validator # Validator object that validates values
-active_field.value_caster_class # Class used to cast (serialize/deserialize) values
-active_field.value_caster # Caster object that performs value casting
+active_field.value_validator_class # Class used for values validation
+active_field.value_validator # Validator object that performs values validation
+active_field.value_caster_class # Class used for values casting
+active_field.value_caster # Caster object that performs values casting
 active_field.customizable_model # Customizable model class
-active_field.type_name # Name identifying the field type without using class names
+active_field.type_name # Name identifying the field type instead of class names
 
 # Scopes:
 ActiveFields::Field::Boolean.for("Author") # Retrieves fields registered for the specified Customizable type
@@ -462,7 +465,7 @@ active_value.value # The stored value for this Active Value
 customizable = Author.take
 
 # Associations:
-customizable.active_values # `has_many` association with values linked to this Customizable
+customizable.active_values # `has_many` association with Active Values linked to this Customizable
 
 # Methods:
 customizable.active_fields # Collection of fields registered for this record
@@ -473,13 +476,13 @@ customizable.active_values_attributes = { "boolean_field_name" => true } # Sette
 
 ```ruby
 ActiveFields.config # Access the plugin's global configuration
-ActiveFields.config.fields # Registered field types (type_name => field_class)
-ActiveFields.config.field_base_class # Base class for all fields
-ActiveFields.config.field_base_class_name # Name of the field base class
-ActiveFields.config.value_class # Class for storing values
-ActiveFields.config.value_class_name # Name of the value class
-ActiveFields.config.field_base_class_changed? # Check if the field base class has changed
-ActiveFields.config.value_class_changed? # Check if the value class has changed
+ActiveFields.config.fields # Registered Active Fields (type_name => field_class)
+ActiveFields.config.field_base_class # Base class for all Active Fields
+ActiveFields.config.field_base_class_name # Name of the Active Fields base class
+ActiveFields.config.value_class # Active Values class
+ActiveFields.config.value_class_name # Name of the Active Values class
+ActiveFields.config.field_base_class_changed? # Check if the Active Fields base class has changed
+ActiveFields.config.value_class_changed? # Check if the Active Values class has changed
 ActiveFields.config.register_field(:ip, "IpField") # Register a custom field type
 ```
 
