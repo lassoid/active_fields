@@ -213,19 +213,28 @@ classDiagram
     ActiveField <|-- IntegerArray
     ActiveField <|-- Text
     ActiveField <|-- TextArray
-
-    note for Boolean "Options:\n required - the value must not be `false`\n nullable - the value could be `nil`"
-    note for Date "Options:\n required - the value must not be `nil` \n min - minimum value allowed \n max - maximum value allowed"
-    note for DateArray "Options:\n min - minimum value allowed, for each element \n max - maximum value allowed, for each element \n min_size - minimum value size \n max_size - maximum value size"
-    note for Decimal "Options:\n required - the value must not be `nil` \n min - minimum value allowed \n max - maximum value allowed \n precision - the precision for value rounding"
-    note for DecimalArray "Options:\n min - minimum value allowed, for each element \n max - maximum value allowed, for each element \n precision - the precision for value rounding, for each element \n min_size - minimum value size \n max_size - maximum value size"
-    note for Enum "Options:\n required - the value must not be `nil` \n allowed_values - a list of allowed values"
-    note for EnumArray "Options:\n allowed_values - a list of allowed values \n min_size - minimum value size \n max_size - maximum value size"
-    note for Integer "Options:\n required - the value must not be `nil` \n min - minimum value allowed \n max - maximum value allowed"
-    note for IntegerArray "Options:\n min - minimum value allowed, for each element \n max - maximum value allowed, for each element \n min_size - minimum value size \n max_size - maximum value size"
-    note for Text "Options:\n required - the value must not be `nil` \n min_length - minimum value length allowed \n max_length - maximum value length allowed"
-    note for TextArray "Options:\n min_length - minimum value length allowed, for each element \n max_length - maximum value length allowed, for each element \n min_size - minimum value size \n max_size - maximum value size"
 ```
+
+**Base** fields attributes:
+- `string` `name`
+- `string` `type`
+- `string` `customizable_type`
+
+**Specific** fields attributes:
+
+| Field Type   | Attributes                         | Options                                                                                                                                                                                                                                                                                        |
+|--------------|------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Boolean      | + `boolean` `default_value`        | `boolean` `required` - the value must not be `false`\n `boolean` `nullable` - the value could be `nil`                                                                                                                                                                                         |
+| Date         | + `date` `default_value`           | `boolean` `required` - the value must not be `nil` \n `date` `min` - minimum value allowed \n `date` `max` - maximum value allowed                                                                                                                                                             |
+| DateArray    | + `array[date]` `default_value`    | `date` `min` - minimum value allowed, for each element \n `date` `max` - maximum value allowed, for each element \n `integer` `min_size` - minimum value size \n `integer` `max_size` - maximum value size                                                                                     |
+| Decimal      | + `decimal` `default_value`        | `boolean` `required` - the value must not be `nil` \n `decimal` `min` - minimum value allowed \n `decimal` `max` - maximum value allowed \n `integer` `precision` - the precision for value rounding                                                                                           |
+| DecimalArray | + `array[decimal]` `default_value` | `decimal` `min` - minimum value allowed, for each element \n `decimal` `max` - maximum value allowed, for each element \n `integer` `precision` - the precision for value rounding, for each element \n `integer` `min_size` - minimum value size \n `integer` `max_size` - maximum value size |
+| Enum         | + `string` `default_value`         | `boolean` `required` - the value must not be `nil` \n `array[string]` `allowed_values` - a list of allowed values                                                                                                                                                                              |
+| EnumArray    | + `array[string]` `default_value`  | `array[string]` `allowed_values` - a list of allowed values \n `integer` `min_size` - minimum value size \n `integer` `max_size` - maximum value size                                                                                                                                          |
+| Integer      | + `integer` `default_value`        | `boolean` `required` - the value must not be `nil` \n `integer` `min` - minimum value allowed \n `integer` `max` - maximum value allowed                                                                                                                                                       |
+| IntegerArray | + `array[integer]` `default_value` | `integer` `min` - minimum value allowed, for each element \n `integer` `max` - maximum value allowed, for each element \n `integer` `min_size` - minimum value size \n `integer` `max_size` - maximum value size                                                                               |
+| Text         | + `string` `default_value`         | `boolean` `required` - the value must not be `nil` \n `integer` `min_length` - minimum value length allowed \n `integer` `max_length` - maximum value length allowed                                                                                                                           |
+| TextArray    | + `array[string]` `default_value`  | `integer` `min_length` - minimum value length allowed, for each element \n `integer` `max_length` - maximum value length allowed, for each element \n `integer` `min_size` - minimum value size \n `integer` `max_size` - maximum value size                                                   |
 
 ## Configuration
 
