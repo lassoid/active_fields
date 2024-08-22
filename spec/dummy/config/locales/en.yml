@@ -30,6 +30,6 @@
 en:
   errors:
     messages:
-      size_too_long: must contain at most %{count} elements
       size_too_short: must contain at least %{count} elements
+      size_too_long: must contain at most %{count} elements
       duplicate: must not contain duplicates

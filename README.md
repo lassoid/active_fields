@@ -416,6 +416,24 @@ class IpArrayField < ActiveFields.config.field_base_class
 end
 ```
 
+### Localization (I18n)
+
+The built-in _validators_ primarily use _Rails_ default error types.
+However, there are some custom error types that you’ll need to handle in your locale files:
+- `size_too_short` (args: `count`): Triggered when the size of an array _Active Field_ value is smaller than the allowed minimum.
+- `size_too_long` (args: `count`): Triggered when the size of an array _Active Field_ value exceeds the allowed maximum.
+- `duplicate`: Triggered when an enum array _Active Field_ contains duplicate elements.
+
+For an example, refer to the [locales file](https://github.com/lassoid/active_fields/blob/main/spec/dummy/config/locales/en.yml).
+
+## Current Restrictions
+
+1. Updating _Active Fields_ options may be unsafe.
+
+   This could cause existing _Active Values_ to become invalid,
+   leading to the associated _Customizables_ also becoming invalid,
+   which could potentially result in update failures.
+
 ## API Overview
 
 ### Fields API
