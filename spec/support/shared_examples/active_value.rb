@@ -95,7 +95,7 @@ RSpec.shared_examples "active_value" do |factory:|
     describe "#value" do
       subject(:call_method) { record.value }
 
-      it { is_expected.to eq(record.active_field.value_caster.deserialize(record.attributes["value"])) }
+      it { is_expected.to eq(record.active_field.value_caster.deserialize(record.attributes["value_meta"]["const"])) }
 
       context "without active_field" do
         before do
@@ -114,11 +114,7 @@ RSpec.shared_examples "active_value" do |factory:|
       it "sets value" do
         call_method
 
-        expect(record.value).to eq(
-          record.active_field.value_caster.deserialize(
-            record.active_field.value_caster.serialize(value),
-          ),
-        )
+        expect(record.attributes["value_meta"]["const"]).to eq(record.active_field.value_caster.serialize(value))
       end
 
       context "without active_field" do

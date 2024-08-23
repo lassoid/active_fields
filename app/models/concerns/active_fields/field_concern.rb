@@ -49,11 +49,11 @@ module ActiveFields
     end
 
     def default_value=(v)
-      super(value_caster.serialize(v))
+      default_value_meta["const"] = value_caster.serialize(v)
     end
 
     def default_value
-      value_caster.deserialize(super)
+      value_caster.deserialize(default_value_meta["const"])
     end
 
     def type_name

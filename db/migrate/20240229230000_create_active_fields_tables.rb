@@ -6,7 +6,7 @@ class CreateActiveFieldsTables < ActiveRecord::Migration[6.0]
       t.string :name, null: false
       t.string :type, null: false
       t.string :customizable_type, null: false
-      t.jsonb :default_value
+      t.jsonb :default_value_meta, null: false, default: {}
       t.jsonb :options, null: false, default: {}
 
       t.timestamps
@@ -20,7 +20,7 @@ class CreateActiveFieldsTables < ActiveRecord::Migration[6.0]
       t.references :active_field,
         null: false,
         foreign_key: { to_table: :active_fields, name: "active_fields_values_active_field_id_fk" }
-      t.jsonb :value
+      t.jsonb :value_meta, null: false, default: {}
 
       t.timestamps
 

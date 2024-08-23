@@ -20,11 +20,11 @@ module ActiveFields
     end
 
     def value=(v)
-      super(active_field&.value_caster&.serialize(v))
+      value_meta["const"] = active_field&.value_caster&.serialize(v)
     end
 
     def value
-      active_field&.value_caster&.deserialize(super)
+      active_field&.value_caster&.deserialize(value_meta["const"])
     end
 
     private

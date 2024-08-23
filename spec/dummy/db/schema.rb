@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_29_230000) do
+ActiveRecord::Schema[7.2].define(version: 2024_02_29_230000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,7 +18,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_29_230000) do
     t.string "name", null: false
     t.string "type", null: false
     t.string "customizable_type", null: false
-    t.jsonb "default_value"
+    t.jsonb "default_value_meta", default: {}, null: false
     t.jsonb "options", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_29_230000) do
     t.string "customizable_type", null: false
     t.bigint "customizable_id", null: false
     t.bigint "active_field_id", null: false
-    t.jsonb "value"
+    t.jsonb "value_meta", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["active_field_id"], name: "index_active_fields_values_on_active_field_id"
