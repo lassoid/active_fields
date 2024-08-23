@@ -1,5 +1,9 @@
 ## [Unreleased]
 - Precision configuration for decimal fields
+- Added array field types mix-in `ActiveFields::FieldArrayConcern`
+- Added helper mix-in `ActiveFields::Helper`
+- Fixed enum types behavior for blank values
+- Dummy app
 
 ## [0.2.0] - 2024-06-13
 

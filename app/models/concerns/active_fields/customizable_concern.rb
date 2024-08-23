@@ -22,7 +22,7 @@ module ActiveFields
 
       # This virtual attribute is used for setting active_values values.
       # Keys are active_fields names,
-      # values are values for corresponding active_values of the record.
+      # values are values for corresponding active_values of the customizable record.
       attr_reader :active_values_attributes
     end
 

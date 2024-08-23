@@ -12,7 +12,7 @@ module ActiveFields
 
     initializer "active_fields.action_controller" do
       ActiveSupport.on_load(:action_controller) do
-        include ControllerExtension
+        include Helper
       end
     end
   end
