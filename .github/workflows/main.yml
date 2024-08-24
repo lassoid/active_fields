@@ -59,8 +59,8 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
 
-    - name: Set up database
-      run: bin/rails db:schema:load
+    - name: Set up Dummy
+      run: spec/dummy/bin/setup
 
     - name: Run tests
       run: bin/rspec
