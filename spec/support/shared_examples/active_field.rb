@@ -206,7 +206,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
     describe "#default_value" do
       subject(:call_method) { record.default_value }
 
-      it { is_expected.to eq(record.value_caster.deserialize(record.attributes["default_value_meta"]["const"])) }
+      it { is_expected.to eq(record.value_caster.deserialize(record.default_value_meta["const"])) }
     end
 
     describe "#default_value=" do
@@ -217,7 +217,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       it "sets default_value" do
         call_method
 
-        expect(record.attributes["default_value_meta"]["const"]).to eq(record.value_caster.serialize(value))
+        expect(record.default_value_meta["const"]).to eq(record.value_caster.serialize(value))
       end
     end
 
