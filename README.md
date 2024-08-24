@@ -535,10 +535,11 @@ active_fields_permitted_attributes(customizable) # Filters for the `permit` meth
 
 ## Development
 
-After checking out the repo, run `spec/dummy/bin/setup` to install dependencies. Then, run `bin/rspec` to run the tests.
+After checking out the repo, run `spec/dummy/bin/setup` to setup the environment.
+Then, run `bin/rspec` to run the tests.
 You can also run `bin/rubocop` to lint the source code,
 `bin/rails c` for an interactive prompt that will allow you to experiment
-and `bin/rails s` to start the dummy app with plugin already enabled and configured.
+and `bin/rails s` to start the Dummy app with plugin already enabled and configured.
 
 To install this gem onto your local machine, run `bin/rake install`.
 To release a new version, update the version number in `version.rb`, and then run `bin/rake release`,
