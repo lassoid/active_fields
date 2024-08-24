@@ -3,6 +3,9 @@ default: &default
   encoding: unicode
   pool: 5
   timeout: 5000
+  migrations_paths:
+    - db/migrate
+    - ../../db/migrate
 
 development:
   <<: *default

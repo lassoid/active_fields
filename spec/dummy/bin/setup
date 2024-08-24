@@ -4,7 +4,7 @@
 require "fileutils"
 
 APP_ROOT = File.expand_path("..", __dir__)
-APP_NAME = "dummy"
+APP_NAME = "Dummy"
 
 def system!(*args)
   system(*args, exception: true)
