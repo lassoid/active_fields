@@ -71,41 +71,6 @@ such as booleans, strings, numbers, arrays, etc.
     - Add inputs for _Active Values_ in _Customizable_ forms.
     - Permit _Active Values_ parameters in _Customizable_ controllers.
 
-        Use the helper method `active_fields_permitted_attributes` to pass necessary filters to the `permit` method,
-        allowing all _Active Values_ for a given _Customizable_ to be correctly permitted.
-        This helper is available by default in _controllers_.
-        If you need to use it in other places (e.g., in _policies_), simply include `ActiveFields::Helper` wherever it's needed.
-
-        ```ruby
-        # In a controller
-        class AuthorsController
-          # ...
-      
-          def author_params
-            params.require(:author).permit(
-              :name,
-              :group_id,
-              active_values_attributes: active_fields_permitted_attributes(@author),
-            )
-          end
-        end
-      
-        # In a policy
-        class AuthorPolicy < ApplicationPolicy
-          include ActiveFields::Helper
-      
-          # ...
-
-          def permitted_attributes
-            [
-              :name,
-              :group_id,
-              active_values_attributes: active_fields_permitted_attributes(record),
-            ]
-          end
-        end
-        ```
-
         **Note:** By default, Rails form fields insert an empty string into array (multiple) parameters.
         You’ll need to remove these empty strings manually. 
         Here’s [one possible solution](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/authors_controller.rb#L47) 
@@ -496,7 +461,16 @@ customizable.active_values # `has_many` association with Active Values linked to
 
 # Methods:
 customizable.active_fields # Collection of Active Fields registered for this record
-customizable.active_values_attributes = { "boolean_field_name" => true } # Setter to create or update Active Values upon saving the Customizable
+
+# Create, update or destroy Active Values.
+# Powered by Rails `accepts_nested_attributes_for`. More info: https://edgeapi.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
+customizable.active_values_attributes = [
+  { active_field_id: 1, value: [1, 2] }, # create
+  { id: 2, value: "2024-07-16" }, # update
+  { id: 3, _destroy: true }, # destroy
+]
+
+customizable.initialize_active_values # build an Active Value, if it doesn't exist, with the default value for each Active Field
 ```
 
 ### Global Config
@@ -521,16 +495,6 @@ customizable_model.active_fields_config # Access the Customizable's configuratio
 customizable_model.active_fields_config.customizable_model # The Customizable model itself
 customizable_model.active_fields_config.types # Allowed Active Field types (e.g., `[:boolean]`)
 customizable_model.active_fields_config.types_class_names # Allowed Active Field class names (e.g., `[ActiveFields::Field::Boolean]`)
-```
-
-### Helper
-
-```ruby
-include ActiveFields::Helper
-
-customizable = Author.take
-active_fields_permitted_attributes(customizable) # Filters for the `permit` method to allow all Active Values attributes
-#=> [:birthdate, { interested_products: [] }]
 ```
 
 ## Development

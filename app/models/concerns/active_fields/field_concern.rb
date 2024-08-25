@@ -22,7 +22,6 @@ module ActiveFields
       validate :validate_default_value
       validate :validate_customizable_model_allows_type
 
-      after_create :add_field_to_records
       after_initialize :set_defaults
     end
 
@@ -78,17 +77,11 @@ module ActiveFields
     end
 
     def validate_customizable_model_allows_type
-      allowed_types = customizable_model&.active_fields_config&.types_class_names || []
-      return true if allowed_types.include?(type)
+      allowed_types = customizable_model&.active_fields_config&.types || []
+      return true if allowed_types.include?(type_name)
 
       errors.add(:customizable_type, :inclusion)
       false
-    end
-
-    def add_field_to_records
-      customizable_model.find_each do |record|
-        ActiveFields.config.value_class.create!(active_field: self, customizable: record, value: default_value)
-      end
     end
 
     def set_defaults; end

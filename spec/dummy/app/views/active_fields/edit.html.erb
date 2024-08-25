@@ -1,5 +1,5 @@
 <h1>Editing Active Field</h1>
 
-<%= render partial: "edit_form", locals: { active_field: @active_field } %>
+<%= render_active_field_form(active_field: @active_field) %>
 
 <div><%= link_to "Back", active_fields_path %></div>

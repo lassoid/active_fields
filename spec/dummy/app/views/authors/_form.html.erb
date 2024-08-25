@@ -11,10 +11,8 @@
     <%= f.collection_select :group_id, Group.order(:id), :id, :name, prompt: true %>
   </div>
 
-  <%= f.fields_for :active_values_attributes do |active_fields_form| %>
-    <% author.active_fields.each do |active_field| %>
-      <%= render_active_field_input(form: active_fields_form, record: author, active_field: active_field) %>
-    <% end %>
+  <%= f.fields_for :active_values, author.active_values.sort_by(&:active_field_id) do |active_fields_form| %>
+    <%= render_active_value_input(form: active_fields_form, active_value: active_fields_form.object) %>
   <% end %>
 
   <div class="form-input">

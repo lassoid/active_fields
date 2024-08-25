@@ -13,19 +13,22 @@ RSpec.shared_examples "customizable" do
       let(:value) { active_value_for(active_field) }
       let(:value_errors) { Set.new([:invalid, [:greater_than, count: random_number]]) }
 
-      context "new record" do
-        let(:record) { described_class.new(active_values_attributes: { active_field.name => value }) }
+      before do
+        validator = instance_double(active_field.value_validator_class, errors: value_errors)
+        allow(active_field.value_validator_class).to receive(:new).and_return(validator)
+        allow(validator).to receive(:validate).with(value).and_return(value_errors.empty?)
 
-        before do
-          validator = instance_double(active_field.value_validator_class, errors: value_errors)
-          allow(active_field.value_validator_class).to receive(:new).and_return(validator)
-          allow(validator).to receive(:validate).with(value).and_return(value_errors.empty?)
-        end
+        record.active_values_attributes = [{ active_field_id: active_field.id, value: value }]
+      end
+
+      context "new record" do
+        let(:record) { described_class.new }
 
         it "validates" do
           record.valid?
 
           active_value = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
+
           value_errors.each do |error|
             expect(record.errors.added?(:"active_values.value", *error)).to be(true)
             expect(active_value.errors.added?(:value, *error)).to be(true)
@@ -35,18 +38,6 @@ RSpec.shared_examples "customizable" do
 
       context "persisted record" do
         let!(:record) { described_class.create! }
-
-        before do
-          validator = instance_double(active_field.value_validator_class, errors: value_errors)
-          allow(active_field.value_validator_class).to receive(:new).and_return(validator)
-          allow(validator).to receive(:validate).with(value).and_return(value_errors.empty?)
-
-          record.active_values_attributes = { active_field.name => value }
-
-          # Force any active_values change,
-          # because association validation won't be executed at all if `value` remains the same.
-          record.active_values.each { _1.updated_at = 1.second.after(_1.updated_at) }
-        end
 
         it "validates" do
           record.valid?
@@ -63,188 +54,77 @@ RSpec.shared_examples "customizable" do
   end
 
   context "callbacks" do
-    let!(:active_field) do
-      create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
-    end
+    describe "active_fields nested attributes autosave" do
+      subject(:save_record) { record.save! }
 
-    describe "before_validation #initialize_active_values" do
-      context "new record" do
-        let(:record) { described_class.new(active_values_attributes: active_values_attributes) }
-
-        context "with nil active_values_attributes" do
-          let(:active_values_attributes) { nil }
-
-          it "builds active_values with defaults" do
-            expect do
-              record.valid?
-            end.to change { record.active_values.size }.by(1)
-
-            field = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
-            expect(field.value).to eq(active_field.default_value)
-          end
-        end
-
-        context "with invalid active_values_attributes" do
-          let(:active_values_attributes) { random_string }
-
-          it "builds active_values with defaults" do
-            expect do
-              record.valid?
-            end.to change { record.active_values.size }.by(1)
-
-            field = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
-            expect(field.value).to eq(active_field.default_value)
-          end
-        end
-
-        context "with string active_values_attributes keys" do
-          let(:active_values_attributes) do
-            {
-              active_field.name => active_value_for(active_field),
-              "non existing active_field name" => "doesn't matter",
-            }
-          end
-
-          it "builds active_values with provided values" do
-            expect do
-              record.valid?
-            end.to change { record.active_values.size }.by(1)
-
-            field = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
-            expect(field.value).to eq(active_values_attributes[active_field.name])
-          end
-        end
-
-        context "with symbol active_values_attributes keys" do
-          let(:active_values_attributes) do
-            {
-              active_field.name.to_sym => active_value_for(active_field),
-              :"non existing active_field name" => "doesn't matter",
-            }
-          end
-
-          it "builds active_values with provided values" do
-            expect do
-              record.valid?
-            end.to change { record.active_values.size }.by(1)
-
-            field = record.active_values.find { |active_value| active_value.active_field_id == active_field.id }
-            expect(field.value).to eq(active_values_attributes[active_field.name.to_sym])
-          end
+      let!(:record) { described_class.create! }
+      let!(:active_fields) do
+        active_field_factories_for(record.class).map do |active_field_factory|
+          create(active_field_factory, customizable_type: record.class.name)
         end
       end
-
-      context "persisted record" do
-        let!(:record) { described_class.create! }
-
-        before do
-          record.active_values_attributes = active_values_attributes
-        end
-
-        context "with nil active_values_attributes" do
-          let(:active_values_attributes) { nil }
-
-          it "doesn't change active_values values" do
-            expect do
-              record.valid?
-            end.to not_change { record.active_values.find { _1.active_field_id == active_field.id }.value }
-          end
-        end
-
-        context "with invalid active_values_attributes" do
-          let(:active_values_attributes) { random_string }
-
-          it "doesn't change active_values values" do
-            expect do
-              record.valid?
-            end.to not_change { record.active_values.find { _1.active_field_id == active_field.id }.value }
-          end
-        end
-
-        context "with string active_values_attributes keys" do
-          let(:active_values_attributes) do
-            {
-              active_field.name => active_value_for(active_field),
-              "non existing active_field name" => "doesn't matter",
-            }
-          end
-
-          it "changes active_values for provided values only" do
-            record.valid?
-
-            active_value = record.active_values.find { _1.active_field_id == active_field.id }
-            expect(active_value.value).to eq(active_values_attributes[active_field.name])
-          end
-        end
-
-        context "with symbol active_values_attributes keys" do
-          let(:active_values_attributes) do
-            {
-              active_field.name.to_sym => active_value_for(active_field),
-              :"non existing active_field name" => "doesn't matter",
-            }
-          end
-
-          it "changes active_values for provided values only" do
-            record.valid?
-
-            active_value = record.active_values.find { _1.active_field_id == active_field.id }
-            expect(active_value.value).to eq(active_values_attributes[active_field.name.to_sym])
-          end
+      let!(:existing_active_values) do
+        active_fields.sample(3).map do |active_field|
+          create(active_value_factory, active_field: active_field, customizable: record)
         end
       end
-    end
-
-    describe "active_fields autosave" do
-      subject(:update_active_fields) { record.update!(active_values_attributes: active_values_attributes) }
-
-      let!(:other_active_field) do
-        create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
-      end
-      let(:active_values_attributes) do
+      let(:data) do
         {
-          active_field.name => active_value_for(active_field),
-          "non existing active_field name" => "doesn't matter",
+          active_field_to_create: active_fields.find { existing_active_values.map(&:active_field_id).exclude?(_1.id) },
+          active_value_to_update: existing_active_values.first,
+          active_value_to_destroy: existing_active_values.second,
+          unchanged_active_value: existing_active_values.third,
+        }
+      end
+      let(:action_attributes) do
+        {
+          create: {
+            active_field_id: data[:active_field_to_create].id,
+            value: active_value_for(data[:active_field_to_create]),
+          },
+          update: {
+            id: data[:active_value_to_update].id,
+            value: active_value_for(data[:active_value_to_update].active_field),
+          },
+          destroy: {
+            id: data[:active_value_to_destroy].id,
+            _destroy: true,
+          },
         }
       end
 
-      context "new record" do
-        let(:record) { described_class.new }
-
-        it "saves active_values with provided values" do
-          update_active_fields
-          record.reload
-
-          changed_value = record.active_values.find { _1.active_field_id == active_field.id }
-          expect(changed_value.value).to eq(active_values_attributes[active_field.name])
-        end
-
-        it "saves active_values without provided values" do
-          update_active_fields
-          record.reload
-
-          not_changed_value = record.active_values.find { _1.active_field_id == other_active_field.id }
-          expect(not_changed_value.value).to eq(other_active_field.default_value)
-        end
+      before do
+        record.active_values_attributes = action_attributes.values
       end
 
-      context "persisted record" do
-        let!(:record) { described_class.create! }
+      it "creates new active_values" do
+        save_record
+        record.reload
 
-        it "saves active_values with provided values" do
-          update_active_fields
-          record.reload
+        created_active_value = record.active_values.find { _1.active_field_id == data[:active_field_to_create].id }
+        expect(created_active_value.value).to eq(action_attributes[:create][:value])
+      end
 
-          changed_value = record.active_values.find { _1.active_field_id == active_field.id }
-          expect(changed_value.value).to eq(active_values_attributes[active_field.name])
-        end
+      it "updates active_values" do
+        save_record
+        data[:active_value_to_update].reload
 
-        it "doesn't save active_values without provided values" do
-          expect do
-            update_active_fields
-            record.reload
-          end.to not_change { record.active_values.find { _1.active_field_id == other_active_field.id }.value }
-        end
+        expect(data[:active_value_to_update].value).to eq(action_attributes[:update][:value])
+      end
+
+      it "destroys active_values" do
+        save_record
+        record.reload
+
+        destroyed_active_value = record.active_values.find { _1.id == data[:active_value_to_destroy].id }
+        expect(destroyed_active_value).to be_nil
+      end
+
+      it "doesn't change other active_values" do
+        expect do
+          save_record
+          data[:unchanged_active_value].reload
+        end.to not_change { data[:unchanged_active_value].value }
       end
     end
   end
@@ -265,6 +145,44 @@ RSpec.shared_examples "customizable" do
         expect(record.active_fields.to_a)
           .to include(*active_fields.select { |field| field.customizable_type == described_class.name })
           .and exclude(*active_fields.reject { |field| field.customizable_type == described_class.name })
+      end
+    end
+
+    describe "#initialize_active_values" do
+      subject(:call_method) { record.initialize_active_values }
+
+      let!(:record) { described_class.create! }
+      let!(:active_fields) do
+        active_field_factories_for(record.class).map do |active_field_factory|
+          create(active_field_factory, customizable_type: record.class.name)
+        end
+      end
+      let!(:existing_active_values) do
+        active_fields.sample(rand(active_fields.size)).map do |active_field|
+          create(active_value_factory, active_field: active_field, customizable: record)
+        end
+      end
+
+      it "builds not existing active_values" do
+        expect do
+          call_method
+        end.to change { record.active_values.size }.by(active_fields.size - existing_active_values.size)
+      end
+
+      it "doesn't save active_values that were built" do
+        call_method
+
+        new_active_values =
+          record.active_values.reject { existing_active_values.map(&:active_field_id).include?(_1.active_field_id) }
+        expect(new_active_values.map(&:persisted?).uniq).to eq([false])
+      end
+
+      it "sets default values" do
+        call_method
+
+        new_active_values =
+          record.active_values.reject { existing_active_values.map(&:active_field_id).include?(_1.active_field_id) }
+        expect(new_active_values.map(&:value)).to eq(new_active_values.map { _1.active_field.default_value })
       end
     end
   end

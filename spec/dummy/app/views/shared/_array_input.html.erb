@@ -1,5 +1,6 @@
 <div class="form-input">
-  <%= form.label name %>
+  <%= form.label name, label_text %>
+
   <div data-controller="array-input" data-array-input-template-input-group-class="d-none">
     <div data-array-input-target="templateInputGroup" class="form-array-input-group">
       <%= form.public_send(field_method, name, { multiple: true, value: "", **field_opts }) %>

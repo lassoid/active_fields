@@ -11,10 +11,6 @@ RSpec.describe ActiveFields::Field::EnumArray do
   include_examples "store_attribute_integer", :max_size, :options, described_class
   include_examples "store_attribute_text_array", :allowed_values, :options, described_class
 
-  it "has a valid factory" do
-    expect(build(factory)).to be_valid
-  end
-
   context "validations" do
     include_examples "field_sizes_validate", factory: factory
 

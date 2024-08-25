@@ -13,10 +13,6 @@ RSpec.describe ActiveFields::Field::DecimalArray do
   include_examples "store_attribute_decimal", :max, :options, described_class
   include_examples "store_attribute_integer", :precision, :options, described_class
 
-  it "has a valid factory" do
-    expect(build(factory)).to be_valid
-  end
-
   context "validations" do
     include_examples "field_sizes_validate", factory: factory
 

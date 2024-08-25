@@ -6,10 +6,22 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
   end
 
   context "validations" do
-    subject(:record) { build(factory) }
+    subject(:record) { build(factory, *traits, **attributes) }
+
+    let(:traits) { [] }
+    let(:attributes) { {} }
+
+    available_traits.map { [nil, _1] }.then { _1[0].product(*_1[1..-1]) }.each do |traits_combination|
+      traits_combination = traits_combination.compact
+      let(:traits) { traits_combination }
+
+      context "with traits: [#{traits_combination.join(", ")}]" do
+        it { is_expected.to be_valid }
+      end
+    end
 
     context "name format" do
-      subject(:record) { build(factory, name: name) }
+      let(:attributes) { { name: name } }
 
       context "when contains lowercase alphanumerics and underscores only" do
         let(:name) { "abcxyz_123456789" }
@@ -72,12 +84,15 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
     end
 
     describe "#validate_customizable_model_allows_type" do
-      let(:config) { ActiveFields::CustomizableConfig.new(described_class) }
+      let(:config) do
+        ActiveFields::CustomizableConfig.new(described_class).tap { _1.types = allowed_types }
+      end
 
       context "when customizable_model allows this type" do
+        let(:allowed_types) { [record.type_name] }
+
         before do
           allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
-          allow(config).to receive(:types_class_names).and_return([record.type])
         end
 
         it "is valid" do
@@ -88,9 +103,10 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       end
 
       context "when customizable_model does not allow this type" do
+        let(:allowed_types) { ActiveFields.config.fields.keys - [record.type_name] }
+
         before do
           allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
-          allow(config).to receive(:types_class_names).and_return(ActiveFields.config.fields.values - [record.type])
         end
 
         it "is invalid" do
@@ -101,8 +117,10 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       end
 
       context "when customizable_model does not have active_fields" do
+        let(:config) { nil }
+
         before do
-          allow(record.customizable_model).to receive(:active_fields_config).and_return(nil)
+          allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
         end
 
         it "is invalid" do
@@ -113,9 +131,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       end
 
       context "when customizable_type is invalid" do
-        before do
-          record.customizable_type = "invalid const"
-        end
+        let(:attributes) { { customizable_type: "invalid const" } }
 
         it "is invalid" do
           record.valid?
@@ -225,36 +241,6 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       subject(:call_method) { record.type_name }
 
       it { is_expected.to eq(ActiveFields.config.fields.key(record.type)) }
-    end
-  end
-
-  context "callbacks" do
-    describe "after_create #add_field_to_records" do
-      subject(:create_field) { record.save! }
-
-      let!(:customizable) { customizable_models_for(described_class.name).sample.create! }
-
-      available_traits.map { [nil, _1] }.then { _1[0].product(*_1[1..-1]) }.each do |traits_combination|
-        traits_combination = traits_combination.compact
-
-        context "with traits: [#{traits_combination.join(", ")}]" do
-          let(:record) { build(factory, *traits_combination, customizable_type: customizable.class.name) }
-
-          it "creates active_value for customizable" do
-            expect do
-              create_field
-              customizable.reload
-            end.to change { customizable.active_values.size }.by(1)
-          end
-
-          it "sets active_value value" do
-            create_field
-            customizable.reload
-
-            expect(customizable.active_values.take!.value).to eq(record.default_value)
-          end
-        end
-      end
     end
   end
 end

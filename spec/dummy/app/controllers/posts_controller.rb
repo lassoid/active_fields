@@ -9,6 +9,7 @@ class PostsController < ApplicationController
 
   def new
     @post = Post.new
+    @post.initialize_active_values
   end
 
   def create
@@ -18,22 +19,26 @@ class PostsController < ApplicationController
     if @post.save
       redirect_to edit_post_path(@post), status: :see_other
     else
+      @post.initialize_active_values
       render :new, status: :unprocessable_entity
     end
   end
 
-  def edit; end
+  def edit
+    @post.initialize_active_values
+  end
 
   def update
     if @post.update(post_params)
       redirect_to edit_post_path(@post), status: :see_other
     else
+      @post.initialize_active_values
       render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
-    @post.destroy
+    @post.destroy!
 
     redirect_to posts_path, status: :see_other
   end
@@ -45,17 +50,15 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    active_fields_permitted = active_fields_permitted_attributes(@post)
     permitted_params = params.require(:post).permit(
       :title,
       :body,
       :author_id,
-      active_values_attributes: active_fields_permitted,
+      active_values_attributes: [:id, :active_field_id, :value, :_destroy, value: []],
     )
-    permitted_params[:active_values_attributes] = compact_array_params(
-      permitted_params[:active_values_attributes],
-      active_fields_permitted,
-    )
+    permitted_params[:active_values_attributes].each do |_index, value_attrs|
+      value_attrs[:value] = compact_array_param(value_attrs[:value])
+    end
 
     permitted_params
   end

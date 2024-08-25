@@ -9,19 +9,11 @@ class ApplicationController < ActionController::Base
     "#{model.model_name.name}Policy".constantize.new
   end
 
-  def compact_array_params(params, permitted)
-    permitted.each do |permitted_element|
-      next unless permitted_element.is_a?(Hash)
-
-      permitted_element.each do |key, value|
-        next if value != []
-
-        if params[key].is_a?(Array) && params[key].first == ""
-          params[key] = params[key][1..-1]
-        end
-      end
+  def compact_array_param(value)
+    if value.first == ""
+      value[1..-1]
+    else
+      value
     end
-
-    params
   end
 end

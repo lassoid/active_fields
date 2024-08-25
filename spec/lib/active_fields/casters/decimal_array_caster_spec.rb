@@ -29,13 +29,13 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
     context "when array of numbers" do
       let(:value) { random_numbers }
 
-      it { is_expected.to eq(value.map(&:to_d)) }
+      it { is_expected.to eq(value.map { _1.to_d.to_s }) }
     end
 
     context "when array of number strings" do
       let(:value) { [random_integer.to_s, random_float.to_s] }
 
-      it { is_expected.to eq(value.map(&:to_d)) }
+      it { is_expected.to eq(value.map { _1.to_d.to_s }) }
     end
 
     context "when not an array" do
@@ -52,13 +52,13 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
       context "when array of numbers" do
         let(:value) { random_numbers }
 
-        it { is_expected.to eq(value.map { _1.to_d.truncate(active_field.precision) }) }
+        it { is_expected.to eq(value.map { _1.to_d.truncate(active_field.precision).to_s }) }
       end
 
       context "when array of number strings" do
         let(:value) { [random_integer.to_s, random_float.to_s] }
 
-        it { is_expected.to eq(value.map { _1.to_d.truncate(active_field.precision) }) }
+        it { is_expected.to eq(value.map { _1.to_d.truncate(active_field.precision).to_s }) }
       end
     end
   end

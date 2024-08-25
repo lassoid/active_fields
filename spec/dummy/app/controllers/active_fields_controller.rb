@@ -32,7 +32,7 @@ class ActiveFieldsController < ApplicationController
   end
 
   def destroy
-    @active_field.destroy
+    @active_field.destroy!
 
     redirect_to active_fields_path, status: :see_other
   end
@@ -40,19 +40,19 @@ class ActiveFieldsController < ApplicationController
   private
 
   def active_field_create_params(model_class)
-    permitted = policy(model_class).permitted_attributes_for_create
-    compact_array_params(
-      params.require(:active_field).permit(permitted),
-      permitted,
-    )
+    params.require(:active_field).permit(policy(model_class).permitted_attributes_for_create).tap do |attrs|
+      attrs.transform_values! do |value|
+        value.is_a?(Array) ? compact_array_param(value) : value
+      end
+    end
   end
 
   def active_field_update_params(model_class)
-    permitted = policy(model_class).permitted_attributes_for_update
-    compact_array_params(
-      params.require(:active_field).permit(permitted),
-      permitted,
-    )
+    params.require(:active_field).permit(policy(model_class).permitted_attributes_for_update).tap do |attrs|
+      attrs.transform_values! do |value|
+        value.is_a?(Array) ? compact_array_param(value) : value
+      end
+    end
   end
 
   def set_active_field

@@ -1,0 +1,42 @@
+<%= form_with(model: active_field, scope: :active_field, url: active_field.persisted? ? active_field_path(active_field) : active_fields_path) do |f| %>
+  <%= render partial: "shared/form_errors", locals: { record: active_field } %>
+
+  <% if active_field.new_record? %>
+    <%= f.hidden_field :type, { name: "type", value: active_field.type_name } %>
+  <% end %>
+
+  <% if active_field.new_record? %>
+    <div class="form-input">
+      <%= f.label :customizable_type %>
+      <%= f.select :customizable_type, %w[Author Post] %>
+    </div>
+  <% end %>
+
+  <div class="form-input">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <% if active_field.new_record? %>
+    <div class="form-input">
+      <%= f.label :required %>
+      <%= f.check_box :required %>
+    </div>
+  <% end %>
+
+  <% if active_field.new_record? %>
+    <div class="form-input">
+      <%= f.label :nullable %>
+      <%= f.check_box :nullable %>
+    </div>
+  <% end %>
+
+  <div class="form-input">
+    <%= f.label :default_value %>
+    <%= f.collection_radio_buttons :default_value, { "Null" => "", "True" => "true", "False" => "false" }, :last, :first %>
+  </div>
+
+  <div class="form-input">
+    <%= f.submit %>
+  </div>
+<% end %>
