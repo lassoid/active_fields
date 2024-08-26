@@ -12,10 +12,6 @@ RSpec.describe ActiveFields::Field::DateArray do
   include_examples "store_attribute_date", :min, :options, described_class
   include_examples "store_attribute_date", :max, :options, described_class
 
-  it "has a valid factory" do
-    expect(build(factory)).to be_valid
-  end
-
   context "validations" do
     include_examples "field_sizes_validate", factory: factory
 

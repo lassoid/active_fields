@@ -14,7 +14,7 @@ module ActiveFields
       end
 
       def permitted_attributes_for_update
-        %i[name]
+        %i[name default_value]
       end
     end
   end

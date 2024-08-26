@@ -1,11 +1,12 @@
 <h1>Authors</h1>
 
-<%= link_to "New", new_author_path %>
+<div class="links">
+  <%= link_to "New", new_author_path %>
+</div>
 
-<table>
+<table class="table">
   <thead>
     <tr>
-      <th></th>
       <th>ID</th>
       <th>Name</th>
       <th>Group</th>
@@ -15,14 +16,15 @@
   <tbody>
     <% @authors.each do |author| %>
       <tr>
-        <th><%= link_to "Edit", edit_author_path(author) %></th>
-        <th><%= author.id %></th>
-        <th><%= author.name %></th>
-        <th><%= author.group&.name %></th>
-        <th><%= button_to "Destroy", author_path(author), method: :delete %></th>
+        <td><%= link_to "##{author.id}", edit_author_path(author) %></td>
+        <td><%= author.name %></td>
+        <td><%= author.group&.name %></td>
+        <td><%= button_to "Destroy", author_path(author), method: :delete %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<div><%= link_to "Back", root_path %></div>
+<div class="links">
+  <%= link_to "Back", root_path %>
+</div>

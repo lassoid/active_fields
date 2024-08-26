@@ -10,10 +10,6 @@ RSpec.describe ActiveFields::Field::Boolean do
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_boolean", :nullable, :options, described_class
 
-  it "has a valid factory" do
-    expect(build(factory)).to be_valid
-  end
-
   context "callbacks" do
     describe "after_initialize #set_defaults" do
       let(:record) { described_class.new(required: required, nullable: nullable) }

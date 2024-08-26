@@ -1,0 +1,8 @@
+<% if active_value.new_record? %>
+  <%= form.hidden_field :active_field_id %>
+<% end %>
+
+<div class="form-input">
+  <%= form.label :value %>
+  <%= form.select :value, active_field.allowed_values, { multiple: true, selected: active_value.value } %>
+</div>

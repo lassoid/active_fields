@@ -9,7 +9,7 @@ module ActiveFields
     end
 
     def types=(value)
-      invalid_types = value - ActiveFields.config.fields.keys
+      invalid_types = value - ActiveFields.config.type_names
       if invalid_types.any?
         raise ArgumentError, "undefined ActiveFields types provided for #{customizable_model}: #{invalid_types}"
       end

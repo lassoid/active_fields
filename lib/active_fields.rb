@@ -7,7 +7,6 @@ module ActiveFields
   autoload :Config, "active_fields/config"
   autoload :CustomizableConfig, "active_fields/customizable_config"
   autoload :HasActiveFields, "active_fields/has_active_fields"
-  autoload :Helper, "active_fields/helper"
 
   module Casters
     autoload :BaseCaster, "active_fields/casters/base_caster"

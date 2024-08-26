@@ -69,6 +69,10 @@ module TestMethods
     }
   end
 
+  def active_value_factory
+    ActiveFields.config.value_class_changed? ? :custom_value : :active_value
+  end
+
   def active_value_for(active_field)
     case active_field
     when ActiveFields::Field::Text

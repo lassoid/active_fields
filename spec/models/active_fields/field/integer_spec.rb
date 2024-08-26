@@ -11,10 +11,6 @@ RSpec.describe ActiveFields::Field::Integer do
   include_examples "store_attribute_integer", :min, :options, described_class
   include_examples "store_attribute_integer", :max, :options, described_class
 
-  it "has a valid factory" do
-    expect(build(factory)).to be_valid
-  end
-
   context "validations" do
     describe "#max" do
       let(:record) { build(factory, min: min, max: max) }

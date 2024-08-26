@@ -13,13 +13,11 @@
 
   <div class="form-input">
     <%= f.label :author_id %>
-    <%= f.collection_select :author_id, Author.order(:id), :id, :name, prompt: true %>
+    <%= f.collection_select :author_id, Author.order(:id), :id, :name, include_blank: true %>
   </div>
 
-  <%= f.fields_for :active_values_attributes do |active_fields_form| %>
-    <% post.active_fields.each do |active_field| %>
-      <%= render_active_field_input(form: active_fields_form, record: post, active_field: active_field) %>
-    <% end %>
+  <%= f.fields_for :active_values, post.active_values.sort_by(&:active_field_id) do |active_fields_form| %>
+    <%= render_active_value_input(form: active_fields_form, active_value: active_fields_form.object) %>
   <% end %>
 
   <div class="form-input">

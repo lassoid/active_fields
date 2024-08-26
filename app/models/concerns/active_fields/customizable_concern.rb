@@ -15,48 +15,22 @@ module ActiveFields
         dependent: :destroy
       # rubocop:enable Rails/ReflectionClassName
 
-      # Firstly, we build active_values that doesn't exist.
-      # Than, we set values for active_values whose values should be changed
-      # according to `active_values_attributes`.
-      before_validation :initialize_active_values
-
-      # This virtual attribute is used for setting active_values values.
-      # Keys are active_fields names,
-      # values are values for corresponding active_values of the customizable record.
-      attr_reader :active_values_attributes
+      accepts_nested_attributes_for :active_values, allow_destroy: true
     end
 
     def active_fields
       ActiveFields.config.field_base_class.for(model_name.name)
     end
 
-    # Convert hash keys to strings for easier access by fields names.
-    def active_values_attributes=(value)
-      @active_values_attributes =
-        if value.respond_to?(:to_h)
-          value.to_h.transform_keys(&:to_s)
-        else
-          value
-        end
-    end
-
-    private
-
+    # Build an active_value, if it doesn't exist, with a default value for each available active_field
     def initialize_active_values
+      existing_field_ids = active_values.map(&:active_field_id)
+
       active_fields.each do |active_field|
-        active_value =
-          find_active_value_by_field(active_field) ||
-          active_values.new(active_field: active_field, value: active_field.default_value)
+        next if existing_field_ids.include?(active_field.id)
 
-        next unless active_values_attributes.is_a?(Hash)
-        next unless active_values_attributes.key?(active_field.name)
-
-        active_value.value = active_values_attributes[active_field.name]
+        active_values.new(active_field: active_field, value: active_field.default_value)
       end
-    end
-
-    def find_active_value_by_field(active_field)
-      active_values.find { |active_value| active_value.active_field_id == active_field.id }
     end
   end
 end

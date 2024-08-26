@@ -1,0 +1,48 @@
+<%= form_with(model: active_field, scope: :active_field, url: active_field.persisted? ? active_field_path(active_field) : active_fields_path) do |f| %>
+  <%= render partial: "shared/form_errors", locals: { record: active_field } %>
+
+  <div class="form-input">
+    <%= f.label :type %>
+    <%=
+      f.text_field :type,
+        name: "type",
+        value: active_field.type_name,
+        disabled: active_field.persisted?,
+        readonly: active_field.new_record?
+    %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :customizable_type %>
+    <%= f.select :customizable_type, %w[Author], {}, { disabled: active_field.persisted? } %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :required %>
+    <%= f.check_box :required, disabled: active_field.persisted? %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :min %>
+    <%= f.date_field :min, disabled: active_field.persisted? %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :max %>
+    <%= f.date_field :max, disabled: active_field.persisted? %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :default_value %>
+    <%= f.date_field :default_value %>
+  </div>
+
+  <div class="form-input">
+    <%= f.submit %>
+  </div>
+<% end %>

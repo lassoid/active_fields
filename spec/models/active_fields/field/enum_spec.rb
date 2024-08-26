@@ -10,10 +10,6 @@ RSpec.describe ActiveFields::Field::Enum do
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_text_array", :allowed_values, :options, described_class
 
-  it "has a valid factory" do
-    expect(build(factory)).to be_valid
-  end
-
   context "validations" do
     describe "#validate_allowed_values" do
       let(:record) { build(factory, allowed_values: allowed_values) }

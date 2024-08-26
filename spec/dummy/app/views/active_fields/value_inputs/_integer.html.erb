@@ -1,0 +1,8 @@
+<% if active_value.new_record? %>
+  <%= form.hidden_field :active_field_id %>
+<% end %>
+
+<div class="form-input">
+  <%= form.label :value, active_field.name %>
+  <%= form.number_field :value, { value: active_value.value, min: active_field.min, max: active_field.max } %>
+</div>

@@ -7,7 +7,7 @@ RSpec.describe ActiveFields::CustomizableConfig do
     subject(:call_method) { object.types = value }
 
     context "with valid elements provided" do
-      let(:value) { ActiveFields.config.fields.keys.sample(rand(1..ActiveFields.config.fields.keys.size)) }
+      let(:value) { ActiveFields.config.type_names.sample(rand(1..ActiveFields.config.type_names.size)) }
 
       it "sets types" do
         call_method
@@ -17,7 +17,7 @@ RSpec.describe ActiveFields::CustomizableConfig do
     end
 
     context "with invalid elements provided" do
-      let(:value) { [ActiveFields.config.fields.keys.sample, :invalid] }
+      let(:value) { [ActiveFields.config.type_names.sample, :invalid] }
 
       it "raises an error" do
         expect do
@@ -31,7 +31,7 @@ RSpec.describe ActiveFields::CustomizableConfig do
     subject(:call_method) { object.types_class_names }
 
     before do
-      object.types = ActiveFields.config.fields.keys.sample(rand(1..ActiveFields.config.fields.keys.size))
+      object.types = ActiveFields.config.type_names.sample(rand(1..ActiveFields.config.type_names.size))
     end
 
     it "returns class names for configured types" do

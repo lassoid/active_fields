@@ -68,50 +68,14 @@ such as booleans, strings, numbers, arrays, etc.
 
    Generally, you should:
     - Implement a controller and UI for managing _Active Fields_.
-    - Add inputs for _Active Values_ in _Customizable_ forms.
-    - Permit _Active Values_ parameters in _Customizable_ controllers.
-
-        Use the helper method `active_fields_permitted_attributes` to pass necessary filters to the `permit` method,
-        allowing all _Active Values_ for a given _Customizable_ to be correctly permitted.
-        This helper is available by default in _controllers_.
-        If you need to use it in other places (e.g., in _policies_), simply include `ActiveFields::Helper` wherever it's needed.
-
-        ```ruby
-        # In a controller
-        class AuthorsController
-          # ...
-      
-          def author_params
-            params.require(:author).permit(
-              :name,
-              :group_id,
-              active_values_attributes: active_fields_permitted_attributes(@author),
-            )
-          end
-        end
-      
-        # In a policy
-        class AuthorPolicy < ApplicationPolicy
-          include ActiveFields::Helper
-      
-          # ...
-
-          def permitted_attributes
-            [
-              :name,
-              :group_id,
-              active_values_attributes: active_fields_permitted_attributes(record),
-            ]
-          end
-        end
-        ```
+    - Add inputs for _Active Values_ in _Customizable_ forms and permit their params in the controller.
 
         **Note:** By default, Rails form fields insert an empty string into array (multiple) parameters.
         You’ll need to remove these empty strings manually. 
-        Here’s [one possible solution](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/authors_controller.rb#L47) 
+        Here’s [one possible solution](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/authors_controller.rb#L58) 
         for handling this case.
 
-   You can find a detailed [example](https://github.com/lassoid/active_fields/tree/main/spec/dummy) 
+   You can find a detailed [example](https://github.com/lassoid/active_fields/blob/main/spec/dummy) 
    of how to implement this in a full-stack Rails application.
    Feel free to explore the source code and run it locally:
 
@@ -219,6 +183,7 @@ classDiagram
 - `name`(`string`)
 - `type`(`string`)
 - `customizable_type`(`string`)
+- `default_value` (`json`)
 
 ### Field Types Summary
 
@@ -437,7 +402,7 @@ For an example, refer to the [locales file](https://github.com/lassoid/active_fi
 
    However, you can give it a try! :)
 
-2. Updating _Active Fields_ options may be unsafe.
+2. Updating some _Active Fields_ options may be unsafe.
 
    This could cause existing _Active Values_ to become invalid,
    leading to the associated _Customizables_ also becoming invalid,
@@ -457,10 +422,11 @@ active_field.active_values # `has_many` association with Active Values associate
 active_field.type # Class name of this Active Field (utilizing STI)
 active_field.customizable_type # Name of the Customizable model this Active Field is registered to
 active_field.name # Identifier of this Active Field, it should be unique in scope of customizable_type
-active_field.default_value # Default value for all Active Values associated with this Active Field
+active_field.default_value_meta # JSON column declaring the default value. Consider using `default_value` instead
 active_field.options # A hash (json) containing type-specific attributes for this Active Field
 
 # Methods:
+active_field.default_value # Default value for all Active Values associated with this Active Field
 active_field.array? # Returns whether the Active Field type is an array
 active_field.value_validator_class # Class used for values validation
 active_field.value_validator # Validator object that performs values validation
@@ -483,7 +449,10 @@ active_value.active_field # `belongs_to` association with the associated Active 
 active_value.customizable # `belongs_to` association with the associated Customizable
 
 # Attributes:
-active_value.value # The stored value for this Active Value
+active_value.value_meta # JSON column declaring the value. Consider using `value` instead
+
+# Methods:
+active_value.value # The value of this Active Value
 ```
 
 ### Customizable API
@@ -496,7 +465,20 @@ customizable.active_values # `has_many` association with Active Values linked to
 
 # Methods:
 customizable.active_fields # Collection of Active Fields registered for this record
-customizable.active_values_attributes = { "boolean_field_name" => true } # Setter to create or update Active Values upon saving the Customizable
+
+# Create, update or destroy Active Values.
+# Powered by Rails `accepts_nested_attributes_for`.
+# More info: https://edgeapi.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
+customizable.active_values_attributes = [
+  { active_field_id: 1, value: [1, 2] }, # create
+  { id: 2, value: "2024-07-16" }, # update
+  { id: 3, _destroy: true }, # destroy
+]
+
+# Build an Active Value, if it doesn't exist, with the default value for each Active Field.
+# This method is useful with `fields_for`, allowing you to pass the collection as an argument to render new Active Values:
+# `form.fields_for :active_values, customizable.active_values`.
+customizable.initialize_active_values
 ```
 
 ### Global Config
@@ -510,6 +492,8 @@ ActiveFields.config.value_class # Active Values class
 ActiveFields.config.value_class_name # Name of the Active Values class
 ActiveFields.config.field_base_class_changed? # Check if the Active Fields base class has changed
 ActiveFields.config.value_class_changed? # Check if the Active Values class has changed
+ActiveFields.config.type_names # Registered Active Fields type names
+ActiveFields.config.type_class_names # Registered Active Fields class names
 ActiveFields.config.register_field(:ip, "IpField") # Register a custom Active Field type
 ```
 
@@ -521,16 +505,6 @@ customizable_model.active_fields_config # Access the Customizable's configuratio
 customizable_model.active_fields_config.customizable_model # The Customizable model itself
 customizable_model.active_fields_config.types # Allowed Active Field types (e.g., `[:boolean]`)
 customizable_model.active_fields_config.types_class_names # Allowed Active Field class names (e.g., `[ActiveFields::Field::Boolean]`)
-```
-
-### Helper
-
-```ruby
-include ActiveFields::Helper
-
-customizable = Author.take
-active_fields_permitted_attributes(customizable) # Filters for the `permit` method to allow all Active Values attributes
-#=> [:birthdate, { interested_products: [] }]
 ```
 
 ## Development

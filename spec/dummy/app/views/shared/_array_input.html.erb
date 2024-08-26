@@ -1,17 +1,24 @@
 <div class="form-input">
-  <%= form.label name %>
+  <%= form.label name, label_text %>
+
   <div data-controller="array-input" data-array-input-template-input-group-class="d-none">
     <div data-array-input-target="templateInputGroup" class="form-array-input-group">
       <%= form.public_send(field_method, name, { multiple: true, value: "", **field_opts }) %>
-      <%= button_tag "Remove", type: "button", data: { action: "click->array-input#removeField" } %>
+      <% unless field_opts[:disabled] %>
+        <%= button_tag "Remove", type: "button", data: { action: "click->array-input#removeField" } %>
+      <% end %>
     </div>
     <% Array(value).each do |value_element| %>
       <div class="form-array-input-group">
         <%= form.public_send(field_method, name, { multiple: true, value: value_element || "", **field_opts }) %>
-        <%= button_tag "Remove", type: "button", data: { action: "click->array-input#removeField" } %>
+        <% unless field_opts[:disabled] %>
+          <%= button_tag "Remove", type: "button", data: { action: "click->array-input#removeField" } %>
+        <% end %>
       </div>
     <% end %>
-    <%= button_tag "Add more", type: "button", data: { action: "click->array-input#addField" } %>
+    <% unless field_opts[:disabled] %>
+      <%= button_tag "Add more", type: "button", data: { action: "click->array-input#addField" } %>
+    <% end %>
   </div>
 </div>
 

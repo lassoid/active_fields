@@ -80,7 +80,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
       end
     end
 
@@ -90,7 +90,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_s)
       end
     end
 
@@ -110,7 +110,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
       end
     end
 
@@ -120,7 +120,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
       end
     end
 

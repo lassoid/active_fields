@@ -4,7 +4,8 @@ module ActiveFields
   module Casters
     class DecimalCaster < BaseCaster
       def serialize(value)
-        cast(value)
+        # Decimals should be saved as strings to avoid potential precision loss when stored in JSON
+        cast(value)&.to_s
       end
 
       def deserialize(value)

@@ -11,10 +11,6 @@ RSpec.describe ActiveFields::Field::Text do
   include_examples "store_attribute_integer", :min_length, :options, described_class
   include_examples "store_attribute_integer", :max_length, :options, described_class
 
-  it "has a valid factory" do
-    expect(build(factory)).to be_valid
-  end
-
   context "validations" do
     describe "#min_length" do
       let(:record) { build(factory, min_length: min_length) }

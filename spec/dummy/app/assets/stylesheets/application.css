@@ -11,8 +11,32 @@
     display: none;
 }
 
+.links {
+    margin-bottom: 1em;
+}
+
+.table {
+    margin-bottom: 1em;
+    border-collapse: collapse;
+    border: 2px solid black;
+}
+
+.table td {
+    border: 1px solid black;
+    padding: 0.5em;
+}
+
+.table th {
+    border: 2px solid black;
+    padding: 0.5em;
+}
+
+.table tr:hover {
+    background-color: lightgray;
+}
+
 .form-input {
-    margin-bottom: 1.5em;
+    margin-bottom: 1em;
 }
 
 .form-array-input-group {
