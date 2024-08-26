@@ -1,0 +1,14 @@
+<% if active_value.new_record? %>
+  <%= form.hidden_field :active_field_id %>
+<% end %>
+
+<%=
+  render_array_input(
+    form: form,
+    name: :value,
+    value: active_value.value,
+    label_text: active_field.name,
+    field_method: :datetime_field,
+    field_opts: { min: active_field.min, max: active_field.max },
+  )
+%>

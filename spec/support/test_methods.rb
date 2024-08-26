@@ -57,6 +57,8 @@ module TestMethods
       "ActiveFields::Field::Boolean" => :boolean_active_field,
       "ActiveFields::Field::Date" => :date_active_field,
       "ActiveFields::Field::DateArray" => :date_array_active_field,
+      "ActiveFields::Field::DateTime" => :datetime_active_field,
+      "ActiveFields::Field::DateTimeArray" => :datetime_array_active_field,
       "ActiveFields::Field::Decimal" => :decimal_active_field,
       "ActiveFields::Field::DecimalArray" => :decimal_array_active_field,
       "ActiveFields::Field::Enum" => :enum_active_field,
@@ -75,27 +77,65 @@ module TestMethods
 
   def active_value_for(active_field)
     case active_field
-    when ActiveFields::Field::Text
-      min_length = [active_field.min_length, 0].compact.max
-      max_length =
-        if active_field.max_length && active_field.max_length >= min_length
-          active_field.max_length
-        else
-          min_length + rand(0..10)
-        end
+    when ActiveFields::Field::Boolean
+      allowed = [true]
+      allowed << false unless active_field.required?
+      allowed << nil if active_field.nullable?
 
-      allowed = [random_string(rand(min_length..max_length))]
+      allowed.sample
+    when ActiveFields::Field::Date
+      min = active_field.min || ((active_field.max || Date.current) - rand(0..10))
+      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10)
+
+      allowed = [rand(min..max)]
       allowed << nil unless active_field.required?
 
       allowed.sample
-    when ActiveFields::Field::TextArray
-      min_length = [active_field.min_length, 0].compact.max
-      max_length =
-        if active_field.max_length && active_field.max_length >= min_length
-          active_field.max_length
+    when ActiveFields::Field::DateArray
+      min = active_field.min || ((active_field.max || Date.current) - rand(0..10))
+      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10)
+
+      min_size = [active_field.min_size, 0].compact.max
+      max_size =
+        if active_field.max_size && active_field.max_size >= min_size
+          active_field.max_size
         else
-          min_length + rand(0..10)
+          min_size + rand(0..10)
         end
+
+      Array.new(rand(min_size..max_size)) { rand(min..max) }
+    when ActiveFields::Field::DateTime
+      min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
+      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
+
+      allowed = [rand(min..max)]
+      allowed << nil unless active_field.required?
+
+      allowed.sample
+    when ActiveFields::Field::DateTimeArray
+      min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
+      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
+
+      min_size = [active_field.min_size, 0].compact.max
+      max_size =
+        if active_field.max_size && active_field.max_size >= min_size
+          active_field.max_size
+        else
+          min_size + rand(0..10)
+        end
+
+      Array.new(rand(min_size..max_size)) { rand(min..max) }
+    when ActiveFields::Field::Decimal
+      min = active_field.min || ((active_field.max || 0) - rand(0.0..10.0))
+      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0.0..10.0)
+
+      allowed = [rand(min..max).then { active_field.precision ? _1.truncate(active_field.precision) : _1 }]
+      allowed << nil unless active_field.required?
+
+      allowed.sample
+    when ActiveFields::Field::DecimalArray
+      min = active_field.min || ((active_field.max || 0) - rand(0.0..10.0))
+      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0.0..10.0)
 
       min_size = [active_field.min_size, 0].compact.max
       max_size =
@@ -106,7 +146,7 @@ module TestMethods
         end
 
       Array.new(rand(min_size..max_size)) do
-        random_string(rand(min_length..max_length))
+        rand(min..max).then { active_field.precision ? _1.truncate(active_field.precision) : _1 }
       end
     when ActiveFields::Field::Enum
       allowed = active_field.allowed_values.dup || []
@@ -144,17 +184,27 @@ module TestMethods
         end
 
       Array.new(rand(min_size..max_size)) { rand(min..max) }
-    when ActiveFields::Field::Decimal
-      min = active_field.min || ((active_field.max || 0) - rand(0.0..10.0))
-      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0.0..10.0)
+    when ActiveFields::Field::Text
+      min_length = [active_field.min_length, 0].compact.max
+      max_length =
+        if active_field.max_length && active_field.max_length >= min_length
+          active_field.max_length
+        else
+          min_length + rand(0..10)
+        end
 
-      allowed = [rand(min..max).then { active_field.precision ? _1.truncate(active_field.precision) : _1 }]
+      allowed = [random_string(rand(min_length..max_length))]
       allowed << nil unless active_field.required?
 
       allowed.sample
-    when ActiveFields::Field::DecimalArray
-      min = active_field.min || ((active_field.max || 0) - rand(0.0..10.0))
-      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0.0..10.0)
+    when ActiveFields::Field::TextArray
+      min_length = [active_field.min_length, 0].compact.max
+      max_length =
+        if active_field.max_length && active_field.max_length >= min_length
+          active_field.max_length
+        else
+          min_length + rand(0..10)
+        end
 
       min_size = [active_field.min_size, 0].compact.max
       max_size =
@@ -165,35 +215,8 @@ module TestMethods
         end
 
       Array.new(rand(min_size..max_size)) do
-        rand(min..max).then { active_field.precision ? _1.truncate(active_field.precision) : _1 }
+        random_string(rand(min_length..max_length))
       end
-    when ActiveFields::Field::Date
-      min = active_field.min || ((active_field.max || Date.current) - rand(0..10))
-      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10)
-
-      allowed = [rand(min..max)]
-      allowed << nil unless active_field.required?
-
-      allowed.sample
-    when ActiveFields::Field::DateArray
-      min = active_field.min || ((active_field.max || Date.current) - rand(0..10))
-      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10)
-
-      min_size = [active_field.min_size, 0].compact.max
-      max_size =
-        if active_field.max_size && active_field.max_size >= min_size
-          active_field.max_size
-        else
-          min_size + rand(0..10)
-        end
-
-      Array.new(rand(min_size..max_size)) { rand(min..max) }
-    when ActiveFields::Field::Boolean
-      allowed = [true]
-      allowed << false unless active_field.required?
-      allowed << nil if active_field.nullable?
-
-      allowed.sample
     when IpField
       allowed = [Array.new(4) { rand(256) }.join(".")]
       allowed << nil unless active_field.required?
