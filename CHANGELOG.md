@@ -1,10 +1,12 @@
 ## [Unreleased]
 - Precision configuration for decimal fields
 - Added array field types mix-in `ActiveFields::FieldArrayConcern`
-- Added helper mix-in `ActiveFields::Helper`
 - Fixed enum types behavior for blank values
 - Dummy app
 - Enhanced values storage format
+- Do not implicitly create _Active Values_ when saving an _Active Field_ or _Customizable_
+- Utilize _ActiveRecord_'s nested attributes feature in _Customizable_ models to manage associated _Active Values_
+- Serialize decimals as strings as _ActiveRecord_ does for JSON columns
 
 ## [0.2.0] - 2024-06-13
 
