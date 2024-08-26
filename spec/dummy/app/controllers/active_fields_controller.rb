@@ -60,6 +60,6 @@ class ActiveFieldsController < ApplicationController
   end
 
   def model_class
-    (ActiveFields.config.fields[params[:type]&.to_sym] || ActiveFields.config.fields.values.first).constantize
+    (ActiveFields.config.fields[params[:type]&.to_sym] || ActiveFields.config.type_class_names.first).constantize
   end
 end

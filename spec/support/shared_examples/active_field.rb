@@ -103,7 +103,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
       end
 
       context "when customizable_model does not allow this type" do
-        let(:allowed_types) { ActiveFields.config.fields.keys - [record.type_name] }
+        let(:allowed_types) { ActiveFields.config.type_names - [record.type_name] }
 
         before do
           allow(record.customizable_model).to receive(:active_fields_config).and_return(config)

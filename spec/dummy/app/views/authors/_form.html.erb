@@ -8,7 +8,7 @@
 
   <div class="form-input">
     <%= f.label :group_id %>
-    <%= f.collection_select :group_id, Group.order(:id), :id, :name, prompt: true %>
+    <%= f.collection_select :group_id, Group.order(:id), :id, :name, include_blank: true %>
   </div>
 
   <%= f.fields_for :active_values, author.active_values.sort_by(&:active_field_id) do |active_fields_form| %>

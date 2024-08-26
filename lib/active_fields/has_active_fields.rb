@@ -8,7 +8,7 @@ module ActiveFields
     class_methods do
       attr_reader :active_fields_config
 
-      def has_active_fields(types: ActiveFields.config.fields.keys)
+      def has_active_fields(types: ActiveFields.config.type_names)
         include CustomizableConcern
 
         @active_fields_config = CustomizableConfig.new(self)

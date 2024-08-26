@@ -1,35 +1,36 @@
 <%= form_with(model: active_field, scope: :active_field, url: active_field.persisted? ? active_field_path(active_field) : active_fields_path) do |f| %>
   <%= render partial: "shared/form_errors", locals: { record: active_field } %>
 
-  <% if active_field.new_record? %>
-    <%= f.hidden_field :type, { name: "type", value: active_field.type_name } %>
-  <% end %>
+  <div class="form-input">
+    <%= f.label :type %>
+    <%=
+      f.text_field :type,
+        name: "type",
+        value: active_field.type_name,
+        disabled: active_field.persisted?,
+        readonly: active_field.new_record?
+    %>
+  </div>
 
-  <% if active_field.new_record? %>
-    <div class="form-input">
-      <%= f.label :customizable_type %>
-      <%= f.select :customizable_type, %w[Author] %>
-    </div>
-  <% end %>
+  <div class="form-input">
+    <%= f.label :customizable_type %>
+    <%= f.select :customizable_type, %w[Author], {}, { disabled: active_field.persisted? } %>
+  </div>
 
   <div class="form-input">
     <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
 
-  <% if active_field.new_record? %>
-    <div class="form-input">
-      <%= f.label :min_length %>
-      <%= f.number_field :min_length %>
-    </div>
-  <% end %>
+  <div class="form-input">
+    <%= f.label :min_length %>
+    <%= f.number_field :min_length, disabled: active_field.persisted? %>
+  </div>
 
-  <% if active_field.new_record? %>
-    <div class="form-input">
-      <%= f.label :max_length %>
-      <%= f.number_field :max_length %>
-    </div>
-  <% end %>
+  <div class="form-input">
+    <%= f.label :max_length %>
+    <%= f.number_field :max_length, disabled: active_field.persisted? %>
+  </div>
 
   <div class="form-input">
     <%= f.label :default_value %>

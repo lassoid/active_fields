@@ -7,7 +7,8 @@ module ActiveFields
 
     include Singleton
 
-    attr_accessor :field_base_class_name, :value_class_name, :fields
+    attr_accessor :field_base_class_name, :value_class_name
+    attr_reader :fields
 
     def initialize
       @field_base_class_name = DEFAULT_FIELD_BASE_CLASS_NAME
@@ -45,6 +46,14 @@ module ActiveFields
 
     def register_field(type_name, class_name)
       @fields[type_name.to_sym] = class_name
+    end
+
+    def type_names
+      fields.keys
+    end
+
+    def type_class_names
+      fields.values
     end
   end
 end
