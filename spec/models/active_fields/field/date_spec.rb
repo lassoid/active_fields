@@ -53,7 +53,7 @@ RSpec.describe ActiveFields::Field::Date do
         end
 
         context "when max is less than min" do
-          let(:max) { min - 1 }
+          let(:max) { min - 1.day }
 
           it "is invalid" do
             record.valid?
@@ -73,7 +73,7 @@ RSpec.describe ActiveFields::Field::Date do
         end
 
         context "when max is greater than min" do
-          let(:max) { min + 1 }
+          let(:max) { min + 1.day }
 
           it "is valid" do
             record.valid?

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe ActiveFields::Field::DateArray do
-  factory = :date_array_active_field
+RSpec.describe ActiveFields::Field::DateTimeArray do
+  factory = :datetime_array_active_field
 
   it_behaves_like "active_field",
     factory: factory,
@@ -9,8 +9,8 @@ RSpec.describe ActiveFields::Field::DateArray do
 
   include_examples "store_attribute_integer", :min_size, :options, described_class
   include_examples "store_attribute_integer", :max_size, :options, described_class
-  include_examples "store_attribute_date", :min, :options, described_class
-  include_examples "store_attribute_date", :max, :options, described_class
+  include_examples "store_attribute_datetime", :min, :options, described_class
+  include_examples "store_attribute_datetime", :max, :options, described_class
 
   context "validations" do
     include_examples "field_sizes_validate", factory: factory
@@ -32,7 +32,7 @@ RSpec.describe ActiveFields::Field::DateArray do
         end
 
         context "with max" do
-          let(:max) { random_date }
+          let(:max) { random_datetime }
 
           it "is valid" do
             record.valid?
@@ -43,7 +43,7 @@ RSpec.describe ActiveFields::Field::DateArray do
       end
 
       context "with min" do
-        let(:min) { random_date }
+        let(:min) { random_datetime }
 
         context "without max" do
           let(:max) { nil }
@@ -56,7 +56,7 @@ RSpec.describe ActiveFields::Field::DateArray do
         end
 
         context "when max is less than min" do
-          let(:max) { min - 1 }
+          let(:max) { min - 1.second }
 
           it "is invalid" do
             record.valid?
@@ -76,7 +76,7 @@ RSpec.describe ActiveFields::Field::DateArray do
         end
 
         context "when max is greater than min" do
-          let(:max) { min + 1 }
+          let(:max) { min + 1.second }
 
           it "is valid" do
             record.valid?

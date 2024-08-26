@@ -30,9 +30,9 @@ RSpec.describe ActiveFields::Validators::DateValidator do
       let(:active_field) { build(factory, :with_min) }
 
       include_examples "field_value_validate", -> { active_field.min }, "a min date"
-      include_examples "field_value_validate", -> { active_field.min + 1 }, "a date greater than min"
+      include_examples "field_value_validate", -> { active_field.min + 1.day }, "a date greater than min"
       include_examples "field_value_validate",
-        -> { active_field.min - 1 },
+        -> { active_field.min - 1.day },
         "a date less than min",
         -> { [[:greater_than_or_equal_to, count: I18n.l(active_field.min)]] }
     end
@@ -41,9 +41,9 @@ RSpec.describe ActiveFields::Validators::DateValidator do
       let(:active_field) { build(factory, :with_max) }
 
       include_examples "field_value_validate", -> { active_field.max }, "a max date"
-      include_examples "field_value_validate", -> { active_field.max - 1 }, "a date less than max"
+      include_examples "field_value_validate", -> { active_field.max - 1.day }, "a date less than max"
       include_examples "field_value_validate",
-        -> { active_field.max + 1 },
+        -> { active_field.max + 1.day },
         "a date greater than max",
         -> { [[:less_than_or_equal_to, count: I18n.l(active_field.max)]] }
     end
@@ -57,11 +57,11 @@ RSpec.describe ActiveFields::Validators::DateValidator do
         -> { rand(active_field.min..active_field.max) },
         "a date between min and max"
       include_examples "field_value_validate",
-        -> { active_field.min - 1 },
+        -> { active_field.min - 1.day },
         "a date less than min",
         -> { [[:greater_than_or_equal_to, count: I18n.l(active_field.min)]] }
       include_examples "field_value_validate",
-        -> { active_field.max + 1 },
+        -> { active_field.max + 1.day },
         "a date greater than max",
         -> { [[:less_than_or_equal_to, count: I18n.l(active_field.max)]] }
     end

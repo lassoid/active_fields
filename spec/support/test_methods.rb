@@ -29,7 +29,11 @@ module TestMethods
   end
 
   def random_date
-    Date.current + random_integer
+    Date.current + random_integer.days
+  end
+
+  def random_datetime
+    Time.current + random_integer.days
   end
 
   def dummy_models
@@ -84,16 +88,16 @@ module TestMethods
 
       allowed.sample
     when ActiveFields::Field::Date
-      min = active_field.min || ((active_field.max || Date.current) - rand(0..10))
-      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10)
+      min = active_field.min || ((active_field.max || Date.current) - rand(0..10).days)
+      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
 
       allowed = [rand(min..max)]
       allowed << nil unless active_field.required?
 
       allowed.sample
     when ActiveFields::Field::DateArray
-      min = active_field.min || ((active_field.max || Date.current) - rand(0..10))
-      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10)
+      min = active_field.min || ((active_field.max || Date.current) - rand(0..10).days)
+      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
 
       min_size = [active_field.min_size, 0].compact.max
       max_size =

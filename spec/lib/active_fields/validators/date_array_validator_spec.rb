@@ -89,10 +89,10 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
 
       include_examples "field_value_validate", -> { [] }, "an empty array"
       include_examples "field_value_validate",
-        -> { [active_field.min, active_field.min + 1] },
+        -> { [active_field.min, active_field.min + 1.day] },
         "an array of dates greater than or equal to min"
       include_examples "field_value_validate",
-        -> { [active_field.min, active_field.min - 1] },
+        -> { [active_field.min, active_field.min - 1.day] },
         "an array containing a date less than min",
         -> { [[:greater_than_or_equal_to, count: I18n.l(active_field.min)]] }
     end
@@ -102,10 +102,10 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
 
       include_examples "field_value_validate", -> { [] }, "an empty array"
       include_examples "field_value_validate",
-        -> { [active_field.max, active_field.max - 1] },
+        -> { [active_field.max, active_field.max - 1.day] },
         "an array of dates less than or equal to max"
       include_examples "field_value_validate",
-        -> { [active_field.max, active_field.max + 1] },
+        -> { [active_field.max, active_field.max + 1.day] },
         "an array containing a date greater than max",
         -> { [[:less_than_or_equal_to, count: I18n.l(active_field.max)]] }
     end
@@ -118,11 +118,11 @@ RSpec.describe ActiveFields::Validators::DateArrayValidator do
         -> { Array.new(2) { rand(active_field.min..active_field.max) } },
         "an array of dates between min and max"
       include_examples "field_value_validate",
-        -> { [active_field.min, active_field.min - 1] },
+        -> { [active_field.min, active_field.min - 1.day] },
         "an array containing a date less than min",
         -> { [[:greater_than_or_equal_to, count: I18n.l(active_field.min)]] }
       include_examples "field_value_validate",
-        -> { [active_field.max, active_field.max + 1] },
+        -> { [active_field.max, active_field.max + 1.day] },
         "an array containing a date greater than max",
         -> { [[:less_than_or_equal_to, count: I18n.l(active_field.max)]] }
     end

@@ -16,16 +16,16 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       it { is_expected.to be_nil }
     end
 
-    context "when internal value is a date" do
-      let(:internal_value) { random_date }
+    context "when internal value is a datetime" do
+      let(:internal_value) { random_datetime }
 
       it { is_expected.to eq(internal_value) }
     end
 
-    context "when internal value is a date string" do
-      let(:internal_value) { random_date.iso8601 }
+    context "when internal value is a datetime string" do
+      let(:internal_value) { random_datetime.iso8601 }
 
-      it { is_expected.to eq(Date.parse(internal_value)) }
+      it { is_expected.to eq(Time.zone.parse(internal_value)) }
     end
 
     context "when internal value is a number" do
@@ -35,7 +35,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
     end
 
     context "when internal value is an invalid string" do
-      let(:internal_value) { "not a date" }
+      let(:internal_value) { "not a datetime" }
 
       it { is_expected.to be_nil }
     end
@@ -62,20 +62,20 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       end
     end
 
-    context "when value is a date" do
-      let(:value) { random_date }
+    context "when value is a datetime" do
+      let(:value) { random_datetime }
 
-      it "sets date as string" do
+      it "sets datetime as string" do
         call_method
 
         expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.iso8601)
       end
     end
 
-    context "when value is a date string" do
-      let(:value) { random_date.iso8601 }
+    context "when value is a datetime string" do
+      let(:value) { random_datetime.iso8601 }
 
-      it "sets date as string" do
+      it "sets datetime as string" do
         call_method
 
         expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value)
@@ -93,7 +93,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
     end
 
     context "when value is an invalid string" do
-      let(:value) { "not a date" }
+      let(:value) { "not a datetime" }
 
       it "sets nil" do
         call_method
