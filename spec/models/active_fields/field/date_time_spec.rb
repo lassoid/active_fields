@@ -5,11 +5,12 @@ RSpec.describe ActiveFields::Field::DateTime do
 
   it_behaves_like "active_field",
     factory: factory,
-    available_traits: %i[required with_min with_max]
+    available_traits: %i[required with_min with_max with_precision]
 
   include_examples "store_attribute_boolean", :required, :options, described_class
   include_examples "store_attribute_datetime", :min, :options, described_class
   include_examples "store_attribute_datetime", :max, :options, described_class
+  include_examples "store_attribute_integer", :precision, :options, described_class
 
   context "validations" do
     describe "#max" do
@@ -80,6 +81,50 @@ RSpec.describe ActiveFields::Field::DateTime do
 
             expect(record.errors.where(:max)).to be_empty
           end
+        end
+      end
+    end
+
+    describe "#precision" do
+      let(:record) { build(factory, precision: precision) }
+
+      context "without precision" do
+        let(:precision) { nil }
+
+        it "is valid" do
+          record.valid?
+
+          expect(record.errors.where(:precision)).to be_empty
+        end
+      end
+
+      context "when precision is negative" do
+        let(:precision) { rand(-10..-1) }
+
+        it "is invalid" do
+          record.valid?
+
+          expect(record.errors.where(:precision, :greater_than_or_equal_to, count: 0)).not_to be_empty
+        end
+      end
+
+      context "when precision is zero" do
+        let(:precision) { 0 }
+
+        it "is valid" do
+          record.valid?
+
+          expect(record.errors.where(:precision)).to be_empty
+        end
+      end
+
+      context "when precision is positive" do
+        let(:precision) { rand(1..10) }
+
+        it "is valid" do
+          record.valid?
+
+          expect(record.errors.where(:precision)).to be_empty
         end
       end
     end

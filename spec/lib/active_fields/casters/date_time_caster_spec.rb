@@ -2,6 +2,9 @@
 
 RSpec.describe ActiveFields::Casters::DateTimeCaster do
   factory = :datetime_active_field
+  max_precision = 9
+  default_precision = 6
+
   let(:object) { described_class.new(active_field) }
   let(:active_field) { build(factory) }
 
@@ -17,13 +20,19 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
     context "when datetime" do
       let(:value) { random_datetime }
 
-      it { is_expected.to eq(value.iso8601) }
+      it { is_expected.to eq(value.iso8601(default_precision)) }
     end
 
     context "when datetime string" do
       let(:value) { random_datetime.iso8601 }
 
-      it { is_expected.to eq(value) }
+      it { is_expected.to eq(Time.zone.parse(value).iso8601(default_precision)) }
+    end
+
+    context "when datetime string with fractional seconds digits" do
+      let(:value) { random_datetime.iso8601(max_precision) }
+
+      it { is_expected.to eq(Time.zone.parse(value).iso8601(default_precision)) }
     end
 
     context "when number" do
@@ -42,6 +51,30 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
       let(:value) { "" }
 
       it { is_expected.to be_nil }
+    end
+
+    context "with precision" do
+      before do
+        active_field.precision = rand(0..max_precision)
+      end
+
+      context "when datetime" do
+        let(:value) { random_datetime }
+
+        it { is_expected.to eq(value.iso8601(active_field.precision)) }
+      end
+
+      context "when datetime string" do
+        let(:value) { random_datetime.iso8601 }
+
+        it { is_expected.to eq(Time.zone.parse(value).iso8601(active_field.precision)) }
+      end
+
+      context "when datetime string with fractional seconds digits" do
+        let(:value) { random_datetime.iso8601(max_precision) }
+
+        it { is_expected.to eq(Time.zone.parse(value).iso8601(active_field.precision)) }
+      end
     end
   end
 
@@ -57,13 +90,19 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
     context "when datetime" do
       let(:value) { random_datetime }
 
-      it { is_expected.to eq(value) }
+      it { is_expected.to eq(apply_datetime_precision(value, default_precision)) }
     end
 
     context "when datetime string" do
       let(:value) { random_datetime.iso8601 }
 
-      it { is_expected.to eq(Time.zone.parse(value)) }
+      it { is_expected.to eq(Time.zone.parse(value)) } # precision is skipped
+    end
+
+    context "when datetime string with fractional seconds digits" do
+      let(:value) { random_datetime.iso8601(max_precision) }
+
+      it { is_expected.to eq(Time.zone.parse(value)) } # precision is skipped
     end
 
     context "when number" do
@@ -82,6 +121,30 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
       let(:value) { "" }
 
       it { is_expected.to be_nil }
+    end
+
+    context "with precision" do
+      before do
+        active_field.precision = rand(0..max_precision)
+      end
+
+      context "when datetime" do
+        let(:value) { random_datetime }
+
+        it { is_expected.to eq(apply_datetime_precision(value, active_field.precision)) }
+      end
+
+      context "when datetime string" do
+        let(:value) { random_datetime.iso8601 }
+
+        it { is_expected.to eq(Time.zone.parse(value)) } # precision is skipped
+      end
+
+      context "when datetime string with fractional seconds digits" do
+        let(:value) { random_datetime.iso8601(max_precision) }
+
+        it { is_expected.to eq(Time.zone.parse(value)) } # precision is skipped
+      end
     end
   end
 end

@@ -36,6 +36,20 @@ module TestMethods
     Time.current + random_integer.days
   end
 
+  def apply_datetime_precision(value, precision)
+    return value unless precision && value.respond_to?(:nsec)
+
+    number_of_insignificant_digits = 9 - precision
+    round_power = 10**number_of_insignificant_digits
+    rounded_off_nsec = value.nsec % round_power
+
+    if rounded_off_nsec > 0
+      value.change(nsec: value.nsec - rounded_off_nsec)
+    else
+      value
+    end
+  end
+
   def dummy_models
     [Author, Post, Group]
   end

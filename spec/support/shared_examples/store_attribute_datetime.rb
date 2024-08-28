@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name, klass|
+  max_precision = 9
+  default_precision = 6
+
   describe "##{attr_name}" do
     subject(:call_method) { record.public_send(attr_name) }
 
@@ -19,13 +22,19 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
     context "when internal value is a datetime" do
       let(:internal_value) { random_datetime }
 
-      it { is_expected.to eq(internal_value) }
+      it { is_expected.to eq(apply_datetime_precision(internal_value, default_precision)) }
     end
 
     context "when internal value is a datetime string" do
       let(:internal_value) { random_datetime.iso8601 }
 
-      it { is_expected.to eq(Time.zone.parse(internal_value)) }
+      it { is_expected.to eq(Time.zone.parse(internal_value)) } # precision is skipped
+    end
+
+    context "when internal value is a datetime string with fractional seconds digits" do
+      let(:internal_value) { random_datetime.iso8601(max_precision) }
+
+      it { is_expected.to eq(Time.zone.parse(internal_value)) } # precision is skipped
     end
 
     context "when internal value is a number" do
@@ -68,7 +77,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       it "sets datetime as string" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.iso8601)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.iso8601(default_precision))
       end
     end
 
@@ -78,7 +87,19 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       it "sets datetime as string" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value)
+        expect(record.public_send(store_attr_name)[attr_name.to_s])
+          .to eq(Time.zone.parse(value).iso8601(default_precision))
+      end
+    end
+
+    context "when value is a datetime string with fractional seconds digits" do
+      let(:value) { random_datetime.iso8601(max_precision) }
+
+      it "sets datetime as string" do
+        call_method
+
+        expect(record.public_send(store_attr_name)[attr_name.to_s])
+          .to eq(Time.zone.parse(value).iso8601(default_precision))
       end
     end
 

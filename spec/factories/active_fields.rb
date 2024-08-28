@@ -75,6 +75,10 @@ FactoryBot.define do
     trait :with_max do
       max { Time.current + rand(0..10).days }
     end
+
+    trait :with_precision do
+      precision { rand(0..9) } # from seconds to nanoseconds
+    end
   end
 
   factory :datetime_array_active_field, parent: base_factory, class: "ActiveFields::Field::DateTimeArray" do
@@ -94,6 +98,10 @@ FactoryBot.define do
 
     trait :with_max do
       max { Time.current + rand(0..10).days }
+    end
+
+    trait :with_precision do
+      precision { rand(0..9) } # from seconds to nanoseconds
     end
   end
 
