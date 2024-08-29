@@ -122,7 +122,8 @@ RSpec.describe ActiveFields::Field::Text do
           it "is invalid" do
             record.valid?
 
-            expect(record.errors.where(:max_length, :greater_than_or_equal_to, count: min_length)).not_to be_empty
+            errors = record.errors.where(:max_length, :greater_than_or_equal_to, count: record.min_length)
+            expect(errors).not_to be_empty
           end
         end
 

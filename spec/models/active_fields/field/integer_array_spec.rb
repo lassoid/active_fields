@@ -61,7 +61,7 @@ RSpec.describe ActiveFields::Field::IntegerArray do
           it "is invalid" do
             record.valid?
 
-            expect(record.errors.where(:max, :greater_than_or_equal_to, count: min)).not_to be_empty
+            expect(record.errors.where(:max, :greater_than_or_equal_to, count: record.min)).not_to be_empty
           end
         end
 

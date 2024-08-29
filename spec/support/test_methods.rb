@@ -125,14 +125,16 @@ module TestMethods
     when ActiveFields::Field::DateTime
       min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
+      precision = active_field.precision || 6
 
-      allowed = [rand(min..max)]
+      allowed = [apply_datetime_precision(rand(min..max), precision)]
       allowed << nil unless active_field.required?
 
       allowed.sample
     when ActiveFields::Field::DateTimeArray
       min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
+      precision = active_field.precision || 6
 
       min_size = [active_field.min_size, 0].compact.max
       max_size =
@@ -142,7 +144,7 @@ module TestMethods
           min_size + rand(0..10)
         end
 
-      Array.new(rand(min_size..max_size)) { rand(min..max) }
+      Array.new(rand(min_size..max_size)) { apply_datetime_precision(rand(min..max), precision) }
     when ActiveFields::Field::Decimal
       min = active_field.min || ((active_field.max || 0) - rand(0.0..10.0))
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0.0..10.0)

@@ -13,9 +13,10 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, validator_
 
     available_traits.map { [nil, _1] }.then { _1[0].product(*_1[1..-1]) }.each do |traits_combination|
       traits_combination = traits_combination.compact
-      let(:traits) { traits_combination }
 
       context "with traits: [#{traits_combination.join(", ")}]" do
+        let(:traits) { traits_combination }
+
         it { is_expected.to be_valid }
       end
     end
