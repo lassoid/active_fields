@@ -2,7 +2,7 @@
 
 RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
   factory = :datetime_array_active_field
-  max_precision = 9
+  max_precision = RUBY_VERSION >= "3.2" ? 9 : 6 # AR max precision is 6 for old Rubies
   default_precision = 6
 
   let(:object) { described_class.new(active_field) }

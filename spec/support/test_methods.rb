@@ -124,7 +124,7 @@ module TestMethods
       Array.new(rand(min_size..max_size)) { rand(min..max) }
     when ActiveFields::Field::DateTime
       min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
-      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
+      max = active_field.max && active_field.max >= min ? active_field.max : min + 1.second + rand(0..10).days
       precision = active_field.precision || 6
 
       allowed = [apply_datetime_precision(rand(min..max), precision)]
@@ -133,7 +133,7 @@ module TestMethods
       allowed.sample
     when ActiveFields::Field::DateTimeArray
       min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
-      max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
+      max = active_field.max && active_field.max >= min ? active_field.max : min + 1.second + rand(0..10).days
       precision = active_field.precision || 6
 
       min_size = [active_field.min_size, 0].compact.max

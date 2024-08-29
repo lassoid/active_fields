@@ -93,11 +93,11 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { Time.current - rand(0..10).days }
+      min { 1.second.ago - rand(0..10).days }
     end
 
     trait :with_max do
-      max { Time.current + rand(0..10).days }
+      max { 1.second.from_now + rand(0..10).days }
     end
 
     trait :with_precision do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name, klass|
-  max_precision = 9
+  max_precision = RUBY_VERSION >= "3.2" ? 9 : 6 # AR max precision is 6 for old Rubies
   default_precision = 6
 
   describe "##{attr_name}" do
