@@ -35,6 +35,18 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       it { is_expected.to eq(Array.new(value.size, nil)) }
     end
 
+    context "when array of dates" do
+      let(:value) { [random_date, random_date] }
+
+      it { is_expected.to eq(value.map { _1.beginning_of_day.iso8601(default_precision) }) }
+    end
+
+    context "when array of date strings" do
+      let(:value) { [random_date.iso8601, random_date.iso8601] }
+
+      it { is_expected.to eq(value.map { Date.parse(_1).beginning_of_day.iso8601(default_precision) }) }
+    end
+
     context "when array of datetimes" do
       let(:value) { [random_datetime, random_datetime] }
 
@@ -56,6 +68,18 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
     context "with precision" do
       before do
         active_field.precision = rand(0..max_precision)
+      end
+
+      context "when array of dates" do
+        let(:value) { [random_date, random_date] }
+
+        it { is_expected.to eq(value.map { _1.beginning_of_day.iso8601(active_field.precision) }) }
+      end
+
+      context "when array of date strings" do
+        let(:value) { [random_date.iso8601, random_date.iso8601] }
+
+        it { is_expected.to eq(value.map { Date.parse(_1).beginning_of_day.iso8601(active_field.precision) }) }
       end
 
       context "when array of datetimes" do
@@ -99,6 +123,18 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       it { is_expected.to eq(Array.new(value.size, nil)) }
     end
 
+    context "when array of dates" do
+      let(:value) { [random_date, random_date] }
+
+      it { is_expected.to eq(value.map { apply_datetime_precision(_1.beginning_of_day, default_precision) }) }
+    end
+
+    context "when array of date strings" do
+      let(:value) { [random_date.iso8601, random_date.iso8601] }
+
+      it { is_expected.to eq(value.map { Date.parse(_1).beginning_of_day }) } # precision is skipped
+    end
+
     context "when array of datetimes" do
       let(:value) { [random_datetime, random_datetime] }
 
@@ -120,6 +156,18 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
     context "with precision" do
       before do
         active_field.precision = rand(0..max_precision)
+      end
+
+      context "when array of dates" do
+        let(:value) { [random_date, random_date] }
+
+        it { is_expected.to eq(value.map { apply_datetime_precision(_1.beginning_of_day, active_field.precision) }) }
+      end
+
+      context "when array of date strings" do
+        let(:value) { [random_date.iso8601, random_date.iso8601] }
+
+        it { is_expected.to eq(value.map { Date.parse(_1).beginning_of_day }) } # precision is skipped
       end
 
       context "when array of datetimes" do

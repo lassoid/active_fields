@@ -17,6 +17,18 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
       it { is_expected.to be_nil }
     end
 
+    context "when date" do
+      let(:value) { random_date }
+
+      it { is_expected.to eq(value.beginning_of_day.iso8601(default_precision)) }
+    end
+
+    context "when date string" do
+      let(:value) { random_date.iso8601 }
+
+      it { is_expected.to eq(Date.parse(value).beginning_of_day.iso8601(default_precision)) }
+    end
+
     context "when datetime" do
       let(:value) { random_datetime }
 
@@ -58,6 +70,18 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
         active_field.precision = rand(0..max_precision)
       end
 
+      context "when date" do
+        let(:value) { random_date }
+
+        it { is_expected.to eq(value.beginning_of_day.iso8601(active_field.precision)) }
+      end
+
+      context "when date string" do
+        let(:value) { random_date.iso8601 }
+
+        it { is_expected.to eq(Date.parse(value).beginning_of_day.iso8601(active_field.precision)) }
+      end
+
       context "when datetime" do
         let(:value) { random_datetime }
 
@@ -85,6 +109,18 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
       let(:value) { nil }
 
       it { is_expected.to be_nil }
+    end
+
+    context "when date" do
+      let(:value) { random_date }
+
+      it { is_expected.to eq(apply_datetime_precision(value.beginning_of_day, default_precision)) }
+    end
+
+    context "when date string" do
+      let(:value) { random_date.iso8601 }
+
+      it { is_expected.to eq(apply_datetime_precision(Date.parse(value).beginning_of_day, default_precision)) }
     end
 
     context "when datetime" do
@@ -126,6 +162,18 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
     context "with precision" do
       before do
         active_field.precision = rand(0..max_precision)
+      end
+
+      context "when date" do
+        let(:value) { random_date }
+
+        it { is_expected.to eq(apply_datetime_precision(value.beginning_of_day, active_field.precision)) }
+      end
+
+      context "when date string" do
+        let(:value) { random_date.iso8601 }
+
+        it { is_expected.to eq(apply_datetime_precision(Date.parse(value).beginning_of_day, active_field.precision)) }
       end
 
       context "when datetime" do
