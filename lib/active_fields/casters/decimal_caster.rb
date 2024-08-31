@@ -16,9 +16,13 @@ module ActiveFields
 
       def cast(value)
         casted = BigDecimal(value, 0, exception: false)
-        casted = casted.truncate(active_field.precision) if casted && active_field&.precision
+        casted = casted.truncate(precision) if casted && precision
 
         casted
+      end
+
+      def precision
+        options[:precision]
       end
     end
   end

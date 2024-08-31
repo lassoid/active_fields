@@ -7,9 +7,9 @@ module ActiveFields
 
       def perform_validation(value)
         if value.nil?
-          errors << :required if active_field.required?
+          errors << :required if options[:required]
         elsif value.acts_like?(:date)
-          validate_minmax(value, min: active_field.min, max: active_field.max)
+          validate_minmax(value, min: options[:min], max: options[:max])
         else
           errors << :invalid
         end

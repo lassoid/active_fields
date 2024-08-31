@@ -11,11 +11,11 @@ module ActiveFields
           return
         end
 
-        validate_size(value, min: active_field.min_size, max: active_field.max_size)
+        validate_size(value, min: options[:min_size], max: options[:max_size])
 
         value.each do |elem_value|
           if elem_value.acts_like?(:time)
-            validate_minmax(elem_value, min: active_field.min, max: active_field.max)
+            validate_minmax(elem_value, min: options[:min], max: options[:max])
           else
             errors << :invalid
           end

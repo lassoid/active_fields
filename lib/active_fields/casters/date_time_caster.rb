@@ -24,7 +24,7 @@ module ActiveFields
       end
 
       def precision
-        active_field&.precision || 6
+        options[:precision] || 6
       end
     end
   end

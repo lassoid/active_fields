@@ -3,6 +3,17 @@
 module ActiveFields
   module Field
     class Text < ActiveFields.config.field_base_class
+      active_field_config(
+        validator: {
+          class_name: "ActiveFields::Validators::TextValidator",
+          options: -> { { required: required?, min_length: min_length, max_length: max_length } },
+        },
+        caster: {
+          class_name: "ActiveFields::Casters::TextCaster",
+          options: -> { {} },
+        },
+      )
+
       store_accessor :options, :required, :min_length, :max_length
 
       validates :required, exclusion: [nil]
@@ -11,7 +22,7 @@ module ActiveFields
 
       %i[required].each do |column|
         define_method(column) do
-          Casters::BooleanCaster.new(nil).deserialize(super())
+          Casters::BooleanCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}?") do
@@ -19,17 +30,17 @@ module ActiveFields
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::BooleanCaster.new(nil).serialize(other))
+          super(Casters::BooleanCaster.new.serialize(other))
         end
       end
 
       %i[min_length max_length].each do |column|
         define_method(column) do
-          Casters::IntegerCaster.new(nil).deserialize(super())
+          Casters::IntegerCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::IntegerCaster.new(nil).serialize(other))
+          super(Casters::IntegerCaster.new.serialize(other))
         end
       end
 

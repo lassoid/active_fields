@@ -7,7 +7,7 @@ class IpValidator < ActiveFields::Validators::BaseValidator
 
   def perform_validation(value)
     if value.nil?
-      errors << :required if active_field.required?
+      errors << :required if options[:required]
     elsif value.is_a?(String)
       errors << :invalid unless value.match?(Resolv::IPv4::Regex)
     else

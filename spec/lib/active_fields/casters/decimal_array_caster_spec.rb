@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
-  factory = :decimal_array_active_field
-  let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(factory) }
+  let(:object) { described_class.new(**args) }
+  let(:args) { {} }
 
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }
@@ -45,20 +44,18 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
     end
 
     context "with precision" do
-      before do
-        active_field.precision = rand(0..10)
-      end
+      let(:args) { { precision: rand(0..10) } }
 
       context "when array of numbers" do
         let(:value) { random_numbers }
 
-        it { is_expected.to eq(value.map { _1.to_d.truncate(active_field.precision).to_s }) }
+        it { is_expected.to eq(value.map { _1.to_d.truncate(args[:precision]).to_s }) }
       end
 
       context "when array of number strings" do
         let(:value) { [random_integer.to_s, random_float.to_s] }
 
-        it { is_expected.to eq(value.map { _1.to_d.truncate(active_field.precision).to_s }) }
+        it { is_expected.to eq(value.map { _1.to_d.truncate(args[:precision]).to_s }) }
       end
     end
   end
@@ -103,20 +100,18 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
     end
 
     context "with precision" do
-      before do
-        active_field.precision = rand(0..10)
-      end
+      let(:args) { { precision: rand(0..10) } }
 
       context "when array of numbers" do
         let(:value) { random_numbers }
 
-        it { is_expected.to eq(value.map { _1.to_d.truncate(active_field.precision) }) }
+        it { is_expected.to eq(value.map { _1.to_d.truncate(args[:precision]) }) }
       end
 
       context "when array of number strings" do
         let(:value) { [random_integer.to_s, random_float.to_s] }
 
-        it { is_expected.to eq(value.map { _1.to_d.truncate(active_field.precision) }) }
+        it { is_expected.to eq(value.map { _1.to_d.truncate(args[:precision]) }) }
       end
     end
   end

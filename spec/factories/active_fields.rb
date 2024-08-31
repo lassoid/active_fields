@@ -33,11 +33,11 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { Date.current + rand(-10..0) }
+      min { Date.current - rand(0..10).days }
     end
 
     trait :with_max do
-      max { Date.current + rand(0..10) }
+      max { Date.current + rand(0..10).days }
     end
   end
 
@@ -69,11 +69,11 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { Time.current - rand(1..10).days }
+      min { Time.current - rand(0..10).days }
     end
 
     trait :with_max do
-      max { Time.current + rand(1..10).days }
+      max { Time.current + rand(0..10).days }
     end
 
     trait :with_precision do
@@ -93,11 +93,11 @@ FactoryBot.define do
     end
 
     trait :with_min do
-      min { Time.current - rand(1..10).days }
+      min { Time.current - rand(0..10).days }
     end
 
     trait :with_max do
-      max { Time.current + rand(1..10).days }
+      max { Time.current + rand(0..10).days }
     end
 
     trait :with_precision do

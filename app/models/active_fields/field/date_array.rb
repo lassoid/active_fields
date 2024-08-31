@@ -3,7 +3,17 @@
 module ActiveFields
   module Field
     class DateArray < ActiveFields.config.field_base_class
-      include FieldArrayConcern
+      active_field_config(
+        array: true,
+        validator: {
+          class_name: "ActiveFields::Validators::DateArrayValidator",
+          options: -> { { min: min, max: max, min_size: min_size, max_size: max_size } },
+        },
+        caster: {
+          class_name: "ActiveFields::Casters::DateArrayCaster",
+          options: -> { {} },
+        },
+      )
 
       store_accessor :options, :min, :max
 
@@ -11,11 +21,11 @@ module ActiveFields
 
       %i[min max].each do |column|
         define_method(column) do
-          Casters::DateCaster.new(nil).deserialize(super())
+          Casters::DateCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::DateCaster.new(nil).serialize(other))
+          super(Casters::DateCaster.new.serialize(other))
         end
       end
 

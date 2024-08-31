@@ -4,10 +4,10 @@ module ActiveFields
   module Casters
     # Typecasts the active_value value
     class BaseCaster
-      attr_reader :active_field
+      attr_reader :options
 
-      def initialize(active_field)
-        @active_field = active_field
+      def initialize(**options)
+        @options = options
       end
 
       # To raw AR attribute value

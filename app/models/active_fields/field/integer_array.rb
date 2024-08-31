@@ -3,7 +3,17 @@
 module ActiveFields
   module Field
     class IntegerArray < ActiveFields.config.field_base_class
-      include FieldArrayConcern
+      active_field_config(
+        array: true,
+        validator: {
+          class_name: "ActiveFields::Validators::IntegerArrayValidator",
+          options: -> { { min: min, max: max, min_size: min_size, max_size: max_size } },
+        },
+        caster: {
+          class_name: "ActiveFields::Casters::IntegerArrayCaster",
+          options: -> { {} },
+        },
+      )
 
       store_accessor :options, :min, :max
 
@@ -11,11 +21,11 @@ module ActiveFields
 
       %i[min max].each do |column|
         define_method(column) do
-          Casters::IntegerCaster.new(nil).deserialize(super())
+          Casters::IntegerCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::IntegerCaster.new(nil).serialize(other))
+          super(Casters::IntegerCaster.new.serialize(other))
         end
       end
 

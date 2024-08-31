@@ -3,6 +3,17 @@
 module ActiveFields
   module Field
     class Enum < ActiveFields.config.field_base_class
+      active_field_config(
+        validator: {
+          class_name: "ActiveFields::Validators::EnumValidator",
+          options: -> { { required: required?, allowed_values: allowed_values } },
+        },
+        caster: {
+          class_name: "ActiveFields::Casters::EnumCaster",
+          options: -> { {} },
+        },
+      )
+
       store_accessor :options, :required, :allowed_values
 
       validates :required, exclusion: [nil]
@@ -10,7 +21,7 @@ module ActiveFields
 
       %i[required].each do |column|
         define_method(column) do
-          Casters::BooleanCaster.new(nil).deserialize(super())
+          Casters::BooleanCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}?") do
@@ -18,17 +29,17 @@ module ActiveFields
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::BooleanCaster.new(nil).serialize(other))
+          super(Casters::BooleanCaster.new.serialize(other))
         end
       end
 
       %i[allowed_values].each do |column|
         define_method(column) do
-          Casters::TextArrayCaster.new(nil).deserialize(super())
+          Casters::TextArrayCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::TextArrayCaster.new(nil).serialize(other))
+          super(Casters::TextArrayCaster.new.serialize(other))
         end
       end
 

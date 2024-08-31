@@ -7,9 +7,9 @@ module ActiveFields
 
       def perform_validation(value)
         if value.nil?
-          errors << :required if active_field.required?
+          errors << :required if options[:required]
         elsif value.is_a?(String)
-          validate_length(value, min: active_field.min_length, max: active_field.max_length)
+          validate_length(value, min: options[:min_length], max: options[:max_length])
         else
           errors << :invalid
         end

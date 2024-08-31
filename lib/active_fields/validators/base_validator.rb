@@ -4,10 +4,10 @@ module ActiveFields
   module Validators
     # Validates the active_value value
     class BaseValidator
-      attr_reader :active_field, :errors
+      attr_reader :options, :errors
 
-      def initialize(active_field)
-        @active_field = active_field
+      def initialize(**options)
+        @options = options
         @errors = Set.new
       end
 

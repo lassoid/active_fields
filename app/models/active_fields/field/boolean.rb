@@ -3,6 +3,17 @@
 module ActiveFields
   module Field
     class Boolean < ActiveFields.config.field_base_class
+      active_field_config(
+        validator: {
+          class_name: "ActiveFields::Validators::BooleanValidator",
+          options: -> { { nullable: nullable?, required: required? } },
+        },
+        caster: {
+          class_name: "ActiveFields::Casters::BooleanCaster",
+          options: -> { {} },
+        },
+      )
+
       store_accessor :options, :required, :nullable
 
       validates :required, exclusion: [nil]
@@ -10,7 +21,7 @@ module ActiveFields
 
       %i[required nullable].each do |column|
         define_method(column) do
-          Casters::BooleanCaster.new(nil).deserialize(super())
+          Casters::BooleanCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}?") do
@@ -18,7 +29,7 @@ module ActiveFields
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::BooleanCaster.new(nil).serialize(other))
+          super(Casters::BooleanCaster.new.serialize(other))
         end
       end
 
