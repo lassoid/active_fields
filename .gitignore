@@ -15,7 +15,7 @@
 .rspec_status
 
 /spec/dummy/db/schema.rb
-/spec/dummy/log/*.log
+/spec/dummy/log/
 /spec/dummy/tmp/
 
 .ruby-version
