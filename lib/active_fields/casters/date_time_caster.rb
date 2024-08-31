@@ -4,20 +4,23 @@ module ActiveFields
   module Casters
     class DateTimeCaster < BaseCaster
       def serialize(value)
-        cast(value)&.iso8601(precision)
+        value = value.iso8601 if value.is_a?(Date)
+        casted_value = caster.serialize(value)
+
+        casted_value.iso8601(precision) if casted_value.acts_like?(:time)
       end
 
       def deserialize(value)
-        cast(value)
+        value = value.iso8601 if value.is_a?(Date)
+        casted_value = caster.deserialize(value)
+
+        casted_value.in_time_zone if casted_value.acts_like?(:time)
       end
 
       private
 
-      def cast(value)
-        value = value.beginning_of_day if value.acts_like?(:date)
-        casted_value = ActiveModel::Type::DateTime.new(precision: precision).cast(value)
-
-        casted_value if casted_value.acts_like?(:time)
+      def caster
+        ActiveRecord::Type::DateTime.new(precision: precision)
       end
 
       def precision

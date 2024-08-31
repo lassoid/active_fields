@@ -4,19 +4,21 @@ module ActiveFields
   module Casters
     class DateCaster < BaseCaster
       def serialize(value)
-        cast(value)&.iso8601
+        casted_value = caster.serialize(value)
+
+        casted_value.iso8601 if casted_value.is_a?(Date)
       end
 
       def deserialize(value)
-        cast(value)
+        casted_value = caster.deserialize(value)
+
+        casted_value if casted_value.is_a?(Date)
       end
 
       private
 
-      def cast(value)
-        casted_value = ActiveModel::Type::Date.new.cast(value)
-
-        casted_value if casted_value.acts_like?(:date)
+      def caster
+        ActiveRecord::Type::Date.new
       end
     end
   end
