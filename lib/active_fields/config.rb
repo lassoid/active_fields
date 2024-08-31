@@ -17,6 +17,8 @@ module ActiveFields
         boolean: "ActiveFields::Field::Boolean",
         date: "ActiveFields::Field::Date",
         date_array: "ActiveFields::Field::DateArray",
+        datetime: "ActiveFields::Field::DateTime",
+        datetime_array: "ActiveFields::Field::DateTimeArray",
         decimal: "ActiveFields::Field::Decimal",
         decimal_array: "ActiveFields::Field::DecimalArray",
         enum: "ActiveFields::Field::Enum",

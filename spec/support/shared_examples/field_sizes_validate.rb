@@ -111,7 +111,7 @@ RSpec.shared_examples "field_sizes_validate" do |factory:|
         it "is invalid" do
           record.valid?
 
-          expect(record.errors.where(:max_size, :greater_than_or_equal_to, count: min_size)).not_to be_empty
+          expect(record.errors.where(:max_size, :greater_than_or_equal_to, count: record.min_size)).not_to be_empty
         end
       end
 

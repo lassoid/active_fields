@@ -18,5 +18,6 @@
 /spec/dummy/log/*.log
 /spec/dummy/tmp/
 
+.ruby-version
 Gemfile.lock
 TODO.md

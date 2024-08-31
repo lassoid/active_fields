@@ -7,6 +7,7 @@
 - Do not implicitly create _Active Values_ when saving an _Active Field_ or _Customizable_
 - Utilize _ActiveRecord_'s nested attributes feature in _Customizable_ models to manage associated _Active Values_
 - Serialize decimals as strings as _ActiveRecord_ does for JSON columns
+- Added datetime and datetime array field types
 
 ## [0.2.0] - 2024-06-13
 

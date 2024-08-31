@@ -2,7 +2,7 @@
 
 module ActiveFields
   module Validators
-    class DateArrayValidator < BaseValidator
+    class DateTimeArrayValidator < BaseValidator
       private
 
       def perform_validation(value)
@@ -14,7 +14,7 @@ module ActiveFields
         validate_size(value, min: active_field.min_size, max: active_field.max_size)
 
         value.each do |elem_value|
-          if elem_value.acts_like?(:date)
+          if elem_value.acts_like?(:time)
             validate_minmax(elem_value, min: active_field.min, max: active_field.max)
           else
             errors << :invalid

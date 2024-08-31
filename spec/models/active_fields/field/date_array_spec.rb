@@ -56,12 +56,12 @@ RSpec.describe ActiveFields::Field::DateArray do
         end
 
         context "when max is less than min" do
-          let(:max) { min - 1 }
+          let(:max) { min - 1.day }
 
           it "is invalid" do
             record.valid?
 
-            expect(record.errors.where(:max, :greater_than_or_equal_to, count: min)).not_to be_empty
+            expect(record.errors.where(:max, :greater_than_or_equal_to, count: record.min)).not_to be_empty
           end
         end
 
@@ -76,7 +76,7 @@ RSpec.describe ActiveFields::Field::DateArray do
         end
 
         context "when max is greater than min" do
-          let(:max) { min + 1 }
+          let(:max) { min + 1.day }
 
           it "is valid" do
             record.valid?

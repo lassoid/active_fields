@@ -113,6 +113,21 @@ classDiagram
         + integer min_size
         + integer max_size
     }
+    class DateTime {
+        + datetime default_value
+        + boolean required
+        + datetime min
+        + datetime max
+        + integer precision
+    }
+    class DateTimeArray {
+        + array~datetime~ default_value
+        + datetime min
+        + datetime max
+        + integer precision
+        + integer min_size
+        + integer max_size
+    }
     class Decimal {
         + decimal default_value
         + boolean required
@@ -169,6 +184,8 @@ classDiagram
     ActiveField <|-- Boolean
     ActiveField <|-- Date
     ActiveField <|-- DateArray
+    ActiveField <|-- DateTime
+    ActiveField <|-- DateTimeArray
     ActiveField <|-- Decimal
     ActiveField <|-- DecimalArray
     ActiveField <|-- Enum
@@ -190,20 +207,22 @@ classDiagram
 All _Active Field_ model names start with `ActiveFields::Field`.
 We replace it with `**` for conciseness.
 
-| Active Field model              | Type name       | Attributes                              | Options                                                                                                                                                                                                                                                                                             |
-|---------------------------------|-----------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `**::Boolean`                   | `boolean`       | `default_value`<br>(`boolean` or `nil`) | `required`(`boolean`) - the value must not be `false`<br>`nullable`(`boolean`) - the value could be `nil`                                                                                                                                                                                           |
-| `**::Date`                      | `date`          | `default_value`<br>(`date` or `nil`)    | `required`(`boolean`) - the value must not be `nil`<br>`min`(`date`) - minimum value allowed<br>`max`(`date`) - maximum value allowed                                                                                                                                                               |
-| `**::DateArray`                 | `date_array`    | `default_value`<br>(`array[date]`)      | `min`(`date`) - minimum value allowed, for each element<br>`max`(`date`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                      |
-| `**::Decimal`                   | `decimal`       | `default_value`<br>(`decimal` or `nil`) | `required`(`boolean`) - the value must not be `nil`<br>`min`(`decimal`) - minimum value allowed<br>`max`(`decimal`) - maximum value allowed<br>`precision`(`integer`) - the precision for value rounding                                                                                            |
-| `**::DecimalArray`              | `decimal_array` | `default_value`<br>(`array[decimal]`)   | `min`(`decimal`) - minimum value allowed, for each element<br>`max`(`decimal`) - maximum value allowed, for each element<br>`precision`(`integer`) - the precision for value rounding, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size |
-| `**::Enum`                      | `enum`          | `default_value`<br>(`string` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>**\***`allowed_values`(`array[string]`) - a list of allowed values                                                                                                                                                                           |
-| `**::EnumArray`                 | `enum_array`    | `default_value`<br>(`array[string]`)    | **\***`allowed_values`(`array[string]`) - a list of allowed values<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                                                                      |
-| `**::Integer`                   | `integer`       | `default_value`<br>(`integer` or `nil`) | `required`(`boolean`) - the value must not be `nil`<br>`min`(`integer`) - minimum value allowed<br>`max`(`integer`) - maximum value allowed                                                                                                                                                         |
-| `**::IntegerArray`              | `integer_array` | `default_value`<br>(`array[integer]`)   | `min`(`integer`) - minimum value allowed, for each element<br>`max`(`integer`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                |
-| `**::Text`                      | `text`          | `default_value`<br>(`string` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>`min_length`(`integer`) - minimum value length allowed<br>`max_length`(`integer`) - maximum value length allowed                                                                                                                             |
-| `**::TextArray`                 | `text_array`    | `default_value`<br>(`array[string]`)    | `min_length`(`integer`) - minimum value length allowed, for each element<br>`max_length`(`integer`) - maximum value length allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                    |
-| _Your custom class can be here_ | _..._           | _..._                                   | _..._                                                                                                                                                                                                                                                                                               |
+| Active Field model              | Type name        | Attributes                               | Options                                                                                                                                                                                                                                                                                                         |
+|---------------------------------|------------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `**::Boolean`                   | `boolean`        | `default_value`<br>(`boolean` or `nil`)  | `required`(`boolean`) - the value must not be `false`<br>`nullable`(`boolean`) - the value could be `nil`                                                                                                                                                                                                       |
+| `**::Date`                      | `date`           | `default_value`<br>(`date` or `nil`)     | `required`(`boolean`) - the value must not be `nil`<br>`min`(`date`) - minimum value allowed<br>`max`(`date`) - maximum value allowed                                                                                                                                                                           |
+| `**::DateArray`                 | `date_array`     | `default_value`<br>(`array[date]`)       | `min`(`date`) - minimum value allowed, for each element<br>`max`(`date`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                                  |
+| `**::DateTime`                  | `datetime`       | `default_value`<br>(`datetime` or `nil`) | `required`(`boolean`) - the value must not be `nil`<br>`min`(`datetime`) - minimum value allowed<br>`max`(`datetime`) - maximum value allowed<br>`precision`(`integer`) - the number of digits in fractional seconds                                                                                            |
+| `**::DateTimeArray`             | `datetime_array` | `default_value`<br>(`array[datetime]`)   | `min`(`datetime`) - minimum value allowed, for each element<br>`max`(`datetime`) - maximum value allowed, for each element<br>`precision`(`integer`) - the number of digits in fractional seconds, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size |
+| `**::Decimal`                   | `decimal`        | `default_value`<br>(`decimal` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>`min`(`decimal`) - minimum value allowed<br>`max`(`decimal`) - maximum value allowed<br>`precision`(`integer`) - the number of digits after the decimal point                                                                                            |
+| `**::DecimalArray`              | `decimal_array`  | `default_value`<br>(`array[decimal]`)    | `min`(`decimal`) - minimum value allowed, for each element<br>`max`(`decimal`) - maximum value allowed, for each element<br>`precision`(`integer`) - the number of digits after the decimal point, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size |
+| `**::Enum`                      | `enum`           | `default_value`<br>(`string` or `nil`)   | `required`(`boolean`) - the value must not be `nil`<br>**\***`allowed_values`(`array[string]`) - a list of allowed values                                                                                                                                                                                       |
+| `**::EnumArray`                 | `enum_array`     | `default_value`<br>(`array[string]`)     | **\***`allowed_values`(`array[string]`) - a list of allowed values<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                                                                                  |
+| `**::Integer`                   | `integer`        | `default_value`<br>(`integer` or `nil`)  | `required`(`boolean`) - the value must not be `nil`<br>`min`(`integer`) - minimum value allowed<br>`max`(`integer`) - maximum value allowed                                                                                                                                                                     |
+| `**::IntegerArray`              | `integer_array`  | `default_value`<br>(`array[integer]`)    | `min`(`integer`) - minimum value allowed, for each element<br>`max`(`integer`) - maximum value allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                                            |
+| `**::Text`                      | `text`           | `default_value`<br>(`string` or `nil`)   | `required`(`boolean`) - the value must not be `nil`<br>`min_length`(`integer`) - minimum value length allowed<br>`max_length`(`integer`) - maximum value length allowed                                                                                                                                         |
+| `**::TextArray`                 | `text_array`     | `default_value`<br>(`array[string]`)     | `min_length`(`integer`) - minimum value length allowed, for each element<br>`max_length`(`integer`) - maximum value length allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                |
+| _Your custom class can be here_ | _..._            | _..._                                    | _..._                                                                                                                                                                                                                                                                                                           |
 
 **Note:** Options marked with **\*** are mandatory.
 
