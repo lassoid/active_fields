@@ -288,7 +288,7 @@ end
 ### Adding Custom Field Types
 
 To add a custom _Active Field_ type, create a subclass of the `ActiveFields.config.field_base_class`,
-register it in the global configuration and configure the field itself by calling `acts_as_active_field`.
+register it in the global configuration and configure the field by calling `acts_as_active_field`.
 
 ```ruby
 # config/initializers/active_fields.rb
@@ -303,20 +303,35 @@ class IpField < ActiveFields.config.field_base_class
   acts_as_active_field(
     validator: {
       class_name: "IpValidator",
-      options: -> { { required: required } }, # options, that will be passed to the validator
+      options: -> { { required: required? } }, # options that will be passed to the validator
     },
     caster: {
       class_name: "IpCaster",
-      options: -> { { strip: strip } }, # options, that will be passed to the caster
+      options: -> { { strip: strip? } }, # options that will be passed to the caster
     },
   )
 
   # Store specific attributes in `options`
   store_accessor :options, :required, :strip
 
+  # You can use built-in casters to cast your options
+  %i[required strip].each do |column|
+    define_method(column) do
+      ActiveFields::Casters::BooleanCaster.new.deserialize(super())
+    end
+
+    define_method(:"#{column}?") do
+      !!public_send(column)
+    end
+
+    define_method(:"#{column}=") do |other|
+      super(ActiveFields::Casters::BooleanCaster.new.serialize(other))
+    end
+  end
+
   private
 
-  # This method allows you to assign default values to your attributes.
+  # This method allows you to assign default values to your options.
   # It is automatically executed within the `after_initialize` callback.
   def set_defaults
     self.required ||= false
@@ -325,7 +340,7 @@ class IpField < ActiveFields.config.field_base_class
 end
 ```
 
-To create an array _Active Field_ type, provide `array: true` option to `acts_as_active_field`.
+To create an array _Active Field_ type, pass the `array: true` option to `acts_as_active_field`.
 This will add `min_size` and `max_size` options, as well as some important internal methods such as `array?`.
 
 ```ruby
@@ -357,7 +372,7 @@ For each custom _Active Field_ type, you must define a **validator** and a **cas
 Create a class that inherits from `ActiveFields::Validators::BaseValidator` and implements the `perform_validation` method.
 This method is responsible for validating `active_field.default_value` and `active_value.value`, and adding any errors to the `errors` set.
 These errors will then propagate to the corresponding record.
-Each error should be aligned with the arguments of the _ActiveModel_ `errors.add` method.
+Each error should match the arguments format of the _ActiveModel_ `errors.add` method.
 
 ```ruby
 # lib/ip_validator.rb (or anywhere you want)
