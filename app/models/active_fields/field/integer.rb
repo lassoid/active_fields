@@ -3,7 +3,7 @@
 module ActiveFields
   module Field
     class Integer < ActiveFields.config.field_base_class
-      active_field_config(
+      acts_as_active_field(
         validator: {
           class_name: "ActiveFields::Validators::IntegerValidator",
           options: -> { { required: required?, min: min, max: max } },

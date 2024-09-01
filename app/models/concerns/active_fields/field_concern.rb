@@ -26,7 +26,7 @@ module ActiveFields
     end
 
     class_methods do
-      def active_field_config(array: false, validator:, caster:)
+      def acts_as_active_field(array: false, validator:, caster:)
         include FieldArrayConcern if array
 
         define_method(:array?) { array }

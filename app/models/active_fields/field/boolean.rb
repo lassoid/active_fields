@@ -3,10 +3,10 @@
 module ActiveFields
   module Field
     class Boolean < ActiveFields.config.field_base_class
-      active_field_config(
+      acts_as_active_field(
         validator: {
           class_name: "ActiveFields::Validators::BooleanValidator",
-          options: -> { { nullable: nullable?, required: required? } },
+          options: -> { { required: required?, nullable: nullable? } },
         },
         caster: {
           class_name: "ActiveFields::Casters::BooleanCaster",

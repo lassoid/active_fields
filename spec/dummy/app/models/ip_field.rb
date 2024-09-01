@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class IpField < ActiveFields.config.field_base_class
-  active_field_config(
+  acts_as_active_field(
     validator: {
       class_name: "IpValidator",
       options: -> { { required: required? } },

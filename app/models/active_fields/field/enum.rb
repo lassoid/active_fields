@@ -3,7 +3,7 @@
 module ActiveFields
   module Field
     class Enum < ActiveFields.config.field_base_class
-      active_field_config(
+      acts_as_active_field(
         validator: {
           class_name: "ActiveFields::Validators::EnumValidator",
           options: -> { { required: required?, allowed_values: allowed_values } },

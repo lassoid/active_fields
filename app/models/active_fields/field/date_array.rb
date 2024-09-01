@@ -3,7 +3,7 @@
 module ActiveFields
   module Field
     class DateArray < ActiveFields.config.field_base_class
-      active_field_config(
+      acts_as_active_field(
         array: true,
         validator: {
           class_name: "ActiveFields::Validators::DateArrayValidator",

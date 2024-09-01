@@ -3,7 +3,7 @@
 module ActiveFields
   module Field
     class Text < ActiveFields.config.field_base_class
-      active_field_config(
+      acts_as_active_field(
         validator: {
           class_name: "ActiveFields::Validators::TextValidator",
           options: -> { { required: required?, min_length: min_length, max_length: max_length } },
