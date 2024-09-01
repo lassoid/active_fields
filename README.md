@@ -287,19 +287,30 @@ end
 
 ### Adding Custom Field Types
 
-To add a custom _Active Field_ type, create a subclass of the `ActiveFields.config.field_base_class` 
-and register it in the global configuration.
-
-**Note:** The _first_ argument should be the field _type name_ and the _second_ should be the field _class name_.
+To add a custom _Active Field_ type, create a subclass of the `ActiveFields.config.field_base_class`,
+register it in the global configuration and configure the field itself by calling `acts_as_active_field`.
 
 ```ruby
 # config/initializers/active_fields.rb
 ActiveFields.configure do |config|
+  # The first argument - field type name, the second - field class name
   config.register_field :ip, "IpField"
 end
 
 # app/models/ip_field.rb
 class IpField < ActiveFields.config.field_base_class
+  # Configure the field
+  acts_as_active_field(
+    validator: {
+      class_name: "IpValidator",
+      options: -> { { required: required } }, # options, that will be passed to the validator
+    },
+    caster: {
+      class_name: "IpCaster",
+      options: -> { { strip: strip } }, # options, that will be passed to the caster
+    },
+  )
+
   # Store specific attributes in `options`
   store_accessor :options, :required, :strip
 
@@ -314,7 +325,32 @@ class IpField < ActiveFields.config.field_base_class
 end
 ```
 
-For each custom _Active Field_ type, you must also define a **validator** and a **caster**:
+To create an array _Active Field_ type, provide `array: true` option to `acts_as_active_field`.
+This will add `min_size` and `max_size` options, as well as some important internal methods such as `array?`.
+
+```ruby
+# config/initializers/active_fields.rb
+ActiveFields.configure do |config|
+  config.register_field :ip_array, "IpArrayField"
+end
+
+# app/models/ip_array_field.rb
+class IpArrayField < ActiveFields.config.field_base_class
+  acts_as_active_field(
+    array: true,
+    validator: {
+      class_name: "IpArrayValidator",
+      options: -> { { min_size: min_size, max_size: max_size } },
+    },
+    caster: {
+      class_name: "IpArrayCaster",
+    },
+  )
+  # ...
+end
+```
+
+For each custom _Active Field_ type, you must define a **validator** and a **caster**:
 
 #### Validator
 
@@ -324,21 +360,13 @@ These errors will then propagate to the corresponding record.
 Each error should be aligned with the arguments of the _ActiveModel_ `errors.add` method.
 
 ```ruby
-# app/models/ip_field.rb
-class IpField < ActiveFields.config.field_base_class
-  # ...
-  def value_validator_class = IpValidator
-  # ...
-end
-
 # lib/ip_validator.rb (or anywhere you want)
 class IpValidator < ActiveFields::Validators::BaseValidator
   private
 
   def perform_validation(value)
     if value.nil?
-      # active_field record is available!
-      if active_field.required
+      if options[:required]
         errors << :required # type only
       end
     elsif value.is_a?(String)
@@ -359,47 +387,21 @@ and implements methods `serialize` (used when setting a value) and `deserialize`
 These methods handle the conversion of `active_field.default_value` and `active_value.value`.
 
 ```ruby
-# app/models/ip_field.rb
-class IpField < ActiveFields.config.field_base_class
-  # ...
-  def value_caster_class = IpCaster
-  # ...
-end
-
 # lib/ip_caster.rb (or anywhere you want)
 class IpCaster < ActiveFields::Casters::BaseCaster
   def serialize(value)
     value = value&.to_s
-    # active_field record is available!
-    value = value&.strip if active_field.strip
+    value = value&.strip if options[:strip]
 
     value
   end
 
   def deserialize(value)
     value = value&.to_s
-    # active_field record is available too!
-    value = value&.strip if active_field.strip
+    value = value&.strip if options[:strip]
 
     value
   end
-end
-```
-
-To create a custom array _Active Field_ type, include the `ActiveFields::FieldArrayConcern` mix-in in your model
-and register it in global configuration as usual.
-This will add `min_size` and `max_size` options, as well as some important internal methods such as `array?`.
-
-```ruby
-# config/initializers/active_fields.rb
-ActiveFields.configure do |config|
-  config.register_field :ip_array, "IpArrayField"
-end
-
-# app/models/ip_array_field.rb
-class IpArrayField < ActiveFields.config.field_base_class
-  include ActiveFields::FieldArrayConcern
-  # ...
 end
 ```
 
@@ -411,7 +413,7 @@ However, there are some custom error types that you’ll need to handle in your 
 - `size_too_long` (args: `count`): Triggered when the size of an array _Active Field_ value exceeds the allowed maximum.
 - `duplicate`: Triggered when an enum array _Active Field_ contains duplicate elements.
 
-For an example, refer to the [locales file](https://github.com/lassoid/active_fields/blob/main/spec/dummy/config/locales/en.yml).
+For an example, refer to the [locale file](https://github.com/lassoid/active_fields/blob/main/spec/dummy/config/locales/en.yml).
 
 ## Current Restrictions
 
