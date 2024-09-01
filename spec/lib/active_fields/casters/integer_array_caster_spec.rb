@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::IntegerArrayCaster do
-  factory = :integer_array_active_field
-  let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(factory) }
+  let(:object) { described_class.new(**args) }
+  let(:args) { {} }
 
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }

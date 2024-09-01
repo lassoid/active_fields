@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::DateTimeCaster do
-  factory = :datetime_active_field
   max_precision = RUBY_VERSION >= "3.2" ? 9 : 6 # AR max precision is 6 for old Rubies
   default_precision = 6
 
-  let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(factory) }
+  let(:object) { described_class.new(**args) }
+  let(:args) { {} }
 
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }
@@ -106,38 +105,36 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
     end
 
     context "with precision" do
-      before do
-        active_field.precision = rand(0..max_precision)
-      end
+      let(:args) { { precision: rand(0..max_precision) } }
 
       context "when date" do
         let(:value) { random_date }
 
-        it { is_expected.to eq(value.to_time(:utc).iso8601(active_field.precision)) }
+        it { is_expected.to eq(value.to_time(:utc).iso8601(args[:precision])) }
       end
 
       context "when date string" do
         let(:value) { random_date.iso8601 }
 
-        it { is_expected.to eq(Date.parse(value).to_time(:utc).iso8601(active_field.precision)) }
+        it { is_expected.to eq(Date.parse(value).to_time(:utc).iso8601(args[:precision])) }
       end
 
       context "when datetime" do
         let(:value) { random_datetime }
 
-        it { is_expected.to eq(value.utc.iso8601(active_field.precision)) }
+        it { is_expected.to eq(value.utc.iso8601(args[:precision])) }
       end
 
       context "when datetime string" do
         let(:value) { random_datetime.iso8601 }
 
-        it { is_expected.to eq(Time.zone.parse(value).utc.iso8601(active_field.precision)) }
+        it { is_expected.to eq(Time.zone.parse(value).utc.iso8601(args[:precision])) }
       end
 
       context "when datetime string with fractional seconds digits" do
         let(:value) { random_datetime.iso8601(max_precision) }
 
-        it { is_expected.to eq(Time.zone.parse(value).utc.iso8601(active_field.precision)) }
+        it { is_expected.to eq(Time.zone.parse(value).utc.iso8601(args[:precision])) }
       end
     end
   end
@@ -240,9 +237,7 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
     end
 
     context "with precision" do
-      before do
-        active_field.precision = rand(0..max_precision)
-      end
+      let(:args) { { precision: rand(0..max_precision) } }
 
       context "when date" do
         let(:value) { random_date }
@@ -259,7 +254,7 @@ RSpec.describe ActiveFields::Casters::DateTimeCaster do
       context "when datetime" do
         let(:value) { random_datetime.utc }
 
-        it { is_expected.to eq(apply_datetime_precision(value.in_time_zone, active_field.precision)) }
+        it { is_expected.to eq(apply_datetime_precision(value.in_time_zone, args[:precision])) }
       end
 
       context "when datetime string" do

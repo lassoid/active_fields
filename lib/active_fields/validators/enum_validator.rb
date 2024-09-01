@@ -7,9 +7,9 @@ module ActiveFields
 
       def perform_validation(value)
         if value.nil?
-          errors << :required if active_field.required?
-        elsif active_field.allowed_values.is_a?(Array)
-          validate_value_allowed(value, allowed_values: active_field.allowed_values)
+          errors << :required if options[:required]
+        elsif options[:allowed_values].is_a?(Array)
+          validate_value_allowed(value, allowed_values: options[:allowed_values])
         end
       end
 

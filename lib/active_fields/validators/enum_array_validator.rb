@@ -11,11 +11,11 @@ module ActiveFields
           return
         end
 
-        validate_size(value, min: active_field.min_size, max: active_field.max_size)
+        validate_size(value, min: options[:min_size], max: options[:max_size])
 
-        if active_field.allowed_values.is_a?(Array)
+        if options[:allowed_values].is_a?(Array)
           value.each do |elem_value|
-            validate_value_allowed(elem_value, allowed_values: active_field.allowed_values)
+            validate_value_allowed(elem_value, allowed_values: options[:allowed_values])
           end
         end
 

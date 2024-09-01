@@ -13,15 +13,13 @@ module ActiveFields
 
       %i[min_size max_size].each do |column|
         define_method(column) do
-          Casters::IntegerCaster.new(nil).deserialize(super())
+          Casters::IntegerCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::IntegerCaster.new(nil).serialize(other))
+          super(Casters::IntegerCaster.new.serialize(other))
         end
       end
     end
-
-    def array? = true
   end
 end

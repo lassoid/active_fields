@@ -3,9 +3,8 @@
 RSpec.describe ActiveFields::Validators::IntegerValidator do
   subject(:validate) { object.validate(value) }
 
-  factory = :integer_active_field
-  let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(factory) }
+  let(:object) { described_class.new(**args) }
+  let(:args) { {} }
 
   include_examples "field_value_validate", -> { nil }, "nil"
   include_examples "field_value_validate",
@@ -14,56 +13,56 @@ RSpec.describe ActiveFields::Validators::IntegerValidator do
     -> { [:invalid] }
 
   context "when required" do
-    let(:active_field) { build(factory, :required) }
+    let(:args) { { required: true } }
 
     include_examples "field_value_validate", -> { nil }, "nil", -> { [:required] }
   end
 
   context "value comparison" do
     context "without min and max" do
-      let(:active_field) { build(factory) }
+      let(:args) { {} }
 
       include_examples "field_value_validate", -> { random_number }, "a number"
     end
 
     context "with min" do
-      let(:active_field) { build(factory, :with_min) }
+      let(:args) { { min: rand(-10..0) } }
 
-      include_examples "field_value_validate", -> { active_field.min }, "a min number"
-      include_examples "field_value_validate", -> { active_field.min + 1 }, "a number greater than min"
+      include_examples "field_value_validate", -> { args[:min] }, "a min number"
+      include_examples "field_value_validate", -> { args[:min] + 1 }, "a number greater than min"
       include_examples "field_value_validate",
-        -> { active_field.min - 1 },
+        -> { args[:min] - 1 },
         "a number less than min",
-        -> { [[:greater_than_or_equal_to, count: active_field.min]] }
+        -> { [[:greater_than_or_equal_to, count: args[:min]]] }
     end
 
     context "with max" do
-      let(:active_field) { build(factory, :with_max) }
+      let(:args) { { max: rand(0..10) } }
 
-      include_examples "field_value_validate", -> { active_field.max }, "a max number"
-      include_examples "field_value_validate", -> { active_field.max - 1 }, "a number less than max"
+      include_examples "field_value_validate", -> { args[:max] }, "a max number"
+      include_examples "field_value_validate", -> { args[:max] - 1 }, "a number less than max"
       include_examples "field_value_validate",
-        -> { active_field.max + 1 },
+        -> { args[:max] + 1 },
         "a number greater than max",
-        -> { [[:less_than_or_equal_to, count: active_field.max]] }
+        -> { [[:less_than_or_equal_to, count: args[:max]]] }
     end
 
     context "with both min and max" do
-      let(:active_field) { build(factory, :with_min, :with_max) }
+      let(:args) { { min: rand(-10..0), max: rand(0..10) } }
 
-      include_examples "field_value_validate", -> { active_field.min }, "a min number"
-      include_examples "field_value_validate", -> { active_field.max }, "a max number"
+      include_examples "field_value_validate", -> { args[:min] }, "a min number"
+      include_examples "field_value_validate", -> { args[:max] }, "a max number"
       include_examples "field_value_validate",
-        -> { rand(active_field.min..active_field.max) },
+        -> { rand(args[:min]..args[:max]) },
         "a number between min and max"
       include_examples "field_value_validate",
-        -> { active_field.min - 1 },
+        -> { args[:min] - 1 },
         "a number less than min",
-        -> { [[:greater_than_or_equal_to, count: active_field.min]] }
+        -> { [[:greater_than_or_equal_to, count: args[:min]]] }
       include_examples "field_value_validate",
-        -> { active_field.max + 1 },
+        -> { args[:max] + 1 },
         "a number greater than max",
-        -> { [[:less_than_or_equal_to, count: active_field.max]] }
+        -> { [[:less_than_or_equal_to, count: args[:max]]] }
     end
   end
 end

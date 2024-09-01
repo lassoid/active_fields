@@ -3,9 +3,8 @@
 RSpec.describe ActiveFields::Validators::BooleanValidator do
   subject(:validate) { object.validate(value) }
 
-  factory = :boolean_active_field
-  let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(factory) }
+  let(:object) { described_class.new(**args) }
+  let(:args) { {} }
 
   include_examples "field_value_validate",
     -> { [random_integer, random_date, "true", []].sample },
@@ -13,7 +12,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
     -> { [:invalid] }
 
   context "when required" do
-    let(:active_field) { build(factory, :required) }
+    let(:args) { { required: true } }
 
     include_examples "field_value_validate", -> { nil }, "nil", -> { [:exclusion] }
     include_examples "field_value_validate", -> { true }, "true"
@@ -21,7 +20,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
   end
 
   context "when nullable" do
-    let(:active_field) { build(factory, :nullable) }
+    let(:args) { { nullable: true } }
 
     include_examples "field_value_validate", -> { nil }, "nil"
     include_examples "field_value_validate", -> { true }, "true"
@@ -29,7 +28,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
   end
 
   context "when required and nullable" do
-    let(:active_field) { build(factory, :required, :nullable) }
+    let(:args) { { required: true, nullable: true } }
 
     include_examples "field_value_validate", -> { nil }, "nil"
     include_examples "field_value_validate", -> { true }, "true"
@@ -37,7 +36,7 @@ RSpec.describe ActiveFields::Validators::BooleanValidator do
   end
 
   context "when not required and not nullable" do
-    let(:active_field) { build(factory) }
+    let(:args) { {} }
 
     include_examples "field_value_validate", -> { nil }, "nil", -> { [:exclusion] }
     include_examples "field_value_validate", -> { true }, "true"

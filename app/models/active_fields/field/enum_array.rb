@@ -3,7 +3,16 @@
 module ActiveFields
   module Field
     class EnumArray < ActiveFields.config.field_base_class
-      include FieldArrayConcern
+      acts_as_active_field(
+        array: true,
+        validator: {
+          class_name: "ActiveFields::Validators::EnumArrayValidator",
+          options: -> { { allowed_values: allowed_values, min_size: min_size, max_size: max_size } },
+        },
+        caster: {
+          class_name: "ActiveFields::Casters::EnumArrayCaster",
+        },
+      )
 
       store_accessor :options, :allowed_values
 
@@ -11,11 +20,11 @@ module ActiveFields
 
       %i[allowed_values].each do |column|
         define_method(column) do
-          Casters::TextArrayCaster.new(nil).deserialize(super())
+          Casters::TextArrayCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::TextArrayCaster.new(nil).serialize(other))
+          super(Casters::TextArrayCaster.new.serialize(other))
         end
       end
 

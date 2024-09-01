@@ -7,9 +7,9 @@ module ActiveFields
 
       def perform_validation(value)
         if value.nil?
-          errors << :exclusion unless active_field.nullable?
+          errors << :exclusion unless options[:nullable]
         elsif value.is_a?(FalseClass)
-          errors << :required if active_field.required?
+          errors << :required if options[:required]
         elsif value.is_a?(TrueClass)
           nil
         else

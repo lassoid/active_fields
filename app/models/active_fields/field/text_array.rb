@@ -3,7 +3,18 @@
 module ActiveFields
   module Field
     class TextArray < ActiveFields.config.field_base_class
-      include FieldArrayConcern
+      acts_as_active_field(
+        array: true,
+        validator: {
+          class_name: "ActiveFields::Validators::TextArrayValidator",
+          options: -> do
+            { min_length: min_length, max_length: max_length, min_size: min_size, max_size: max_size }
+          end,
+        },
+        caster: {
+          class_name: "ActiveFields::Casters::TextArrayCaster",
+        },
+      )
 
       store_accessor :options, :min_length, :max_length
 
@@ -12,11 +23,11 @@ module ActiveFields
 
       %i[min_length max_length].each do |column|
         define_method(column) do
-          Casters::IntegerCaster.new(nil).deserialize(super())
+          Casters::IntegerCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::IntegerCaster.new(nil).serialize(other))
+          super(Casters::IntegerCaster.new.serialize(other))
         end
       end
 

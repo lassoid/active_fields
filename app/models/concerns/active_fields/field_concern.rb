@@ -25,22 +25,44 @@ module ActiveFields
       after_initialize :set_defaults
     end
 
-    def array? = false
+    class_methods do
+      def acts_as_active_field(array: false, validator:, caster:)
+        include FieldArrayConcern if array
 
-    def value_validator_class
-      @value_validator_class ||= "ActiveFields::Validators::#{model_name.name.demodulize}Validator".constantize
-    end
+        define_method(:array?) { array }
 
-    def value_validator
-      value_validator_class.new(self)
-    end
+        define_method(:value_validator_class) do
+          @value_validator_class ||= validator[:class_name].constantize
+        end
 
-    def value_caster_class
-      @value_caster_class ||= "ActiveFields::Casters::#{model_name.name.demodulize}Caster".constantize
-    end
+        define_method(:value_validator) do
+          options =
+            if validator[:options].nil?
+              {}
+            elsif validator[:options].arity == 0
+              instance_exec(&validator[:options])
+            else
+              validator[:options].call(self)
+            end
+          value_validator_class.new(**options)
+        end
 
-    def value_caster
-      value_caster_class.new(self)
+        define_method(:value_caster_class) do
+          @value_caster_class ||= caster[:class_name].constantize
+        end
+
+        define_method(:value_caster) do
+          options =
+            if caster[:options].nil?
+              {}
+            elsif caster[:options].arity == 0
+              instance_exec(&caster[:options])
+            else
+              caster[:options].call(self)
+            end
+          value_caster_class.new(**options)
+        end
+      end
     end
 
     def customizable_model

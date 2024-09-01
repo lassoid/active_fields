@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::DecimalCaster do
-  factory = :decimal_active_field
-  let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(factory) }
+  let(:object) { described_class.new(**args) }
+  let(:args) { {} }
 
   describe "#serialize" do
     subject(:call_method) { object.serialize(value) }
@@ -57,38 +56,36 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     end
 
     context "with precision" do
-      before do
-        active_field.precision = rand(0..10)
-      end
+      let(:args) { { precision: rand(0..10) } }
 
       context "when integer" do
         let(:value) { random_integer }
 
-        it { is_expected.to eq(value.to_d.truncate(active_field.precision).to_s) }
+        it { is_expected.to eq(value.to_d.truncate(args[:precision]).to_s) }
       end
 
       context "when float" do
         let(:value) { random_float }
 
-        it { is_expected.to eq(value.to_d.truncate(active_field.precision).to_s) }
+        it { is_expected.to eq(value.to_d.truncate(args[:precision]).to_s) }
       end
 
       context "when big decimal" do
         let(:value) { random_decimal }
 
-        it { is_expected.to eq(value.truncate(active_field.precision).to_s) }
+        it { is_expected.to eq(value.truncate(args[:precision]).to_s) }
       end
 
       context "when integer string" do
         let(:value) { random_integer.to_s }
 
-        it { is_expected.to eq(value.to_d.truncate(active_field.precision).to_s) }
+        it { is_expected.to eq(value.to_d.truncate(args[:precision]).to_s) }
       end
 
       context "when decimal string" do
         let(:value) { random_float.to_s }
 
-        it { is_expected.to eq(value.to_d.truncate(active_field.precision).to_s) }
+        it { is_expected.to eq(value.to_d.truncate(args[:precision]).to_s) }
       end
     end
   end
@@ -145,38 +142,36 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     end
 
     context "with precision" do
-      before do
-        active_field.precision = rand(0..10)
-      end
+      let(:args) { { precision: rand(0..10) } }
 
       context "when integer" do
         let(:value) { random_integer }
 
-        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(args[:precision])) }
       end
 
       context "when float" do
         let(:value) { random_float }
 
-        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(args[:precision])) }
       end
 
       context "when big decimal" do
         let(:value) { random_decimal }
 
-        it { is_expected.to eq(value.truncate(active_field.precision)) }
+        it { is_expected.to eq(value.truncate(args[:precision])) }
       end
 
       context "when integer string" do
         let(:value) { random_integer.to_s }
 
-        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(args[:precision])) }
       end
 
       context "when decimal string" do
         let(:value) { random_float.to_s }
 
-        it { is_expected.to eq(value.to_d.truncate(active_field.precision)) }
+        it { is_expected.to eq(value.to_d.truncate(args[:precision])) }
       end
     end
   end

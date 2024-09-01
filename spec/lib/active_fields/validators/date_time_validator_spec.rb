@@ -3,9 +3,8 @@
 RSpec.describe ActiveFields::Validators::DateTimeValidator do
   subject(:validate) { object.validate(value) }
 
-  factory = :datetime_active_field
-  let(:object) { described_class.new(active_field) }
-  let(:active_field) { build(factory) }
+  let(:object) { described_class.new(**args) }
+  let(:args) { {} }
 
   include_examples "field_value_validate", -> { nil }, "nil"
   include_examples "field_value_validate",
@@ -14,56 +13,56 @@ RSpec.describe ActiveFields::Validators::DateTimeValidator do
     -> { [:invalid] }
 
   context "when required" do
-    let(:active_field) { build(factory, :required) }
+    let(:args) { { required: true } }
 
     include_examples "field_value_validate", -> { nil }, "nil", -> { [:required] }
   end
 
   context "value comparison" do
     context "without min and max" do
-      let(:active_field) { build(factory) }
+      let(:args) { {} }
 
       include_examples "field_value_validate", -> { random_datetime }, "a datetime"
     end
 
     context "with min" do
-      let(:active_field) { build(factory, :with_min) }
+      let(:args) { { min: Time.current - rand(0..10).days } }
 
-      include_examples "field_value_validate", -> { active_field.min }, "a min datetime"
-      include_examples "field_value_validate", -> { active_field.min + 1.second }, "a datetime greater than min"
+      include_examples "field_value_validate", -> { args[:min] }, "a min datetime"
+      include_examples "field_value_validate", -> { args[:min] + 1.second }, "a datetime greater than min"
       include_examples "field_value_validate",
-        -> { active_field.min - 1.second },
+        -> { args[:min] - 1.second },
         "a datetime less than min",
-        -> { [[:greater_than_or_equal_to, count: I18n.l(active_field.min)]] }
+        -> { [[:greater_than_or_equal_to, count: I18n.l(args[:min])]] }
     end
 
     context "with max" do
-      let(:active_field) { build(factory, :with_max) }
+      let(:args) { { max: Time.current + rand(0..10).days } }
 
-      include_examples "field_value_validate", -> { active_field.max }, "a max datetime"
-      include_examples "field_value_validate", -> { active_field.max - 1.second }, "a datetime less than max"
+      include_examples "field_value_validate", -> { args[:max] }, "a max datetime"
+      include_examples "field_value_validate", -> { args[:max] - 1.second }, "a datetime less than max"
       include_examples "field_value_validate",
-        -> { active_field.max + 1.second },
+        -> { args[:max] + 1.second },
         "a datetime greater than max",
-        -> { [[:less_than_or_equal_to, count: I18n.l(active_field.max)]] }
+        -> { [[:less_than_or_equal_to, count: I18n.l(args[:max])]] }
     end
 
     context "with both min and max" do
-      let(:active_field) { build(factory, :with_min, :with_max) }
+      let(:args) { { min: Time.current - rand(0..10).days, max: Time.current + rand(0..10).days } }
 
-      include_examples "field_value_validate", -> { active_field.min }, "a min datetime"
-      include_examples "field_value_validate", -> { active_field.max }, "a max datetime"
+      include_examples "field_value_validate", -> { args[:min] }, "a min datetime"
+      include_examples "field_value_validate", -> { args[:max] }, "a max datetime"
       include_examples "field_value_validate",
-        -> { rand(active_field.min..active_field.max) },
+        -> { rand(args[:min]..args[:max]) },
         "a datetime between min and max"
       include_examples "field_value_validate",
-        -> { active_field.min - 1.second },
+        -> { args[:min] - 1.second },
         "a datetime less than min",
-        -> { [[:greater_than_or_equal_to, count: I18n.l(active_field.min)]] }
+        -> { [[:greater_than_or_equal_to, count: I18n.l(args[:min])]] }
       include_examples "field_value_validate",
-        -> { active_field.max + 1.second },
+        -> { args[:max] + 1.second },
         "a datetime greater than max",
-        -> { [[:less_than_or_equal_to, count: I18n.l(active_field.max)]] }
+        -> { [[:less_than_or_equal_to, count: I18n.l(args[:max])]] }
     end
   end
 end

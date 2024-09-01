@@ -3,6 +3,16 @@
 module ActiveFields
   module Field
     class Date < ActiveFields.config.field_base_class
+      acts_as_active_field(
+        validator: {
+          class_name: "ActiveFields::Validators::DateValidator",
+          options: -> { { required: required?, min: min, max: max } },
+        },
+        caster: {
+          class_name: "ActiveFields::Casters::DateCaster",
+        },
+      )
+
       store_accessor :options, :required, :min, :max
 
       validates :required, exclusion: [nil]
@@ -10,7 +20,7 @@ module ActiveFields
 
       %i[required].each do |column|
         define_method(column) do
-          Casters::BooleanCaster.new(nil).deserialize(super())
+          Casters::BooleanCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}?") do
@@ -18,17 +28,17 @@ module ActiveFields
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::BooleanCaster.new(nil).serialize(other))
+          super(Casters::BooleanCaster.new.serialize(other))
         end
       end
 
       %i[min max].each do |column|
         define_method(column) do
-          Casters::DateCaster.new(nil).deserialize(super())
+          Casters::DateCaster.new.deserialize(super())
         end
 
         define_method(:"#{column}=") do |other|
-          super(Casters::DateCaster.new(nil).serialize(other))
+          super(Casters::DateCaster.new.serialize(other))
         end
       end
 
