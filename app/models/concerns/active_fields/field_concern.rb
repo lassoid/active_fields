@@ -37,7 +37,9 @@ module ActiveFields
 
         define_method(:value_validator) do
           options =
-            if validator[:options].arity == 0
+            if validator[:options].nil?
+              {}
+            elsif validator[:options].arity == 0
               instance_exec(&validator[:options])
             else
               validator[:options].call(self)
@@ -51,7 +53,9 @@ module ActiveFields
 
         define_method(:value_caster) do
           options =
-            if caster[:options].arity == 0
+            if caster[:options].nil?
+              {}
+            elsif caster[:options].arity == 0
               instance_exec(&caster[:options])
             else
               caster[:options].call(self)

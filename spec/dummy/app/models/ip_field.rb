@@ -8,7 +8,6 @@ class IpField < ActiveFields.config.field_base_class
     },
     caster: {
       class_name: "IpCaster",
-      options: -> { {} },
     },
   )
 

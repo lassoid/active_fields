@@ -10,7 +10,6 @@ module ActiveFields
         },
         caster: {
           class_name: "ActiveFields::Casters::DateCaster",
-          options: -> { {} },
         },
       )
 

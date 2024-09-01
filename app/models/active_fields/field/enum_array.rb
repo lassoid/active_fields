@@ -11,7 +11,6 @@ module ActiveFields
         },
         caster: {
           class_name: "ActiveFields::Casters::EnumArrayCaster",
-          options: -> { {} },
         },
       )
 
