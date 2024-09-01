@@ -8,6 +8,7 @@
 - Utilize _ActiveRecord_'s nested attributes feature in _Customizable_ models to manage associated _Active Values_
 - Serialize decimals as strings as _ActiveRecord_ does for JSON columns
 - Added datetime and datetime array field types
+- Added fields configuration DSL
 
 ## [0.2.0] - 2024-06-13
 
