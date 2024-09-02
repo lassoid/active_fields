@@ -11,6 +11,7 @@ module ActiveFields
           :max_size,
           :min,
           :max,
+          :precision,
           default_value: [],
         ]
       end

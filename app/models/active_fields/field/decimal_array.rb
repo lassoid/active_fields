@@ -20,7 +20,10 @@ module ActiveFields
       validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
       validates :precision, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
 
-      before_validation :reapply_precision
+      # If precision is set after attributes that depend on it, deserialization will work correctly,
+      # but an incorrect internal value may be saved in the DB.
+      # This callback reassigns the internal values of the attributes to ensure accuracy.
+      before_save :reapply_precision
 
       %i[precision].each do |column|
         define_method(column) do

@@ -3,6 +3,8 @@
 module ActiveFields
   module Casters
     class DateTimeCaster < BaseCaster
+      MAX_PRECISION = RUBY_VERSION >= "3.2" ? 9 : 6 # AR max precision is 6 for old Rubies
+
       def serialize(value)
         value = value.iso8601 if value.is_a?(Date)
         casted_value = caster.serialize(value)
@@ -14,17 +16,32 @@ module ActiveFields
         value = value.iso8601 if value.is_a?(Date)
         casted_value = caster.deserialize(value)
 
-        casted_value.in_time_zone if casted_value.acts_like?(:time)
+        apply_precision(casted_value).in_time_zone if casted_value.acts_like?(:time)
       end
 
       private
 
       def caster
-        ActiveRecord::Type::DateTime.new(precision: precision)
+        ActiveRecord::Type::DateTime.new
       end
 
+      # Use max precision by default,
+      # so the caster would not truncate useful time info before the possible apply of precision later
+      # or if the provided value is too big
       def precision
-        options[:precision] || 6
+        [options[:precision], MAX_PRECISION].compact.min
+      end
+
+      def apply_precision(value)
+        number_of_insignificant_digits = 9 - precision
+        round_power = 10**number_of_insignificant_digits
+        rounded_off_nsec = value.nsec % round_power
+
+        if rounded_off_nsec > 0
+          value.change(nsec: value.nsec - rounded_off_nsec)
+        else
+          value
+        end
       end
     end
   end

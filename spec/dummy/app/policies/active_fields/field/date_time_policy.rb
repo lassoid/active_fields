@@ -4,7 +4,7 @@ module ActiveFields
   module Field
     class DateTimePolicy < ApplicationPolicy
       def permitted_attributes_for_create
-        %i[customizable_type name required min max default_value]
+        %i[customizable_type name required min max precision default_value]
       end
 
       def permitted_attributes_for_update
