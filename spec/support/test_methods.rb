@@ -41,11 +41,7 @@ module TestMethods
     round_power = 10**number_of_insignificant_digits
     rounded_off_nsec = value.nsec % round_power
 
-    if rounded_off_nsec > 0
-      value.change(nsec: value.nsec - rounded_off_nsec)
-    else
-      value
-    end
+    value.change(nsec: value.nsec - rounded_off_nsec)
   end
 
   def dummy_models
