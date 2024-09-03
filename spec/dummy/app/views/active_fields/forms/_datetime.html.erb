@@ -38,6 +38,11 @@
   </div>
 
   <div class="form-input">
+    <%= f.label :precision %>
+    <%= f.number_field :precision, min: 0, max: ActiveFields::Casters::DateTimeCaster::MAX_PRECISION, disabled: active_field.persisted? %>
+  </div>
+
+  <div class="form-input">
     <%= f.label :default_value %>
     <%= f.datetime_field :default_value %>
   </div>

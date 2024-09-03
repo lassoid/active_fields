@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name, klass|
-  max_precision = RUBY_VERSION >= "3.2" ? 9 : 6 # AR max precision is 6 for old Rubies
-  default_precision = 6
+  max_precision = ActiveFields::Casters::DateTimeCaster::MAX_PRECISION
 
   describe "##{attr_name}" do
     subject(:call_method) { record.public_send(attr_name) }
@@ -53,7 +52,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       context "when internal value is a datetime" do
         let(:internal_value) { random_datetime.utc }
 
-        it { is_expected.to eq(apply_datetime_precision(internal_value.in_time_zone, default_precision)) }
+        it { is_expected.to eq(apply_datetime_precision(internal_value.in_time_zone, max_precision)) }
       end
 
       context "when internal value is a datetime string" do
@@ -91,7 +90,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       context "when internal value is a datetime" do
         let(:internal_value) { random_datetime.utc }
 
-        it { is_expected.to eq(apply_datetime_precision(internal_value.in_time_zone, default_precision)) }
+        it { is_expected.to eq(apply_datetime_precision(internal_value.in_time_zone, max_precision)) }
       end
 
       context "when internal value is a datetime string" do
@@ -161,7 +160,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(value.to_time(:utc).iso8601(default_precision))
+            .to eq(value.to_time(:utc).iso8601(max_precision))
         end
       end
 
@@ -172,7 +171,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Date.parse(value).to_time(:utc).iso8601(default_precision))
+            .to eq(Date.parse(value).to_time(:utc).iso8601(max_precision))
         end
       end
 
@@ -183,7 +182,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(value.utc.iso8601(default_precision))
+            .to eq(value.utc.iso8601(max_precision))
         end
       end
 
@@ -194,7 +193,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Time.zone.parse(value).utc.iso8601(default_precision))
+            .to eq(Time.zone.parse(value).utc.iso8601(max_precision))
         end
       end
 
@@ -205,7 +204,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Time.zone.parse(value).utc.iso8601(default_precision))
+            .to eq(Time.zone.parse(value).utc.iso8601(max_precision))
         end
       end
     end
@@ -224,7 +223,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(value.to_time(:utc).iso8601(default_precision))
+            .to eq(value.to_time(:utc).iso8601(max_precision))
         end
       end
 
@@ -235,7 +234,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Date.parse(value).to_time(:utc).iso8601(default_precision))
+            .to eq(Date.parse(value).to_time(:utc).iso8601(max_precision))
         end
       end
 
@@ -246,7 +245,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(value.utc.iso8601(default_precision))
+            .to eq(value.utc.iso8601(max_precision))
         end
       end
 
@@ -257,7 +256,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Time.zone.parse(value).utc.iso8601(default_precision))
+            .to eq(Time.zone.parse(value).utc.iso8601(max_precision))
         end
       end
 
@@ -268,7 +267,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
           call_method
 
           expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Time.zone.parse(value).utc.iso8601(default_precision))
+            .to eq(Time.zone.parse(value).utc.iso8601(max_precision))
         end
       end
     end

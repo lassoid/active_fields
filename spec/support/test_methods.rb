@@ -37,17 +37,11 @@ module TestMethods
   end
 
   def apply_datetime_precision(value, precision)
-    return value unless precision && value.respond_to?(:nsec)
-
     number_of_insignificant_digits = 9 - precision
     round_power = 10**number_of_insignificant_digits
     rounded_off_nsec = value.nsec % round_power
 
-    if rounded_off_nsec > 0
-      value.change(nsec: value.nsec - rounded_off_nsec)
-    else
-      value
-    end
+    value.change(nsec: value.nsec - rounded_off_nsec)
   end
 
   def dummy_models
@@ -125,7 +119,7 @@ module TestMethods
     when ActiveFields::Field::DateTime
       min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
-      precision = active_field.precision || 6
+      precision = [active_field.precision, ActiveFields::Casters::DateTimeCaster::MAX_PRECISION].compact.min
 
       allowed = [apply_datetime_precision(rand(min..max), precision)]
       allowed << nil unless active_field.required?
@@ -134,7 +128,7 @@ module TestMethods
     when ActiveFields::Field::DateTimeArray
       min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
-      precision = active_field.precision || 6
+      precision = [active_field.precision, ActiveFields::Casters::DateTimeCaster::MAX_PRECISION].compact.min
 
       min_size = [active_field.min_size, 0].compact.max
       max_size =
