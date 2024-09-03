@@ -25,9 +25,8 @@ module ActiveFields
         ActiveRecord::Type::DateTime.new
       end
 
-      # Use max precision by default,
-      # so the caster would not truncate useful time info before the possible apply of precision later
-      # or if the provided value is too big
+      # Use maximum precision by default to prevent the caster from truncating useful time information
+      # before precision is applied later
       def precision
         [options[:precision], MAX_PRECISION].compact.min
       end
