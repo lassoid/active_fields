@@ -89,11 +89,70 @@ RSpec.shared_examples "active_value" do |factory:|
     end
   end
 
+  context "callbacks" do
+    describe "before_validation #assign_value_from_temp" do
+      let(:record) { ActiveFields.config.value_class.new }
+      let(:active_field) { build(random_active_field_factory) }
+      let(:value) { active_value_for(active_field) }
+
+      context "with active_field and temp_value" do
+        before do
+          # Assign the value before the active_field to set temp_value
+          record.value = value
+          record.active_field = active_field
+        end
+
+        it "sets the value from temp variable and clears it" do
+          record.valid?
+
+          expect(record.temp_value).to be_nil
+          # Do not use value getter, because it triggers this callback too
+          expect(record.active_field.value_caster.deserialize(record.value_meta["const"])).to eq(value)
+        end
+      end
+
+      context "without active_field" do
+        before do
+          # Set temp_value
+          record.value = value
+        end
+
+        it "doesn't change value and temp variable" do
+          record.valid?
+
+          expect(record.temp_value["value"]).to eq(value)
+          # Do not use value getter, because it triggers this callback too
+          expect(record.value_meta["const"]).to be_nil
+        end
+      end
+
+      context "without temp_value" do
+        before do
+          record.active_field = active_field
+        end
+
+        it "doesn't change value" do
+          record.valid?
+
+          # Do not use value getter, because it triggers this callback too
+          expect(record.value_meta["const"]).to be_nil
+        end
+      end
+    end
+  end
+
   context "methods" do
-    let(:record) { build(factory) }
+    let(:record) { build(factory, active_field: active_field) }
+    let(:active_field) { build(random_active_field_factory) }
 
     describe "#value" do
       subject(:call_method) { record.value }
+
+      it "doesn't change value" do
+        expect do
+          call_method
+        end.to not_change { record.value_meta["const"] }
+      end
 
       it { is_expected.to eq(record.active_field.value_caster.deserialize(record.value_meta["const"])) }
 
@@ -102,32 +161,76 @@ RSpec.shared_examples "active_value" do |factory:|
           record.active_field = nil
         end
 
+        it "doesn't change value" do
+          expect do
+            call_method
+          end.to not_change { record.value_meta["const"] }
+        end
+
         it { is_expected.to be_nil }
+      end
+
+      context "with temp value" do
+        let(:value) { active_value_for(active_field) }
+
+        before do
+          # Temporarily remove the active_field to save the value in a temp variable, then restore it
+          record.active_field = nil
+          record.value = value
+          record.active_field = active_field
+        end
+
+        it "sets value from temp variable and clears it" do
+          call_method
+
+          expect(record.temp_value).to be_nil
+          expect(record.active_field.value_caster.deserialize(record.value_meta["const"])).to eq(value)
+        end
+
+        it { is_expected.to eq(value) }
       end
     end
 
     describe "#value=" do
       subject(:call_method) { record.value = value }
 
-      let(:value) { active_value_for(record.active_field) }
+      let(:value) { active_value_for(active_field) }
 
       it "sets value" do
         call_method
 
         expect(record.value_meta["const"]).to eq(record.active_field.value_caster.serialize(value))
+        expect(record.temp_value).to be_nil
       end
 
       context "without active_field" do
-        let(:value) { build(factory).value }
-
         before do
           record.active_field = nil
         end
 
-        it "sets nil" do
-          call_method
+        it "sets temp variable, not value itself" do
+          expect do
+            call_method
+          end.to not_change { record.value_meta["const"] }
 
-          expect(record.value).to be_nil
+          expect(record.temp_value["value"]).to eq(value)
+        end
+      end
+
+      context "with temp_value" do
+        before do
+          # Temporarily remove the active_field to save the value in a temp variable, then restore it
+          record.active_field = nil
+          record.value = active_value_for(active_field)
+          record.active_field = active_field
+        end
+
+        it "sets the value and clears temp variable" do
+          expect do
+            call_method
+          end.to change(record, :temp_value).to(nil)
+
+          expect(record.value_meta["const"]).to eq(record.active_field.value_caster.serialize(value))
         end
       end
     end

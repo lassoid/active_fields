@@ -237,7 +237,7 @@ module TestMethods
 
       allowed.sample
     else
-      raise ArgumentError, "undefined active field type"
+      raise ArgumentError, "undefined active field type `#{active_field.inspect}`"
     end
   end
 end

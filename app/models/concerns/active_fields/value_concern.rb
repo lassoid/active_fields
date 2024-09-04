@@ -17,14 +17,30 @@ module ActiveFields
       validates :active_field, uniqueness: { scope: :customizable }
       validate :validate_value
       validate :validate_customizable_allowed
+
+      before_validation :assign_value_from_temp, if: -> { temp_value && active_field }
     end
 
+    attr_reader :temp_value
+
     def value=(v)
-      value_meta["const"] = active_field&.value_caster&.serialize(v)
+      if active_field
+        clear_temp_value
+        value_meta["const"] = active_field.value_caster.serialize(v)
+      else
+        assign_temp_value(v)
+      end
     end
 
     def value
-      active_field&.value_caster&.deserialize(value_meta["const"])
+      return unless active_field
+
+      if temp_value
+        assign_value_from_temp
+        value
+      else
+        active_field.value_caster.deserialize(value_meta["const"])
+      end
     end
 
     private
@@ -50,6 +66,20 @@ module ActiveFields
 
       errors.add(:customizable, :invalid)
       false
+    end
+
+    # Wrap the provided value to differentiate between explicitly setting it to nil and not setting it at all
+    def assign_temp_value(v)
+      @temp_value = { "value" => v }
+    end
+
+    def clear_temp_value
+      @temp_value = nil
+    end
+
+    def assign_value_from_temp
+      self.value = temp_value["value"]
+      clear_temp_value
     end
   end
 end
