@@ -35,12 +35,9 @@ module ActiveFields
     def value
       return unless active_field
 
-      if temp_value
-        assign_value_from_temp
-        value
-      else
-        active_field.value_caster.deserialize(value_meta["const"])
-      end
+      assign_value_from_temp if temp_value
+
+      active_field.value_caster.deserialize(value_meta["const"])
     end
 
     private
@@ -79,7 +76,6 @@ module ActiveFields
 
     def assign_value_from_temp
       self.value = temp_value["value"]
-      clear_temp_value
     end
   end
 end
