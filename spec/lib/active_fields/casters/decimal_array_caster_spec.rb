@@ -32,13 +32,13 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
     end
 
     context "when array of number strings" do
-      let(:value) { [random_integer.to_s, random_float.to_s] }
+      let(:value) { [random_integer.to_s, random_decimal.to_s] }
 
       it { is_expected.to eq(value.map { _1.to_d.to_s }) }
     end
 
     context "when not an array" do
-      let(:value) { [random_integer.to_s, random_float.to_s, *random_numbers].sample }
+      let(:value) { [random_integer.to_s, random_decimal.to_s, *random_numbers].sample }
 
       it { is_expected.to be_nil }
     end
@@ -53,7 +53,7 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
       end
 
       context "when array of number strings" do
-        let(:value) { [random_integer.to_s, random_float.to_s] }
+        let(:value) { [random_integer.to_s, random_decimal.to_s] }
 
         it { is_expected.to eq(value.map { _1.to_d.truncate(args[:precision]).to_s }) }
       end
@@ -88,13 +88,13 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
     end
 
     context "when array of number strings" do
-      let(:value) { [random_integer.to_s, random_float.to_s] }
+      let(:value) { [random_integer.to_s, random_decimal.to_s] }
 
       it { is_expected.to eq(value.map(&:to_d)) }
     end
 
     context "when not an array" do
-      let(:value) { [random_integer.to_s, random_float.to_s, *random_numbers].sample }
+      let(:value) { [random_integer.to_s, random_decimal.to_s, *random_numbers].sample }
 
       it { is_expected.to be_nil }
     end
@@ -109,7 +109,7 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
       end
 
       context "when array of number strings" do
-        let(:value) { [random_integer.to_s, random_float.to_s] }
+        let(:value) { [random_integer.to_s, random_decimal.to_s] }
 
         it { is_expected.to eq(value.map { _1.to_d.truncate(args[:precision]) }) }
       end

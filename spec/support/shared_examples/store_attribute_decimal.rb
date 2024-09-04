@@ -40,8 +40,8 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it { is_expected.to eq(internal_value.to_d) }
     end
 
-    context "when internal value is decimal string" do
-      let(:internal_value) { random_float.to_s }
+    context "when internal value is a decimal string" do
+      let(:internal_value) { random_decimal.to_s }
 
       it { is_expected.to eq(internal_value.to_d) }
     end
@@ -114,8 +114,8 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       end
     end
 
-    context "when value is decimal string" do
-      let(:value) { random_float.to_s }
+    context "when value is a decimal string" do
+      let(:value) { random_decimal.to_s }
 
       it "sets decimal" do
         call_method

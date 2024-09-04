@@ -38,7 +38,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     end
 
     context "when decimal string" do
-      let(:value) { random_float.to_s }
+      let(:value) { random_decimal.to_s }
 
       it { is_expected.to eq(value.to_d.to_s) }
     end
@@ -83,7 +83,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       end
 
       context "when decimal string" do
-        let(:value) { random_float.to_s }
+        let(:value) { random_decimal.to_s }
 
         it { is_expected.to eq(value.to_d.truncate(args[:precision]).to_s) }
       end
@@ -124,7 +124,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     end
 
     context "when decimal string" do
-      let(:value) { random_float.to_s }
+      let(:value) { random_decimal.to_s }
 
       it { is_expected.to eq(value.to_d) }
     end
@@ -169,7 +169,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       end
 
       context "when decimal string" do
-        let(:value) { random_float.to_s }
+        let(:value) { random_decimal.to_s }
 
         it { is_expected.to eq(value.to_d.truncate(args[:precision])) }
       end
