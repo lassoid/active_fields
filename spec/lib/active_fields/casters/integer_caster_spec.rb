@@ -38,7 +38,7 @@ RSpec.describe ActiveFields::Casters::IntegerCaster do
     end
 
     context "when decimal string" do
-      let(:value) { random_float.to_s }
+      let(:value) { random_decimal.to_s }
 
       it { is_expected.to eq(value.to_i) }
     end
@@ -90,7 +90,7 @@ RSpec.describe ActiveFields::Casters::IntegerCaster do
     end
 
     context "when decimal string" do
-      let(:value) { random_float.to_s }
+      let(:value) { random_decimal.to_s }
 
       it { is_expected.to eq(value.to_i) }
     end
