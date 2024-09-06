@@ -142,7 +142,7 @@ RSpec.shared_examples "customizable" do
 
       context "when active_value not found" do
         context "with value" do
-          context "hash with symbol keys" do
+          context "with hash containing symbol keys" do
             let(:attributes) { { name: active_field.name, value: active_value_for(active_field) } }
 
             it "builds an active_value" do
@@ -154,16 +154,93 @@ RSpec.shared_examples "customizable" do
               expect(active_value.value).to eq(attributes[:value])
             end
           end
+
+          context "with hash containing string keys" do
+            let(:attributes) { { "name" => active_field.name, "value" => active_value_for(active_field) } }
+
+            it "builds an active_value" do
+              expect do
+                call_method
+              end.to change { record.active_values.size }.by(1)
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes["value"])
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new(
+                "name" => active_field.name,
+                "value" => active_value_for(active_field),
+              ).permit!
+            end
+
+            it "builds an active_value" do
+              expect do
+                call_method
+              end.to change { record.active_values.size }.by(1)
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes[:value])
+            end
+          end
+
+          context "with unpermitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => active_field.name, "value" => active_value_for(active_field))
+            end
+
+            it "raises an error" do
+              expect do
+                call_method
+              end.to raise_error(ActionController::UnfilteredParameters)
+            end
+          end
         end
 
         context "with destroy mark" do
-          context "hash with symbol keys" do
+          context "with hash containing symbol keys" do
             let(:attributes) { { name: active_field.name, _destroy: true } }
 
             it "doesn't build an active_value" do
               expect do
                 call_method
               end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with hash containing string keys" do
+            let(:attributes) { { "name" => active_field.name, "_destroy" => true } }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => active_field.name, "_destroy" => "true").permit!
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with unpermitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => active_field.name, "_destroy" => "true")
+            end
+
+            it "raises an error" do
+              expect do
+                call_method
+              end.to raise_error(ActionController::UnfilteredParameters)
             end
           end
         end
@@ -175,7 +252,7 @@ RSpec.shared_examples "customizable" do
         end
 
         context "with value" do
-          context "hash with symbol keys" do
+          context "with hash containing symbol keys" do
             let(:attributes) { { name: active_field.name, value: active_value_for(active_field) } }
 
             it "changes the active_value" do
@@ -187,10 +264,53 @@ RSpec.shared_examples "customizable" do
               expect(active_value.value).to eq(attributes[:value])
             end
           end
+
+          context "with hash containing string keys" do
+            let(:attributes) { { "name" => active_field.name, "value" => active_value_for(active_field) } }
+
+            it "changes the active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes["value"])
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new(
+                "name" => active_field.name,
+                "value" => active_value_for(active_field),
+              ).permit!
+            end
+
+            it "changes the active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes[:value])
+            end
+          end
+
+          context "with unpermitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => active_field.name, "value" => active_value_for(active_field))
+            end
+
+            it "raises an error" do
+              expect do
+                call_method
+              end.to raise_error(ActionController::UnfilteredParameters)
+            end
+          end
         end
 
         context "with destroy mark" do
-          context "hash with symbol keys" do
+          context "with hash containing symbol keys" do
             let(:attributes) { { name: active_field.name, _destroy: true } }
 
             it "marks the active_value for destruction" do
@@ -202,12 +322,52 @@ RSpec.shared_examples "customizable" do
               expect(active_value.marked_for_destruction?).to be(true)
             end
           end
+
+          context "with hash containing string keys" do
+            let(:attributes) { { "name" => active_field.name, "_destroy" => true } }
+
+            it "marks the active_value for destruction" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.marked_for_destruction?).to be(true)
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => active_field.name, "_destroy" => "true").permit!
+            end
+
+            it "marks the active_value for destruction" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.marked_for_destruction?).to be(true)
+            end
+          end
+
+          context "with unpermitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => active_field.name, "_destroy" => "true")
+            end
+
+            it "raises an error" do
+              expect do
+                call_method
+              end.to raise_error(ActionController::UnfilteredParameters)
+            end
+          end
         end
       end
 
       context "when active_field not found" do
         context "with value" do
-          context "hash with symbol keys" do
+          context "with hash containing symbol keys" do
             let(:attributes) { { name: "invalid", value: nil } }
 
             it "doesn't build an active_value" do
@@ -216,16 +376,84 @@ RSpec.shared_examples "customizable" do
               end.to not_change { record.active_values.size }
             end
           end
+
+          context "with hash containing string keys" do
+            let(:attributes) { { "name" => "invalid", "value" => nil } }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => "invalid", "value" => nil).permit!
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with unpermitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => "invalid", "value" => nil)
+            end
+
+            it "raises an error" do
+              expect do
+                call_method
+              end.to raise_error(ActionController::UnfilteredParameters)
+            end
+          end
         end
 
         context "with destroy mark" do
-          context "hash with symbol keys" do
+          context "with hash containing symbol keys" do
             let(:attributes) { { name: "invalid", _destroy: true } }
 
             it "doesn't build an active_value" do
               expect do
                 call_method
               end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with hash containing string keys" do
+            let(:attributes) { { "name" => "invalid", "_destroy" => true } }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => "invalid", "_destroy" => "true").permit!
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with unpermitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new("name" => "invalid", "_destroy" => "true")
+            end
+
+            it "raises an error" do
+              expect do
+                call_method
+              end.to raise_error(ActionController::UnfilteredParameters)
             end
           end
         end
