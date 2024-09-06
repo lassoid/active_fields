@@ -22,6 +22,45 @@ module ActiveFields
       ActiveFields.config.field_base_class.for(model_name.name)
     end
 
+    # [
+    #   { name: "integer_array", value: [1, 4, 5, 5, 0] }, # create or update (symbol keys)
+    #   { "name" => "text", "value" => "Lasso" }, # create or update (string keys)
+    #   { name: "date", _destroy: true }, # destroy (symbol keys)
+    #   { "name" => "boolean", "_destroy" => true }, # destroy (string keys)
+    # ]
+    def active_fields=(attributes)
+      unless attributes.is_a?(Array)
+        raise ArgumentError, "Array expected for `active_fields=`, got #{attributes.class.name}"
+      end
+
+      active_fields_by_name = active_fields.index_by(&:name)
+      active_values_by_field_id = active_values.index_by(&:active_field_id)
+
+      nested_attributes = attributes.filter_map do |active_value_attributes|
+        # Convert params to Hash
+        active_value_attributes = active_value_attributes.to_h if active_value_attributes.respond_to?(:permitted?)
+        active_value_attributes = active_value_attributes.with_indifferent_access
+
+        active_field = active_fields_by_name[active_value_attributes[:name]]
+        next if active_field.nil?
+
+        active_value = active_values_by_field_id[active_field.id]
+
+        if has_destroy_flag?(active_value_attributes)
+          # Destroy
+          { id: active_value&.id, _destroy: true }
+        elsif active_value
+          # Update
+          { id: active_value.id, value: active_value_attributes[:value] }
+        else
+          # Create
+          { active_field: active_field, value: active_value_attributes[:value] }
+        end
+      end
+
+      self.active_values_attributes = nested_attributes
+    end
+
     # Build an active_value, if it doesn't exist, with a default value for each available active_field
     def initialize_active_values
       existing_field_ids = active_values.map(&:active_field_id)
