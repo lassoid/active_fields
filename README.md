@@ -511,8 +511,10 @@ customizable.active_fields = [
   permitted_params, # params could be passed, but they must be permitted
 ]
 
-# Create, update or destroy Active Values. Please use `customizable.active_fields =` instead.
-# Powered by Rails `accepts_nested_attributes_for`.
+# Alias of `#active_fields=` for `fields_for` support.
+customizable.active_fields_attributes = attributes
+
+# Create, update or destroy Active Values. Please use `active_fields=`/`active_fields_attributes=` instead.
 customizable.active_values_attributes = attributes
 
 # Build an Active Value, if it doesn't exist, with the default value for each Active Field.
