@@ -503,13 +503,17 @@ customizable.active_values # `has_many` association with Active Values linked to
 customizable.active_fields # Collection of Active Fields registered for this record
 
 # Create, update or destroy Active Values.
-# Powered by Rails `accepts_nested_attributes_for`.
-# More info: https://edgeapi.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
-customizable.active_values_attributes = [
-  { active_field_id: 1, value: [1, 2] }, # create
-  { id: 2, value: "2024-07-16" }, # update
-  { id: 3, _destroy: true }, # destroy
+customizable.active_fields = [
+  { name: "integer_array", value: [1, 4, 5, 5, 0] }, # create or update (symbol keys)
+  { "name" => "text", "value" => "Lasso" }, # create or update (string keys)
+  { name: "date", _destroy: true }, # destroy (symbol keys)
+  { "name" => "boolean", "_destroy" => true }, # destroy (string keys)
+  permitted_params, # params could be passed, but they must be permitted
 ]
+
+# Create, update or destroy Active Values. Please use `customizable.active_fields =` instead.
+# Powered by Rails `accepts_nested_attributes_for`.
+customizable.active_values_attributes = attributes
 
 # Build an Active Value, if it doesn't exist, with the default value for each Active Field.
 # This method is useful with `fields_for`, allowing you to pass the collection as an argument to render new Active Values:

@@ -22,12 +22,24 @@ module ActiveFields
       ActiveFields.config.field_base_class.for(model_name.name)
     end
 
-    # [
-    #   { name: "integer_array", value: [1, 4, 5, 5, 0] }, # create or update (symbol keys)
-    #   { "name" => "text", "value" => "Lasso" }, # create or update (string keys)
-    #   { name: "date", _destroy: true }, # destroy (symbol keys)
-    #   { "name" => "boolean", "_destroy" => true }, # destroy (string keys)
-    # ]
+    # Assigns the given attributes to the active_values association.
+    #
+    # Accepts an Array of Hashes (symbol/string keys) or permitted params.
+    # Each element should contain a <tt>:name</tt> key matching an existing active_field record.
+    # Element with a <tt>:value</tt> key will create an active_value if it doesn't exist
+    # or update an existing active_value, with the provided value.
+    # Element with a <tt>:_destroy</tt> key set to a truthy value will mark the
+    # matched active_value for destruction.
+    #
+    # Example:
+    #
+    #   customizable.active_fields = [
+    #     { name: "integer_array", value: [1, 4, 5, 5, 0] }, # create or update (symbol keys)
+    #     { "name" => "text", "value" => "Lasso" }, # create or update (string keys)
+    #     { name: "date", _destroy: true }, # destroy (symbol keys)
+    #     { "name" => "boolean", "_destroy" => true }, # destroy (string keys)
+    #     permitted_params, # params could be passed, but they must be permitted
+    #   ]
     def active_fields=(attributes)
       unless attributes.is_a?(Array)
         raise ArgumentError, "Array expected for `active_fields=`, got #{attributes.class.name}"
