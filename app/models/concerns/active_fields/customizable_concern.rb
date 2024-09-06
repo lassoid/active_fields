@@ -41,9 +41,12 @@ module ActiveFields
     #     permitted_params, # params could be passed, but they must be permitted
     #   ]
     def active_fields=(attributes)
-      unless attributes.is_a?(Array)
-        raise ArgumentError, "Array expected for `active_fields=`, got #{attributes.class.name}"
+      unless attributes.is_a?(Array) || attributes.is_a?(Hash)
+        raise ArgumentError, "Array or Hash expected for `active_fields=`, got #{attributes.class.name}"
       end
+
+      # Handle `fields_for` params
+      attributes = attributes.values if attributes.is_a?(Hash)
 
       active_fields_by_name = active_fields.index_by(&:name)
       active_values_by_field_id = active_values.index_by(&:active_field_id)
@@ -72,6 +75,8 @@ module ActiveFields
 
       self.active_values_attributes = nested_attributes
     end
+
+    alias_method :active_fields_attributes=, :active_fields=
 
     # Build an active_value, if it doesn't exist, with a default value for each available active_field
     def initialize_active_values

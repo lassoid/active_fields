@@ -1,6 +1,4 @@
-<% if active_value.new_record? %>
-  <%= form.hidden_field :active_field_id %>
-<% end %>
+<%= form.hidden_field :name, value: active_value.active_field.name %>
 
 <div class="form-input">
   <%= form.label :value, active_field.name %>

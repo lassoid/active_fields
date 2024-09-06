@@ -140,6 +140,7 @@ RSpec.shared_examples "customizable" do
         create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
       end
 
+      # TODO: test fields_for params { "0" => ..., "1" => ..., ... }
       context "when active_value not found" do
         context "with value" do
           context "with hash containing symbol keys" do
