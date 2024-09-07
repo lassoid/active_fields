@@ -46,10 +46,10 @@ such as booleans, strings, numbers, arrays, etc.
     bundle add active_fields
     ```
 
-2. Add the plugin migrations to your app and run them:
+2. Run install generator, then run migrations:
 
     ```shell
-    bin/rails active_fields:install
+    bin/rails generate active_fields:install
     bin/rails db:migrate
     ```
 
