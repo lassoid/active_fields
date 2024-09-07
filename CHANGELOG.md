@@ -9,6 +9,8 @@
 - Serialize decimals as strings as _ActiveRecord_ does for JSON columns
 - Added datetime and datetime array field types
 - Added fields configuration DSL
+- Introduced new _Customizable_ setter for _Active Values_ (`active_fields_attributes=`) with a more convenient syntax
+    to replace the default setter (`active_values_attributes=`) from Rails nested attributes feature.
 
 ## [0.2.0] - 2024-06-13
 
