@@ -66,10 +66,10 @@ RSpec.shared_examples "customizable" do
         record.active_values_attributes = [attributes]
       end
 
-      context "create" do
+      context "with a new active_value" do
         let(:attributes) { { active_field_id: active_field.id, value: active_value_for(active_field) } }
 
-        it "builds an active_value" do
+        it "creates it" do
           expect do
             save_record
             record.reload
@@ -80,11 +80,11 @@ RSpec.shared_examples "customizable" do
         end
       end
 
-      context "update" do
+      context "with a persisted active_value" do
         let!(:active_value) { create(active_value_factory, active_field: active_field, customizable: record) }
         let(:attributes) { { id: active_value.id, value: active_value_for(active_field) } }
 
-        it "updates the active_value" do
+        it "updates it if changed" do
           expect do
             save_record
             record.reload
@@ -95,11 +95,11 @@ RSpec.shared_examples "customizable" do
         end
       end
 
-      context "destroy" do
+      context "with a persisted active_value marked for destruction" do
         let!(:active_value) { create(active_value_factory, active_field: active_field, customizable: record) }
         let(:attributes) { { id: active_value.id, _destroy: true } }
 
-        it "destroys the active_value" do
+        it "destroys it" do
           expect do
             save_record
             record.reload
