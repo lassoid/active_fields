@@ -58,79 +58,63 @@ RSpec.shared_examples "customizable" do
       subject(:save_record) { record.save! }
 
       let!(:record) { described_class.create! }
-      let!(:active_fields) do
-        active_field_factories_for(record.class).map do |active_field_factory|
-          create(active_field_factory, customizable_type: record.class.name)
-        end
-      end
-      let!(:existing_active_values) do
-        active_fields.sample(3).map do |active_field|
-          create(active_value_factory, active_field: active_field, customizable: record)
-        end
-      end
-      let(:data) do
-        {
-          active_field_to_create: active_fields.find { existing_active_values.map(&:active_field_id).exclude?(_1.id) },
-          active_value_to_update: existing_active_values.first,
-          active_value_to_destroy: existing_active_values.second,
-          unchanged_active_value: existing_active_values.third,
-        }
-      end
-      let(:action_attributes) do
-        {
-          create: {
-            active_field_id: data[:active_field_to_create].id,
-            value: active_value_for(data[:active_field_to_create]),
-          },
-          update: {
-            id: data[:active_value_to_update].id,
-            value: active_value_for(data[:active_value_to_update].active_field),
-          },
-          destroy: {
-            id: data[:active_value_to_destroy].id,
-            _destroy: true,
-          },
-        }
+      let!(:active_field) do
+        create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
       end
 
       before do
-        record.active_values_attributes = action_attributes.values
+        record.active_values_attributes = [attributes]
       end
 
-      it "creates new active_values" do
-        save_record
-        record.reload
+      context "with a new active_value" do
+        let(:attributes) { { active_field_id: active_field.id, value: active_value_for(active_field) } }
 
-        created_active_value = record.active_values.find { _1.active_field_id == data[:active_field_to_create].id }
-        expect(created_active_value.value).to eq(action_attributes[:create][:value])
+        it "creates it" do
+          expect do
+            save_record
+            record.reload
+          end.to change { record.active_values.count }.by(1)
+
+          active_value = record.active_values.find { _1.active_field_id == active_field.id }
+          expect(active_value.value).to eq(attributes[:value])
+        end
       end
 
-      it "updates active_values" do
-        save_record
-        data[:active_value_to_update].reload
+      context "with a persisted active_value" do
+        let!(:active_value) { create(active_value_factory, active_field: active_field, customizable: record) }
+        let(:attributes) { { id: active_value.id, value: active_value_for(active_field) } }
 
-        expect(data[:active_value_to_update].value).to eq(action_attributes[:update][:value])
+        it "updates it if changed" do
+          expect do
+            save_record
+            record.reload
+            active_value.reload
+          end.to not_change { record.active_values.count }
+
+          expect(active_value.value).to eq(attributes[:value])
+        end
       end
 
-      it "destroys active_values" do
-        save_record
-        record.reload
+      context "with a persisted active_value marked for destruction" do
+        let!(:active_value) { create(active_value_factory, active_field: active_field, customizable: record) }
+        let(:attributes) { { id: active_value.id, _destroy: true } }
 
-        destroyed_active_value = record.active_values.find { _1.id == data[:active_value_to_destroy].id }
-        expect(destroyed_active_value).to be_nil
-      end
+        it "destroys it" do
+          expect do
+            save_record
+            record.reload
+          end.to change { record.active_values.count }.by(-1)
 
-      it "doesn't change other active_values" do
-        expect do
-          save_record
-          data[:unchanged_active_value].reload
-        end.to not_change { data[:unchanged_active_value].value }
+          expect(record.active_values.find { _1.id == active_value.id }).to be_nil
+        end
       end
     end
   end
 
   context "methods" do
     describe "#active_fields" do
+      subject(:call_method) { record.active_fields }
+
       let(:record) { described_class.create! }
 
       let!(:active_fields) do
@@ -142,9 +126,404 @@ RSpec.shared_examples "customizable" do
       end
 
       it "returns active_fields for provided model only" do
-        expect(record.active_fields.to_a)
+        expect(call_method.to_a)
           .to include(*active_fields.select { |field| field.customizable_type == described_class.name })
           .and exclude(*active_fields.reject { |field| field.customizable_type == described_class.name })
+      end
+    end
+
+    describe "#active_fields_attributes=" do
+      subject(:call_method) { record.active_fields_attributes = attributes }
+
+      let(:record) { described_class.create! }
+      let!(:active_field) do
+        create(active_field_factories_for(described_class).sample, customizable_type: described_class.name)
+      end
+
+      context "when active_value not found" do
+        context "with value" do
+          context "with array of symbol hashes" do
+            let(:attributes) { [{ name: active_field.name, value: active_value_for(active_field) }] }
+
+            it "builds an active_value" do
+              expect do
+                call_method
+              end.to change { record.active_values.size }.by(1)
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes.first[:value])
+            end
+          end
+
+          context "with array of string hashes" do
+            let(:attributes) { [{ "name" => active_field.name, "value" => active_value_for(active_field) }] }
+
+            it "builds an active_value" do
+              expect do
+                call_method
+              end.to change { record.active_values.size }.by(1)
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes.first["value"])
+            end
+          end
+
+          context "with array of permitted params" do
+            let(:attributes) do
+              [
+                ActionController::Parameters.new(
+                  "name" => active_field.name,
+                  "value" => active_value_for(active_field),
+                ).permit!,
+              ]
+            end
+
+            it "builds an active_value" do
+              expect do
+                call_method
+              end.to change { record.active_values.size }.by(1)
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes.first[:value])
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new(
+                "0" => { "name" => active_field.name, "value" => active_value_for(active_field) },
+              ).permit!
+            end
+
+            it "builds an active_value" do
+              expect do
+                call_method
+              end.to change { record.active_values.size }.by(1)
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes.values.first[:value])
+            end
+          end
+        end
+
+        context "with destroy mark" do
+          context "with array of symbol hashes" do
+            let(:attributes) { [{ name: active_field.name, _destroy: true }] }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with array of string hashes" do
+            let(:attributes) { [{ "name" => active_field.name, "_destroy" => true }] }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with array of permitted params" do
+            let(:attributes) do
+              [ActionController::Parameters.new("name" => active_field.name, "_destroy" => "true").permit!]
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new(
+                "0" => { "name" => active_field.name, "_destroy" => "true" },
+              ).permit!
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+        end
+      end
+
+      context "when active_value found" do
+        before do
+          create(active_value_factory, active_field: active_field, customizable: record)
+        end
+
+        context "with value" do
+          context "with array of symbol hashes" do
+            let(:attributes) { [{ name: active_field.name, value: active_value_for(active_field) }] }
+
+            it "changes the active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes.first[:value])
+            end
+          end
+
+          context "with array of string hashes" do
+            let(:attributes) { [{ "name" => active_field.name, "value" => active_value_for(active_field) }] }
+
+            it "changes the active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes.first["value"])
+            end
+          end
+
+          context "with array of permitted params" do
+            let(:attributes) do
+              [
+                ActionController::Parameters.new(
+                  "name" => active_field.name,
+                  "value" => active_value_for(active_field),
+                ).permit!,
+              ]
+            end
+
+            it "changes the active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes.first[:value])
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new(
+                "0" => { "name" => active_field.name, "value" => active_value_for(active_field) },
+              ).permit!
+            end
+
+            it "changes the active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.value).to eq(attributes.values.first[:value])
+            end
+          end
+        end
+
+        context "with destroy mark" do
+          context "with array of symbol hashes" do
+            let(:attributes) { [{ name: active_field.name, _destroy: true }] }
+
+            it "marks the active_value for destruction" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.marked_for_destruction?).to be(true)
+            end
+          end
+
+          context "with array of string hashes" do
+            let(:attributes) { [{ "name" => active_field.name, "_destroy" => true }] }
+
+            it "marks the active_value for destruction" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.marked_for_destruction?).to be(true)
+            end
+          end
+
+          context "with array of permitted params" do
+            let(:attributes) do
+              [ActionController::Parameters.new("name" => active_field.name, "_destroy" => "true").permit!]
+            end
+
+            it "marks the active_value for destruction" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.marked_for_destruction?).to be(true)
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new(
+                "0" => { "name" => active_field.name, "_destroy" => "true" },
+              ).permit!
+            end
+
+            it "marks the active_value for destruction" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+
+              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              expect(active_value.marked_for_destruction?).to be(true)
+            end
+          end
+        end
+      end
+
+      context "when active_field not found" do
+        context "with value" do
+          context "with array of symbol hashes" do
+            let(:attributes) { [{ name: "invalid", value: nil }] }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with array of string hashes" do
+            let(:attributes) { [{ "name" => "invalid", "value" => nil }] }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with array of permitted params" do
+            let(:attributes) do
+              [ActionController::Parameters.new("name" => "invalid", "value" => nil).permit!]
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new(
+                "0" => { "name" => "invalid", "value" => nil },
+              ).permit!
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+        end
+
+        context "with destroy mark" do
+          context "with array of symbol hashes" do
+            let(:attributes) { [{ name: "invalid", _destroy: true }] }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with array of string hashes" do
+            let(:attributes) { [{ "name" => "invalid", "_destroy" => true }] }
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with array of permitted params" do
+            let(:attributes) do
+              [ActionController::Parameters.new("name" => "invalid", "_destroy" => "true").permit!]
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+
+          context "with permitted params" do
+            let(:attributes) do
+              ActionController::Parameters.new(
+                "0" => { "name" => "invalid", "_destroy" => "true" },
+              ).permit!
+            end
+
+            it "doesn't build an active_value" do
+              expect do
+                call_method
+              end.to not_change { record.active_values.size }
+            end
+          end
+        end
+      end
+
+      context "with not an Array, Hash or params" do
+        let(:attributes) { "invalid" }
+
+        it "raises an error" do
+          expect do
+            call_method
+          end.to raise_error(ArgumentError)
+        end
+      end
+
+      context "with unpermitted params" do
+        let(:attributes) do
+          ActionController::Parameters.new("0" => { "name" => "name", "value" => "value" })
+        end
+
+        it "raises an error" do
+          expect do
+            call_method
+          end.to raise_error(ActionController::UnfilteredParameters)
+        end
+      end
+
+      context "with array of unpermitted params" do
+        let(:attributes) do
+          [ActionController::Parameters.new("name" => "name", "value" => "value")]
+        end
+
+        it "raises an error" do
+          expect do
+            call_method
+          end.to raise_error(ActionController::UnfilteredParameters)
+        end
+      end
+    end
+
+    describe "#active_fields=" do
+      let(:record) { described_class.new }
+
+      it "is an alias of #active_fields_attributes=" do
+        expect(record.method(:active_fields=)).to eq(record.method(:active_fields_attributes=))
       end
     end
 

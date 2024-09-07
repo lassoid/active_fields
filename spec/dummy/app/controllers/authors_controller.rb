@@ -53,9 +53,9 @@ class AuthorsController < ApplicationController
     permitted_params = params.require(:author).permit(
       :name,
       :group_id,
-      active_values_attributes: [:id, :active_field_id, :value, :_destroy, value: []],
+      active_fields_attributes: [:name, :value, :_destroy, value: []],
     )
-    permitted_params[:active_values_attributes]&.each do |_index, value_attrs|
+    permitted_params[:active_fields_attributes]&.each do |_index, value_attrs|
       value_attrs[:value] = compact_array_param(value_attrs[:value]) if value_attrs[:value].is_a?(Array)
     end
 

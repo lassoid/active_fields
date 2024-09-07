@@ -16,7 +16,8 @@
     <%= f.collection_select :author_id, Author.order(:id), :id, :name, include_blank: true %>
   </div>
 
-  <%= f.fields_for :active_values, post.active_values.sort_by(&:active_field_id) do |active_fields_form| %>
+  <%= f.fields_for :active_fields, post.active_values.sort_by(&:active_field_id), include_id: false do |active_fields_form| %>
+    <%= active_fields_form.hidden_field :name %>
     <%= render_active_value_input(form: active_fields_form, active_value: active_fields_form.object) %>
   <% end %>
 
