@@ -503,6 +503,15 @@ customizable.active_values # `has_many` association with Active Values linked to
 customizable.active_fields # Collection of Active Fields registered for this record
 
 # Create, update or destroy Active Values.
+customizable.active_fields_attributes = [
+  { name: "integer_array", value: [1, 4, 5, 5, 0] }, # create or update (symbol keys)
+  { "name" => "text", "value" => "Lasso" }, # create or update (string keys)
+  { name: "date", _destroy: true }, # destroy (symbol keys)
+  { "name" => "boolean", "_destroy" => true }, # destroy (string keys)
+  permitted_params, # params could be passed, but they must be permitted
+]
+
+# Alias of `#active_fields_attributes=`.
 customizable.active_fields = [
   { name: "integer_array", value: [1, 4, 5, 5, 0] }, # create or update (symbol keys)
   { "name" => "text", "value" => "Lasso" }, # create or update (string keys)
@@ -511,10 +520,9 @@ customizable.active_fields = [
   permitted_params, # params could be passed, but they must be permitted
 ]
 
-# Alias of `#active_fields=` for `fields_for` support.
-customizable.active_fields_attributes = attributes
-
-# Create, update or destroy Active Values. Please use `active_fields=`/`active_fields_attributes=` instead.
+# Create, update or destroy Active Values.
+# Implemented by `accepts_nested_attributes_for`.
+# Please use `active_fields_attributes=`/`active_fields=` instead.
 customizable.active_values_attributes = attributes
 
 # Build an Active Value, if it doesn't exist, with the default value for each Active Field.

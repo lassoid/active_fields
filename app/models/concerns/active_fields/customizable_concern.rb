@@ -33,14 +33,14 @@ module ActiveFields
     #
     # Example:
     #
-    #   customizable.active_fields = [
+    #   customizable.active_fields_attributes = [
     #     { name: "integer_array", value: [1, 4, 5, 5, 0] }, # create or update (symbol keys)
     #     { "name" => "text", "value" => "Lasso" }, # create or update (string keys)
     #     { name: "date", _destroy: true }, # destroy (symbol keys)
     #     { "name" => "boolean", "_destroy" => true }, # destroy (string keys)
     #     permitted_params, # params could be passed, but they must be permitted
     #   ]
-    def active_fields=(attributes)
+    def active_fields_attributes=(attributes)
       unless attributes.is_a?(Array) || attributes.is_a?(Hash)
         raise ArgumentError, "Array or Hash expected for `active_fields=`, got #{attributes.class.name}"
       end
@@ -76,7 +76,7 @@ module ActiveFields
       self.active_values_attributes = nested_attributes
     end
 
-    alias_method :active_fields_attributes=, :active_fields=
+    alias_method :active_fields=, :active_fields_attributes=
 
     # Build an active_value, if it doesn't exist, with a default value for each available active_field
     def initialize_active_values

@@ -132,8 +132,8 @@ RSpec.shared_examples "customizable" do
       end
     end
 
-    describe "#active_fields=" do
-      subject(:call_method) { record.active_fields = [attributes] }
+    describe "#active_fields_attributes=" do
+      subject(:call_method) { record.active_fields_attributes = [attributes] }
 
       let(:record) { described_class.create! }
       let!(:active_field) do
@@ -458,6 +458,14 @@ RSpec.shared_examples "customizable" do
             end
           end
         end
+      end
+    end
+
+    describe "#active_fields=" do
+      let(:record) { described_class.new }
+
+      it "is an alias of #active_fields_attributes=" do
+        expect(record.method(:active_fields=)).to eq(record.method(:active_fields_attributes=))
       end
     end
 
