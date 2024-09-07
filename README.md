@@ -24,11 +24,11 @@ classDiagram
         + string name
         + string type
         + string customizable_type
-        + json default_value
+        + json default_value_meta
         + json options
     }
     class ActiveValue {
-        + json value
+        + json value_meta
     }
     class Customizable {
         // This is your model
@@ -251,7 +251,7 @@ classDiagram
 - `name`(`string`)
 - `type`(`string`)
 - `customizable_type`(`string`)
-- `default_value` (`json`)
+- `default_value_meta` (`json`)
 
 ### Field Types Summary
 
@@ -510,7 +510,7 @@ active_field.type # Class name of this Active Field (utilizing STI)
 active_field.customizable_type # Name of the Customizable model this Active Field is registered to
 active_field.name # Identifier of this Active Field, it should be unique in scope of customizable_type
 active_field.default_value_meta # JSON column declaring the default value. Consider using `default_value` instead
-active_field.options # A hash (json) containing type-specific attributes for this Active Field
+active_field.options # JSON column containing type-specific attributes for this Active Field
 
 # Methods:
 active_field.default_value # Default value for all Active Values associated with this Active Field
