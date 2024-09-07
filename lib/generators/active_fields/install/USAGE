@@ -1,0 +1,5 @@
+Description:
+    Generates an initializer and copies plugin migrations.
+
+Examples:
+    `bin/rails generate active_fields:install`
