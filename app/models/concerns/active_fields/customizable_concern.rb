@@ -41,6 +41,8 @@ module ActiveFields
     #     permitted_params, # params could be passed, but they must be permitted
     #   ]
     def active_fields_attributes=(attributes)
+      attributes = attributes.to_h if attributes.respond_to?(:permitted?)
+
       unless attributes.is_a?(Array) || attributes.is_a?(Hash)
         raise ArgumentError, "Array or Hash expected for `active_fields=`, got #{attributes.class.name}"
       end
