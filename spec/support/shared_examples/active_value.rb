@@ -234,5 +234,19 @@ RSpec.shared_examples "active_value" do |factory:|
         end
       end
     end
+
+    describe "#name" do
+      subject(:call_method) { record.name }
+
+      context "with active_field" do
+        it { is_expected.to eq(record.active_field.name) }
+      end
+
+      context "without active_field" do
+        let(:active_field) { nil }
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 end

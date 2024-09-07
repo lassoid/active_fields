@@ -45,12 +45,12 @@ module TestMethods
   end
 
   def dummy_models
-    [Author, Post, Group]
+    [Author, Post] # Group doesn't have Active Fields
   end
 
   def customizable_models_for(active_field_class_name)
     dummy_models.select do |model|
-      model.active_fields_config&.types_class_names&.include?(active_field_class_name)
+      model.active_fields_config.types_class_names.include?(active_field_class_name)
     end
   end
 

@@ -21,6 +21,8 @@ module ActiveFields
       before_validation :assign_value_from_temp, if: -> { temp_value && active_field }
     end
 
+    delegate :name, to: :active_field, allow_nil: true
+
     attr_reader :temp_value
 
     def value=(v)

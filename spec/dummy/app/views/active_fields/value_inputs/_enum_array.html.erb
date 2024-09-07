@@ -1,6 +1,4 @@
-<%= form.hidden_field :name, value: active_value.active_field.name %>
-
 <div class="form-input">
-  <%= form.label :value %>
+  <%= form.label :value, active_field.name %>
   <%= form.select :value, active_field.allowed_values, { multiple: true, selected: active_value.value } %>
 </div>

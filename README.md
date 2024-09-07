@@ -63,21 +63,72 @@ such as booleans, strings, numbers, arrays, etc.
 
 4. Implement the necessary code to work with _Active Fields_.
 
-   This plugin provides a convenient API and helpers, allowing you to write code that meets your specific needs
-   without being forced to use predefined implementations that is hard to extend.
+    This plugin provides a convenient API and helpers, allowing you to write code that meets your specific needs
+    without being forced to use predefined implementations that is hard to extend.
 
-   Generally, you should:
-    - Implement a controller and UI for managing _Active Fields_.
-    - Add inputs for _Active Values_ in _Customizable_ forms and permit their params in the controller.
+    Generally, you should:
+     - Implement a controller and UI for managing _Active Fields_.
+     - Add inputs for _Active Values_ in _Customizable_ forms and permit their params in the controller.
 
-        **Note:** By default, Rails form fields insert an empty string into array (multiple) parameters.
-        You’ll need to remove these empty strings manually. 
-        Here’s [one possible solution](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/authors_controller.rb#L58) 
-        for handling this case.
+     To set _Active Values_ for your _Customizable_, use the `active_fields_attributes=` method,
+     that integrates with Rails `fields_for` to generate appropriate form fields.
+     Alternatively, the alias `active_fields=` can be used in contexts without `fields_for`, such as APIs.
 
-   You can find a detailed [example](https://github.com/lassoid/active_fields/blob/main/spec/dummy) 
-   of how to implement this in a full-stack Rails application.
-   Feel free to explore the source code and run it locally:
+     To prepare a collection of _Active Values_ for use with the `fields_for` builder,
+     call the `initialize_active_values` method.
+
+     **Note:** By default, Rails form fields insert an empty string into array (multiple) parameters.
+     You’ll need to handle the removal of these empty strings.
+
+     ```ruby
+     # app/controllers/posts_controller.rb
+     # ...
+
+     def new
+       @post = Post.new
+       @post.initialize_active_values
+     end
+
+     def edit
+       @post.initialize_active_values
+     end
+
+     def post_params
+       permitted_params = params.require(:post).permit(
+         # ...
+         active_fields_attributes: [:name, :value, :_destroy, value: []],
+       )
+       permitted_params[:active_fields_attributes]&.each do |_index, value_attrs|
+         value_attrs[:value] = compact_array_param(value_attrs[:value]) if value_attrs[:value].is_a?(Array)
+       end
+
+       permitted_params
+     end
+
+     def compact_array_param(value)
+       if value.first == ""
+         value[1..-1]
+       else
+         value
+       end
+     end
+     ```
+
+     ```erb
+     # app/views/posts/_form.html.erb
+     # ...
+
+     <%= form.fields_for :active_fields, post.active_values.sort_by(&:active_field_id), include_id: false do |active_fields_form| %>
+       <%= active_fields_form.hidden_field :name %>
+       # Render appropriate Active Value input and (optionally) destroy flag here
+     <% end %>
+
+     # ...
+     ```
+
+    You can find a detailed [example](https://github.com/lassoid/active_fields/blob/main/spec/dummy) 
+    of how to implement this in a full-stack Rails application.
+    Feel free to explore the source code and run it locally:
 
     ```shell
     spec/dummy/bin/setup
@@ -434,15 +485,15 @@ For an example, refer to the [locale file](https://github.com/lassoid/active_fie
 
 1. Only _PostgreSQL_ is fully supported.
 
-   The gem is tested exclusively with _PostgreSQL_. Support for other databases is not guaranteed.
+    The gem is tested exclusively with _PostgreSQL_. Support for other databases is not guaranteed.
 
-   However, you can give it a try! :)
+    However, you can give it a try! :)
 
 2. Updating some _Active Fields_ options may be unsafe.
 
-   This could cause existing _Active Values_ to become invalid,
-   leading to the associated _Customizables_ also becoming invalid,
-   which could potentially result in update failures.
+    This could cause existing _Active Values_ to become invalid,
+    leading to the associated _Customizables_ also becoming invalid,
+    which could potentially result in update failures.
 
 ## API Overview
 
@@ -489,6 +540,7 @@ active_value.value_meta # JSON column declaring the value. Consider using `value
 
 # Methods:
 active_value.value # The value of this Active Value
+active_value.name # Name of the associated Active Field
 ```
 
 ### Customizable API
