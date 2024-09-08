@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  helper ActiveFieldsHelper
+
   protect_from_forgery prepend: true
 
   private

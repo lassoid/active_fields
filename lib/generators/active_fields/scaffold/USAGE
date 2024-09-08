@@ -1,0 +1,7 @@
+Description:
+    Generates some useful templates.
+    The code it generates is unlikely to be a perfect fit for your application.
+    You’ll most probably want to customize the generated code.
+
+Examples:
+    `bin/rails generate active_fields:scaffold`

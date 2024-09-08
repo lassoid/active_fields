@@ -7,10 +7,6 @@
     background-color: red;
 }
 
-.d-none {
-    display: none;
-}
-
 .links {
     margin-bottom: 1em;
 }
@@ -39,6 +35,6 @@
     margin-bottom: 1em;
 }
 
-.form-array-input-group {
+.form-array-field-group {
     margin-bottom: 0.5em;
 }
