@@ -9,30 +9,24 @@ class AuthorsController < ApplicationController
 
   def new
     @author = Author.new
-    @author.initialize_active_values
   end
 
   def create
-    @author = Author.new
-    @author.assign_attributes(author_params)
+    @author = Author.new(author_params)
 
     if @author.save
       redirect_to edit_author_path(@author), status: :see_other
     else
-      @author.initialize_active_values
       render :new, status: :unprocessable_entity
     end
   end
 
-  def edit
-    @author.initialize_active_values
-  end
+  def edit; end
 
   def update
     if @author.update(author_params)
       redirect_to edit_author_path(@author), status: :see_other
     else
-      @author.initialize_active_values
       render :edit, status: :unprocessable_entity
     end
   end

@@ -563,6 +563,10 @@ RSpec.shared_examples "customizable" do
           record.active_values.reject { existing_active_values.map(&:active_field_id).include?(_1.active_field_id) }
         expect(new_active_values.map(&:value)).to eq(new_active_values.map { _1.active_field.default_value })
       end
+
+      it "returns new active_values collection" do
+        expect(call_method).to eq(record.active_values)
+      end
     end
   end
 end

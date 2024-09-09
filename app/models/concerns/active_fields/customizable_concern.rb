@@ -80,7 +80,8 @@ module ActiveFields
 
     alias_method :active_fields=, :active_fields_attributes=
 
-    # Build an active_value, if it doesn't exist, with a default value for each available active_field
+    # Build an active_value, if it doesn't exist, with a default value for each available active_field.
+    # Returns active_values collection.
     def initialize_active_values
       existing_field_ids = active_values.map(&:active_field_id)
 
@@ -89,6 +90,8 @@ module ActiveFields
 
         active_values.new(active_field: active_field, value: active_field.default_value)
       end
+
+      active_values
     end
   end
 end
