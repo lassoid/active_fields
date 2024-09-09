@@ -4,6 +4,8 @@ require_relative "active_fields/version"
 require_relative "active_fields/engine"
 
 module ActiveFields
+  extend ActiveSupport::Autoload
+
   autoload :Config, "active_fields/config"
   autoload :CustomizableConfig, "active_fields/customizable_config"
   autoload :HasActiveFields, "active_fields/has_active_fields"
