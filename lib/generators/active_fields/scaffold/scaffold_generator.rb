@@ -11,6 +11,8 @@ module ActiveFields
 
       def copy_files
         Dir.glob("**/*", base: self.class.source_root).each do |path|
+          next unless File.file?(File.expand_path(path, self.class.source_root))
+
           copy_file path, File.join("app", path)
         end
       end
