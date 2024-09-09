@@ -1,0 +1,12 @@
+<div class="form-input">
+  <%= form.label :value, active_field.name %>
+  <%=
+    render_array_field(
+      form: form,
+      name: :value,
+      value: active_value.value,
+      field_method: :date_field,
+      field_opts: { min: active_field.min, max: active_field.max },
+    )
+  %>
+</div>

@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-module ApplicationHelper
-  def render_array_input(form:, name:, value:, label_text: nil, field_method:, field_opts: {})
-    render partial: "shared/array_input", locals: {
+module ActiveFieldsHelper
+  def render_array_field(form:, name:, value:, field_method:, field_opts: {})
+    render partial: "shared/array_field", locals: {
       form: form,
       name: name,
       value: value,
-      label_text: label_text,
       field_method: field_method,
       field_opts: field_opts,
     }
@@ -29,6 +28,6 @@ module ApplicationHelper
   end
 
   def active_value_input(active_field)
-    "active_fields/value_inputs/#{active_field.type_name}"
+    "active_fields/values/inputs/#{active_field.type_name}"
   end
 end

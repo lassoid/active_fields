@@ -9,9 +9,9 @@ enabling the addition of custom fields to any model at runtime without requiring
 
 ## Key Concepts
 
-- **Active Field**: A record with the definition of a custom field.
-- **Active Value**: A record that stores the value of an _Active Field_ for a specific _Customizable_.
-- **Customizable**: A record that has custom fields.
+- **Customizable**: A record that has custom fields (_Entity_).
+- **Active Field**: A record with the definition of a custom field (_Attribute_).
+- **Active Value**: A record that stores the value of an _Active Field_ for a specific _Customizable_ (_Value_).
 
 ## Models Structure
 
@@ -56,78 +56,84 @@ such as booleans, strings, numbers, arrays, etc.
 3. Add the `has_active_fields` method to any models where you want to enable custom fields:
 
     ```ruby
-    class Author < ApplicationRecord
+    class Post < ApplicationRecord
       has_active_fields
     end
     ```
 
-4. Implement the necessary code to work with _Active Fields_.
+4. Run scaffold generator
 
-    This plugin provides a convenient API and helpers, allowing you to write code that meets your specific needs
+    This plugin provides a convenient API, allowing you to write code that meets your specific needs
     without being forced to use predefined implementations that is hard to extend.
 
-    Generally, you should:
-     - Implement a controller and UI for managing _Active Fields_.
-     - Add inputs for _Active Values_ in _Customizable_ forms and permit their params in the controller.
+    However, for a quick start, you can generate a scaffold by running the following command:
 
-     To set _Active Values_ for your _Customizable_, use the `active_fields_attributes=` method,
-     that integrates with Rails `fields_for` to generate appropriate form fields.
-     Alternatively, the alias `active_fields=` can be used in contexts without `fields_for`, such as APIs.
+    ```shell
+    bin/rails generate active_fields:scaffold
+    ```
 
-     To prepare a collection of _Active Values_ for use with the `fields_for` builder,
-     call the `initialize_active_values` method.
+    This command generates a controller, routes and views for managing _Active Fields_,
+    along with form inputs for _Active Values_ and some useful helper methods.
 
-     **Note:** By default, Rails form fields insert an empty string into array (multiple) parameters.
-     You’ll need to handle the removal of these empty strings.
+    **Note:** The array field helper uses _Stimulus_ for interactivity.
+    If your app doesn't already include _Stimulus_, you can [easily add it](https://github.com/hotwired/stimulus-rails).
+    Alternatively, if you prefer not to use _Stimulus_, you should implement your own JavaScript code.
 
-     ```ruby
-     # app/controllers/posts_controller.rb
-     # ...
+5. Add _Active Fields_ inputs in _Customizables_ forms and permit their params in controllers
 
-     def new
-       @post = Post.new
-       @post.initialize_active_values
-     end
+    There are two methods available on _Customizable_ models for retrieving _Active Values_:
+    - `active_values` returns collection of only existing _Active Values_.
+    - `initialize_active_values` builds any missing _Active Values_ and returns the full collection.
 
-     def edit
-       @post.initialize_active_values
-     end
+    Choose the method that suits your requirements.
+    In most cases, however, `initialize_active_values` is the more suitable option.
 
-     def post_params
-       permitted_params = params.require(:post).permit(
-         # ...
-         active_fields_attributes: [:name, :value, :_destroy, value: []],
-       )
-       permitted_params[:active_fields_attributes]&.each do |_index, value_attrs|
-         value_attrs[:value] = compact_array_param(value_attrs[:value]) if value_attrs[:value].is_a?(Array)
-       end
+    ```erb
+    # app/views/posts/_form.html.erb
+    # ...
 
-       permitted_params
-     end
+    <%= form.fields_for :active_fields, post.initialize_active_values.sort_by(&:active_field_id), include_id: false do |active_fields_form| %>
+      <%= active_fields_form.hidden_field :name %>
+      <%= render_active_value_input(form: active_fields_form, active_value: active_fields_form.object) %>
+    <% end %>
 
-     def compact_array_param(value)
-       if value.first == ""
-         value[1..-1]
-       else
-         value
-       end
-     end
-     ```
+    # ...
+    ```
 
-     ```erb
-     # app/views/posts/_form.html.erb
-     # ...
+    Finally, permit the _Active Fields_ attributes in your _Customizables_ controllers:
 
-     <%= form.fields_for :active_fields, post.active_values.sort_by(&:active_field_id), include_id: false do |active_fields_form| %>
-       <%= active_fields_form.hidden_field :name %>
-       # Render appropriate Active Value input and (optionally) destroy flag here
-     <% end %>
+    ```ruby
+    # app/controllers/posts_controller.rb
+    # ...
 
-     # ...
-     ```
+    def post_params
+      permitted_params = params.require(:post).permit(
+        # ...
+        active_fields_attributes: [:name, :value, :_destroy, value: []],
+      )
+      permitted_params[:active_fields_attributes]&.each do |_index, value_attrs|
+        value_attrs[:value] = compact_array_param(value_attrs[:value]) if value_attrs[:value].is_a?(Array)
+      end
+    
+      permitted_params
+    end
 
-    You can find a detailed [example](https://github.com/lassoid/active_fields/blob/main/spec/dummy) 
-    of how to implement this in a full-stack Rails application.
+    # Removes an empty string from the beginning of the array parameter
+    def compact_array_param(value)
+      if value.first == ""
+        value[1..-1]
+      else
+        value
+      end
+    end
+    ```
+
+    Here, we use the `active_fields_attributes=` method,
+    that integrates well with Rails `fields_for` to generate appropriate form fields.
+    Alternatively, the alias `active_fields=` can be used in contexts without `fields_for`, such as API controllers.
+
+    Explore the [Demo app](https://github.com/lassoid/active_fields/blob/main/spec/dummy)
+    where the plugin is fully integrated into a full-stack Rails application.
     Feel free to explore the source code and run it locally:
 
     ```shell
@@ -523,7 +529,7 @@ active_field.customizable_model # Customizable model class
 active_field.type_name # Identifier of the type of this Active Field (instead of class name)
 
 # Scopes:
-ActiveFields::Field::Boolean.for("Author") # Collection of Active Fields registered for the specified Customizable type
+ActiveFields::Field::Boolean.for("Post") # Collection of Active Fields registered for the specified Customizable type
 ```
 
 ### Values API
@@ -546,7 +552,7 @@ active_value.name # Name of the associated Active Field
 ### Customizable API
 
 ```ruby
-customizable = Author.take
+customizable = Post.take
 
 # Associations:
 customizable.active_values # `has_many` association with Active Values linked to this Customizable
@@ -577,9 +583,10 @@ customizable.active_fields = [
 # Please use `active_fields_attributes=`/`active_fields=` instead.
 customizable.active_values_attributes = attributes
 
-# Build an Active Value, if it doesn't exist, with the default value for each Active Field.
+# Build not existing Active Values, with the default value for each Active Field.
+# Returns full collection of Active Values.
 # This method is useful with `fields_for`, allowing you to pass the collection as an argument to render new Active Values:
-# `form.fields_for :active_values, customizable.active_values`.
+# `form.fields_for :active_fields, customizable.initialize_active_values`.
 customizable.initialize_active_values
 ```
 
@@ -602,7 +609,7 @@ ActiveFields.config.register_field(:ip, "IpField") # Register a custom Active Fi
 ### Customizable Config
 
 ```ruby
-customizable_model = Author
+customizable_model = Post
 customizable_model.active_fields_config # Access the Customizable's configuration
 customizable_model.active_fields_config.customizable_model # The Customizable model itself
 customizable_model.active_fields_config.types # Allowed Active Field types (e.g., `[:boolean]`)

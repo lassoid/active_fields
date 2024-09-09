@@ -1,0 +1,19 @@
+<div data-controller="array-field">
+  <div data-array-field-target="templateFieldGroup">
+    <%= form.public_send(field_method, name, { multiple: true, value: "", **field_opts }) %>
+    <% unless field_opts[:disabled] %>
+      <%= button_tag "Remove", type: "button", data: { action: "click->array-field#removeField" } %>
+    <% end %>
+  </div>
+  <% Array(value).each do |value_element| %>
+    <div>
+      <%= form.public_send(field_method, name, { multiple: true, value: value_element || "", **field_opts }) %>
+      <% unless field_opts[:disabled] %>
+        <%= button_tag "Remove", type: "button", data: { action: "click->array-field#removeField" } %>
+      <% end %>
+    </div>
+  <% end %>
+  <% unless field_opts[:disabled] %>
+    <%= button_tag "Add more", type: "button", data: { action: "click->array-field#addField" } %>
+  <% end %>
+</div>

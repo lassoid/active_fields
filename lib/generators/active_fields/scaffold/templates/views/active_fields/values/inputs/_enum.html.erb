@@ -1,0 +1,4 @@
+<div>
+  <%= form.label :value, active_field.name %>
+  <%= form.select :value, active_field.allowed_values, { include_blank: true, selected: active_value.value } %>
+</div>

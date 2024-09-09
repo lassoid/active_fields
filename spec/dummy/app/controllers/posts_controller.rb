@@ -9,30 +9,24 @@ class PostsController < ApplicationController
 
   def new
     @post = Post.new
-    @post.initialize_active_values
   end
 
   def create
-    @post = Post.new
-    @post.assign_attributes(post_params)
+    @post = Post.new(post_params)
 
     if @post.save
       redirect_to edit_post_path(@post), status: :see_other
     else
-      @post.initialize_active_values
       render :new, status: :unprocessable_entity
     end
   end
 
-  def edit
-    @post.initialize_active_values
-  end
+  def edit; end
 
   def update
     if @post.update(post_params)
       redirect_to edit_post_path(@post), status: :see_other
     else
-      @post.initialize_active_values
       render :edit, status: :unprocessable_entity
     end
   end

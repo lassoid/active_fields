@@ -14,9 +14,10 @@
 <table class="table">
   <thead>
     <tr>
+      <th></th>
       <th>ID</th>
-      <th>Customizable type</th>
       <th>Type</th>
+      <th>Customizable type</th>
       <th>Name</th>
       <th>Options</th>
       <th>Default value</th>
@@ -26,12 +27,13 @@
   <tbody>
     <% @active_fields.each do |active_field| %>
       <tr>
-        <td><%= link_to "##{active_field.id}", edit_active_field_path(active_field) %></td>
-        <td><%= active_field.customizable_type %></td>
+        <td><%= link_to "Edit", edit_active_field_path(active_field) %></td>
+        <td><%= link_to "##{active_field.id}", active_field_path(active_field) %></td>
         <td><%= active_field.type_name %></td>
+        <td><%= active_field.customizable_type %></td>
         <td><%= active_field.name %></td>
-        <td><%= active_field.options %></td>
-        <td><%= active_field.default_value.inspect %></td>
+        <td><code><%= active_field.options %></code></td>
+        <td><code><%= active_field.default_value.inspect %></code></td>
         <td><%= button_to "Destroy", active_field_path(active_field), method: :delete %></td>
       </tr>
     <% end %>

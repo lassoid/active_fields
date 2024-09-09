@@ -1,0 +1,61 @@
+<%= form_with(model: active_field, scope: :active_field, url: active_field.persisted? ? active_field_path(active_field) : active_fields_path) do |f| %>
+  <% if active_field.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(active_field.errors.count, "error") %> prohibited this record from being saved:</h2>
+
+      <ul>
+        <% active_field.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :type %>
+    <%=
+      f.text_field :type,
+        name: "type",
+        value: active_field.type_name,
+        disabled: active_field.persisted?,
+        readonly: active_field.new_record?
+    %>
+  </div>
+
+  <div>
+    <%= f.label :customizable_type %>
+    <%= f.select :customizable_type, ["TODO: add allowed customizable model names"], {}, { disabled: active_field.persisted? } %>
+  </div>
+
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :required %>
+    <%= f.check_box :required, disabled: active_field.persisted? %>
+  </div>
+
+  <div>
+    <%= f.label :allowed_values %>
+    <%=
+      render_array_field(
+        form: f,
+        name: :allowed_values,
+        value: active_field.allowed_values,
+        field_method: :text_field,
+        field_opts: { disabled: active_field.persisted? }
+      )
+    %>
+  </div>
+
+  <div>
+    <%= f.label :default_value %>
+    <%= f.text_field :default_value %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

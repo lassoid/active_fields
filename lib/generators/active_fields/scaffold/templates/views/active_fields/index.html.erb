@@ -1,0 +1,41 @@
+<h1>Active Fields</h1>
+
+<div>
+  <%= form_with url: new_active_field_path, method: :get do |f| %>
+    <span>
+      <%= f.select :type, ActiveFields.config.type_names %>
+    </span>
+    <span>
+      <%= f.submit "New" %>
+    </span>
+  <% end %>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>ID</th>
+      <th>Type</th>
+      <th>Customizable type</th>
+      <th>Name</th>
+      <th>Options</th>
+      <th>Default value</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @active_fields.each do |active_field| %>
+      <tr>
+        <td><%= link_to "Edit", edit_active_field_path(active_field) %></td>
+        <td><%= link_to "##{active_field.id}", active_field_path(active_field) %></td>
+        <td><%= active_field.type_name %></td>
+        <td><%= active_field.customizable_type %></td>
+        <td><%= active_field.name %></td>
+        <td><code><%= active_field.options %></code></td>
+        <td><code><%= active_field.default_value.inspect %></code></td>
+        <td><%= button_to "Destroy", active_field_path(active_field), method: :delete %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

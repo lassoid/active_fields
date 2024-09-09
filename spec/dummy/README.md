@@ -4,27 +4,15 @@ This app is an example of how to use the `ActiveFields` plugin.
 
 ## Quick links
 
-### Active Fields management
+### Basic
 
-- [Controller](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/active_fields_controller.rb)
-- [Forms rendering helper](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/helpers/application_helper.rb#L15)
-- [Forms views](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/active_fields/forms)
-- [Forms usage](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/active_fields/new.html.erb#L3)
-
-### Active Values inputs
-
-- [Inputs rendering helper](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/helpers/application_helper.rb#L21)
-- [Inputs views](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/active_fields/value_inputs)
-- [Inputs usage](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/authors/_form.html.erb#L14)
-
-### Array Active Fields
-
-- [Params normalization helper](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/application_controller.rb#L12)
-- [Params normalization helper usage](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/posts_controller.rb#L59)
-- [Array input rendering helper](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/helpers/application_helper.rb#L4)
-- [Array input view](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/shared/_array_input.html.erb)
-- [Array input Stimulus controller](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/javascript/controllers/array_input_controller.js)
-- [Array input usage](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/active_fields/forms/_enum_array.html.erb#L36)
+- [Active Fields controller](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/active_fields_controller.rb)
+- [Active Fields views](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/active_fields)
+- [Customizable controller](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/controllers/posts_controller.rb)
+- [Customizable form](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/posts/_form.html.erb)
+- [Helper](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/helpers/application_helper.rb)
+- [Active Fields forms](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/active_fields/forms)
+- [Active Values inputs](https://github.com/lassoid/active_fields/blob/main/spec/dummy/app/views/active_fields/values/inputs)
 
 ### Custom Active Field Types
 

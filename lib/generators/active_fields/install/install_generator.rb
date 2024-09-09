@@ -5,7 +5,7 @@ require "rails/generators"
 module ActiveFields
   module Generators
     class InstallGenerator < ::Rails::Generators::Base
-      desc "This generator creates an create_initializer and copies plugin migrations"
+      desc "This generator creates an initializer and copies plugin migrations"
 
       def create_initializer
         initializer "active_fields.rb", <<~RUBY

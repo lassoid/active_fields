@@ -1,0 +1,8 @@
+<div>
+  <%= form.label :value, active_field.name %>
+  <% if active_field.nullable? %>
+    <%= form.collection_radio_buttons :value, { "Null" => "", "True" => "true", "False" => "false" }, :last, :first, { checked: active_value.value.to_s }, {} %>
+  <% else %>
+    <%= form.check_box :value, { checked: active_value.value }, "true", "false" %>
+  <% end %>
+</div>

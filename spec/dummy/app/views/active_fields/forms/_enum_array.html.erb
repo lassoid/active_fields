@@ -32,24 +32,30 @@
     <%= f.number_field :max_size, disabled: active_field.persisted? %>
   </div>
 
-  <%=
-    render_array_input(
-      form: f,
-      name: :allowed_values,
-      value: active_field.allowed_values,
-      field_method: :text_field,
-      field_opts: { disabled: active_field.persisted? }
-    )
-  %>
+  <div class="form-input">
+    <%= f.label :allowed_values %>
+    <%=
+      render_array_field(
+        form: f,
+        name: :allowed_values,
+        value: active_field.allowed_values,
+        field_method: :text_field,
+        field_opts: { disabled: active_field.persisted? }
+      )
+    %>
+  </div>
 
-  <%=
-    render_array_input(
-      form: f,
-      name: :default_value,
-      value: active_field.default_value,
-      field_method: :text_field,
-    )
-  %>
+  <div class="form-input">
+    <%= f.label :default_value %>
+    <%=
+      render_array_field(
+        form: f,
+        name: :default_value,
+        value: active_field.default_value,
+        field_method: :text_field,
+      )
+    %>
+  </div>
 
   <div class="form-input">
     <%= f.submit %>
