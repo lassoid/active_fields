@@ -1,4 +1,7 @@
 ## [Unreleased]
+- Added scaffold generator
+
+## [1.0.0] - 2024-09-07
 - Precision configuration for decimal fields
 - Added array field types mix-in `ActiveFields::FieldArrayConcern`
 - Fixed enum types behavior for blank values
