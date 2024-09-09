@@ -1,0 +1,29 @@
+<h1>Active Field #<%= @active_field.id %></h1>
+
+<p><%= link_to "Edit", edit_active_field_path(@active_field) %></p>
+<p><%= button_to "Destroy", active_field_path(@active_field), method: :delete %></p>
+
+<p>
+  <b>ID:</b>
+  <%= @active_field.id %>
+</p>
+<p>
+  <b>Type:</b> <%= @active_field.type_name %>
+</p>
+<p>
+  <b>Customizable type:</b>
+  <%= @active_field.customizable_type %>
+</p>
+<p>
+  <b>Name:</b> <%= @active_field.name %>
+</p>
+<p>
+  <b>Options:</b>
+  <code><%= @active_field.options %></code>
+</p>
+<p>
+  <b>Default value:</b>
+  <code><%= @active_field.default_value.inspect %></code>
+</p>
+
+<div><%= link_to "Back", active_fields_path %></div>

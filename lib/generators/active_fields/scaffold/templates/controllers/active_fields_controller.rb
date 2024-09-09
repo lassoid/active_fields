@@ -3,11 +3,13 @@
 class ActiveFieldsController < ApplicationController
   helper ActiveFieldsHelper
 
-  before_action :set_active_field, only: %i[edit update destroy]
+  before_action :set_active_field, only: %i[show edit update destroy]
 
   def index
     @active_fields = ActiveFields.config.field_base_class.order(:customizable_type, :id)
   end
+
+  def show; end
 
   def new
     @active_field = model_class.new

@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   resources :authors, only: %i[index new create edit update destroy]
   resources :groups, only: %i[index new create edit update destroy]
   resources :posts, only: %i[index new create edit update destroy]
-  resources :active_fields, only: %i[index new create edit update destroy]
+  resources :active_fields
 end
