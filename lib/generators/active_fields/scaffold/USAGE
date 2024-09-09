@@ -1,5 +1,7 @@
 Description:
-    Generates some useful templates.
+    Creates a controller, routes and views for managing Active Fields,
+    along with form inputs for Active Values and some useful helper methods.
+
     The code it generates is unlikely to be a perfect fit for your application.
     You’ll most probably want to customize the generated code.
 

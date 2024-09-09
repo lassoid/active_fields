@@ -66,25 +66,27 @@ such as booleans, strings, numbers, arrays, etc.
     This plugin provides a convenient API, allowing you to write code that meets your specific needs
     without being forced to use predefined implementations that is hard to extend.
 
-    But for a quick start you can run a command:
+    However, for a quick start, you can generate a scaffold by running the following command:
 
-    ```bash
+    ```shell
     bin/rails generate active_fields:scaffold
     ```
 
-    This command adds a controller, routes and views for managing _Active Fields_,
-    as well as form inputs for _Active Values_ and some useful helper methods.
+    This command generates a controller, routes and views for managing _Active Fields_,
+    along with form inputs for _Active Values_ and some useful helper methods.
 
-    **Note:** Array field helper uses _Stimulus_ for interactivity.
-    If you doesn't have _Stimulus_ in your app just add it, or if you don't want to - implement your own JS code.
+    **Note:** The array field helper uses _Stimulus_ for interactivity.
+    If your app doesn't already include _Stimulus_, you can [easily add it](https://github.com/hotwired/stimulus-rails).
+    Alternatively, if you prefer not to use _Stimulus_, you should implement your own JavaScript code.
 
 5. Add _Active Fields_ inputs in _Customizables_ forms and permit their params in controllers
 
-    There are two _Customizable_ methods returning the _Active Values_ collection:
-    - `active_values` returns existing _Active Values_ only
-    - `initialize_active_values` builds not existing _Active Values_ and returns a full collection of possible _Active Values_
+    There are two methods available on _Customizable_ models for retrieving _Active Values_:
+    - `active_values` returns collection of only existing _Active Values_.
+    - `initialize_active_values` builds any missing _Active Values_ and returns the full collection.
 
-    What method to use depends on your needs. In this example we use `initialize_active_values`.
+    Choose the method that suits your requirements.
+    In most cases, however, `initialize_active_values` is the more suitable option.
 
     ```erb
     # app/views/posts/_form.html.erb
@@ -98,7 +100,7 @@ such as booleans, strings, numbers, arrays, etc.
     # ...
     ```
 
-    And finally permit _Active Fields_ attributes in _Customizables_ controllers:
+    Finally, permit the _Active Fields_ attributes in your _Customizables_ controllers:
 
     ```ruby
     # app/controllers/posts_controller.rb
@@ -116,7 +118,7 @@ such as booleans, strings, numbers, arrays, etc.
       permitted_params
     end
 
-    # Removes an empty string from the start of array param
+    # Removes an empty string from the beginning of the array parameter
     def compact_array_param(value)
       if value.first == ""
         value[1..-1]
@@ -126,15 +128,12 @@ such as booleans, strings, numbers, arrays, etc.
     end
     ```
 
-    Here we use the `active_fields_attributes=` method,
+    Here, we use the `active_fields_attributes=` method,
     that integrates well with Rails `fields_for` to generate appropriate form fields.
-    Alternatively, the alias `active_fields=` can be used in contexts without `fields_for`, such as APIs.
+    Alternatively, the alias `active_fields=` can be used in contexts without `fields_for`, such as API controllers.
 
-    Also, Rails form fields insert an empty string into array (multiple) parameters by default.
-    `compact_array_param` helper method removes these empty strings.
-
-    There is also a [Demo app](https://github.com/lassoid/active_fields/blob/main/spec/dummy) 
-    that demonstrates how to integrate `active_fields` in a full-stack Rails application.
+    Explore the [Demo app](https://github.com/lassoid/active_fields/blob/main/spec/dummy)
+    where the plugin is fully integrated into a full-stack Rails application.
     Feel free to explore the source code and run it locally:
 
     ```shell
