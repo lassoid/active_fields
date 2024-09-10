@@ -1,5 +1,6 @@
 ## [Unreleased]
 - Added scaffold generator
+- Disabled models reloading to prevent STI issues
 
 ## [1.0.0] - 2024-09-07
 - Precision configuration for decimal fields

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  mount ActiveFields::Engine => "/active_fields"
+  # mount ActiveFields::Engine => "/active_fields"
 
   root to: "home#index"
 
