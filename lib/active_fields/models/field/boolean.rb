@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
+p "Loaded ActiveFields::Boolean"
 module ActiveFields
   module Field
     class Boolean < ActiveFields.config.field_base_class
-      p "Loaded ActiveFields::Boolean"
       acts_as_active_field(
         validator: {
           class_name: "ActiveFields::Validators::BooleanValidator",

@@ -4,7 +4,6 @@ module ActiveFields
   module Casters
     # Typecasts the active_value value
     class BaseCaster
-      p "Loaded ActiveFields::Casters::BaseCaster"
       attr_reader :options
 
       def initialize(**options)
