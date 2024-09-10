@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [1.1.0] - 2024-09-10
 - Added scaffold generator
 - Disabled models reloading to prevent STI issues
 
