@@ -61,7 +61,7 @@ such as booleans, strings, numbers, arrays, etc.
     end
     ```
 
-4. Run scaffold generator
+4. Run scaffold generator.
 
     This plugin provides a convenient API, allowing you to write code that meets your specific needs
     without being forced to use predefined implementations that is hard to extend.
@@ -75,11 +75,13 @@ such as booleans, strings, numbers, arrays, etc.
     This command generates a controller, routes and views for managing _Active Fields_,
     along with form inputs for _Active Values_ and some useful helper methods.
 
+    **Note:** Don't forget to add available _Customizable_ types in generated _Active Fields_ forms.
+
     **Note:** The array field helper uses _Stimulus_ for interactivity.
     If your app doesn't already include _Stimulus_, you can [easily add it](https://github.com/hotwired/stimulus-rails).
     Alternatively, if you prefer not to use _Stimulus_, you should implement your own JavaScript code.
 
-5. Add _Active Fields_ inputs in _Customizables_ forms and permit their params in controllers
+5. Add _Active Fields_ inputs in _Customizables_ forms and permit their params in controllers.
 
     There are two methods available on _Customizable_ models for retrieving _Active Values_:
     - `active_values` returns collection of only existing _Active Values_.
@@ -128,11 +130,15 @@ such as booleans, strings, numbers, arrays, etc.
     end
     ```
 
-    Here, we use the `active_fields_attributes=` method,
+    **Note:** Here we use the `active_fields_attributes=` method (as a permitted parameter),
     that integrates well with Rails `fields_for` to generate appropriate form fields.
     Alternatively, the alias `active_fields=` can be used in contexts without `fields_for`, such as API controllers.
 
-    Explore the [Demo app](https://github.com/lassoid/active_fields/blob/main/spec/dummy)
+    That's it!
+    You can now add _Active Fields_ to _Customizables_ at `http://localhost:3000/active_fields`
+    and fill in _Active Values_ within _Customizable_ forms.
+
+    You can also explore the [Demo app](https://github.com/lassoid/active_fields/blob/main/spec/dummy)
     where the plugin is fully integrated into a full-stack Rails application.
     Feel free to explore the source code and run it locally:
 
@@ -500,6 +506,8 @@ For an example, refer to the [locale file](https://github.com/lassoid/active_fie
     This could cause existing _Active Values_ to become invalid,
     leading to the associated _Customizables_ also becoming invalid,
     which could potentially result in update failures.
+
+3. Only _Zeitwerk_ autoloading mode is supported.
 
 ## API Overview
 
