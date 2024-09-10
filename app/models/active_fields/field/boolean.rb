@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-p "Loaded ActiveFields::Boolean"
 module ActiveFields
   module Field
     class Boolean < ActiveFields.config.field_base_class

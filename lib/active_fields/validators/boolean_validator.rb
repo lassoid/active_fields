@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-p "Loaded ActiveFields::Validators::BooleanValidator"
 module ActiveFields
   module Validators
     class BooleanValidator < BaseValidator

@@ -10,32 +10,9 @@ module ActiveFields
   autoload :CustomizableConfig, "active_fields/customizable_config"
   autoload :HasActiveFields, "active_fields/has_active_fields"
 
-  autoload :CustomizableConcern, "active_fields/models/concerns/customizable_concern"
-  autoload :FieldConcern, "active_fields/models/concerns/field_concern"
-  autoload :FieldArrayConcern, "active_fields/models/concerns/field_array_concern"
-  autoload :ValueConcern, "active_fields/models/concerns/value_concern"
-
-  autoload :ApplicationRecord, "active_fields/models/application_record"
-  autoload :Value, "active_fields/models/value"
-
-  module Field
-    autoload :Base, "active_fields/models/field/base"
-    autoload :Boolean, "active_fields/models/field/boolean"
-    autoload :Date, "active_fields/models/field/date"
-    autoload :DateArray, "active_fields/models/field/date_array"
-    autoload :DateTime, "active_fields/models/field/date_time"
-    autoload :DateTimeArray, "active_fields/models/field/date_time_array"
-    autoload :Decimal, "active_fields/models/field/decimal"
-    autoload :DecimalArray, "active_fields/models/field/decimal_array"
-    autoload :Enum, "active_fields/models/field/enum"
-    autoload :EnumArray, "active_fields/models/field/enum_array"
-    autoload :Integer, "active_fields/models/field/integer"
-    autoload :IntegerArray, "active_fields/models/field/integer_array"
-    autoload :Text, "active_fields/models/field/text"
-    autoload :TextArray, "active_fields/models/field/text_array"
-  end
-
   module Casters
+    extend ActiveSupport::Autoload
+
     autoload :BaseCaster, "active_fields/casters/base_caster"
     autoload :BooleanCaster, "active_fields/casters/boolean_caster"
     autoload :DateCaster, "active_fields/casters/date_caster"
@@ -53,6 +30,8 @@ module ActiveFields
   end
 
   module Validators
+    extend ActiveSupport::Autoload
+
     autoload :BaseValidator, "active_fields/validators/base_validator"
     autoload :BooleanValidator, "active_fields/validators/boolean_validator"
     autoload :DateValidator, "active_fields/validators/date_validator"

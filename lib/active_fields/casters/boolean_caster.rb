@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-p "Loaded ActiveFields::Casters::BooleanCaster"
 module ActiveFields
   module Casters
     class BooleanCaster < BaseCaster
