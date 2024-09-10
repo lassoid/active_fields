@@ -6,7 +6,8 @@ module ActiveFields
 
     config.eager_load_namespaces << ActiveFields
 
-    # Disable reloading of models, as it breaks the STI.
+    # Disable models reloading to avoid STI issues.
+    # Reloading can prevent subclasses from recognizing the base class.
     config.autoload_once_paths = %W[#{root}/app/models #{root}/app/models/concerns]
 
     initializer "active_fields.active_record" do
