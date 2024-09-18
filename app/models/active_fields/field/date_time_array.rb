@@ -13,6 +13,9 @@ module ActiveFields
           class_name: "ActiveFields::Casters::DateTimeArrayCaster",
           options: -> { { precision: precision } },
         },
+        finder: {
+          class_name: "ActiveFields::Finders::DateTimeArrayFinder",
+        },
       )
 
       store_accessor :options, :min, :max, :precision

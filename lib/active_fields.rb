@@ -11,6 +11,7 @@ module ActiveFields
       super
       Casters.eager_load!
       Validators.eager_load!
+      Finders.eager_load!
     end
   end
 
@@ -59,6 +60,27 @@ module ActiveFields
       autoload :IntegerArrayValidator
       autoload :TextValidator
       autoload :TextArrayValidator
+    end
+  end
+
+  module Finders
+    extend ActiveSupport::Autoload
+
+    eager_autoload do
+      autoload :BaseFinder
+      autoload :BooleanFinder
+      autoload :DateFinder
+      autoload :DateArrayFinder
+      autoload :DateTimeFinder
+      autoload :DateTimeArrayFinder
+      autoload :DecimalFinder
+      autoload :DecimalArrayFinder
+      autoload :EnumFinder
+      autoload :EnumArrayFinder
+      autoload :IntegerFinder
+      autoload :IntegerArrayFinder
+      autoload :TextFinder
+      autoload :TextArrayFinder
     end
   end
 

@@ -12,6 +12,9 @@ module ActiveFields
         caster: {
           class_name: "ActiveFields::Casters::EnumArrayCaster",
         },
+        finder: {
+          class_name: "ActiveFields::Finders::EnumArrayFinder",
+        },
       )
 
       store_accessor :options, :allowed_values
