@@ -11,6 +11,9 @@ module ActiveFields
         caster: {
           class_name: "ActiveFields::Casters::EnumCaster",
         },
+        finder: {
+          class_name: "ActiveFields::Finders::EnumFinder",
+        },
       )
 
       store_accessor :options, :required, :allowed_values

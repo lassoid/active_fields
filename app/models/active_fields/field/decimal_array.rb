@@ -13,6 +13,9 @@ module ActiveFields
           class_name: "ActiveFields::Casters::DecimalArrayCaster",
           options: -> { { precision: precision } },
         },
+        finder: {
+          class_name: "ActiveFields::Finders::DecimalArrayFinder",
+        },
       )
 
       store_accessor :options, :min, :max, :precision

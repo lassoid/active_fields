@@ -14,6 +14,9 @@ module ActiveFields
         caster: {
           class_name: "ActiveFields::Casters::TextArrayCaster",
         },
+        finder: {
+          class_name: "ActiveFields::Finders::TextArrayFinder",
+        },
       )
 
       store_accessor :options, :min_length, :max_length

@@ -15,6 +15,25 @@ module ActiveFields
         dependent: :destroy
       # rubocop:enable Rails/ReflectionClassName
 
+      scope :where_active_values, ->(*filters) do
+        filters.inject(self) do |scope, filter|
+          field =
+            if filter.key?(:active_field)
+              filter[:active_field]
+            elsif filter.key?(:name)
+              active_fields.find_by!(name: filter[:name])
+            elsif filter.key?(:active_field_id)
+              active_fields.find(filter[:active_field_id])
+            else
+              raise ArgumentError, "unable to find `active_field` in `where_active_values`"
+            end
+
+          next scope unless field.value_finder_class
+
+          field.value_finder_class.call(scope: scope, operator: filter[:operator], value: filter[:value])
+        end
+      end
+
       accepts_nested_attributes_for :active_values, allow_destroy: true
     end
 

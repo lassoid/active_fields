@@ -11,6 +11,9 @@ module ActiveFields
         caster: {
           class_name: "ActiveFields::Casters::IntegerCaster",
         },
+        finder: {
+          class_name: "ActiveFields::Finders::IntegerFinder",
+        },
       )
 
       store_accessor :options, :required, :min, :max
