@@ -22,13 +22,15 @@ module ActiveFields
           Arel::Nodes::NamedFunction.new("CAST", [value_field.as(to)])
         end
 
-        def is_operation(target, value)
+        def is(target, value)
           Arel::Nodes::InfixOperation.new("IS", target, Arel::Nodes.build_quoted(value))
         end
 
-        def is_not_operation(target, value)
+        # rubocop:disable Naming/PredicateName
+        def is_not(target, value)
           Arel::Nodes::InfixOperation.new("IS NOT", target, Arel::Nodes.build_quoted(value))
         end
+        # rubocop:enable Naming/PredicateName
       end
     end
   end
