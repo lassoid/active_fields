@@ -8,9 +8,9 @@ module ActiveFields
           value = Casters::BooleanCaster.new.deserialize(value)
           case operator
           when "=", "is"
-            scope.where(is_operation(casted_value_field("boolean"), value))
+            scope.where(is(casted_value_field("boolean"), value))
           when "!=", "is_not"
-            scope.where(is_not_operation(casted_value_field("boolean"), value))
+            scope.where(is_not(casted_value_field("boolean"), value))
           else
             raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
           end
