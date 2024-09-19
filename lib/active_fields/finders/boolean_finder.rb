@@ -4,8 +4,10 @@ module ActiveFields
   module Finders
     class BooleanFinder < BaseFinder
       class << self
-        def call(scope:, operator:, value:)
+        def call(active_field:, operator:, value:)
           value = Casters::BooleanCaster.new.deserialize(value)
+          scope = active_values_cte(active_field)
+
           case operator
           when "=", "is"
             scope.where(is(casted_value_field("boolean"), value))

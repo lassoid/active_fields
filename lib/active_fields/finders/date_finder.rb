@@ -4,8 +4,10 @@ module ActiveFields
   module Finders
     class DateFinder < BaseFinder
       class << self
-        def call(scope:, operator:, value:)
+        def call(active_field:, operator:, value:)
           value = Casters::DateCaster.new.deserialize(value)
+          scope = active_values_cte(active_field)
+
           case operator
           when "="
             scope.where(casted_value_field("date").eq(value))
