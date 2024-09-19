@@ -16,30 +16,37 @@ module ActiveFields
       # rubocop:enable Rails/ReflectionClassName
 
       scope :where_active_values, ->(*filters) do
+        active_fields_by_name = active_fields.index_by(&:name)
+
         filters.inject(self) do |scope, filter|
-          field =
-            if filter.key?(:active_field)
-              filter[:active_field]
-            elsif filter.key?(:name)
-              active_fields.find_by!(name: filter[:name])
-            elsif filter.key?(:active_field_id)
-              active_fields.find(filter[:active_field_id])
-            else
-              raise ArgumentError, "unable to find `active_field` in `where_active_values`"
-            end
+          filter = filter.to_h if filter.respond_to?(:permitted?)
+          filter = filter.with_indifferent_access
 
-          next scope unless field.value_finder_class
+          active_field = active_fields_by_name[filter[:name]]
+          raise ArgumentError, "unable to find `active_field` in `where_active_values`" if active_field.nil?
 
-          field.value_finder_class.call(scope: scope, operator: filter[:operator], value: filter[:value])
+          next scope unless active_field.value_finder_class
+
+          active_values = active_field.value_finder_class.call(
+            active_field: active_field,
+            operator: filter[:operator],
+            value: filter[:value],
+          )
+
+          scope.where(id: active_values.select(:customizable_id))
         end
       end
 
       accepts_nested_attributes_for :active_values, allow_destroy: true
     end
 
-    def active_fields
-      ActiveFields.config.field_base_class.for(model_name.name)
+    class_methods do
+      def active_fields
+        ActiveFields.config.field_base_class.for(model_name.name)
+      end
     end
+
+    delegate :active_fields, to: :class
 
     # Assigns the given attributes to the active_values association.
     #

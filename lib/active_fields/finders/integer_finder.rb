@@ -2,9 +2,9 @@
 
 module ActiveFields
   module Finders
-    class TextFinder < BaseFinder
+    class IntegerFinder < BaseFinder
       class << self
-        def call(scope:, operator:, value:)
+        def call(active_field:, operator:, value:)
           raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
         end
       end

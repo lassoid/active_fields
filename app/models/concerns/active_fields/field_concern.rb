@@ -26,7 +26,7 @@ module ActiveFields
     end
 
     class_methods do
-      def acts_as_active_field(array: false, validator:, caster:, finder:)
+      def acts_as_active_field(array: false, validator:, caster:, finder: {})
         include FieldArrayConcern if array
 
         define_method(:array?) { array }
@@ -64,7 +64,7 @@ module ActiveFields
         end
 
         define_method(:value_finder_class) do
-          @value_finder_class ||= finder[:class_name].constantize
+          @value_finder_class ||= finder[:class_name]&.constantize
         end
       end
     end

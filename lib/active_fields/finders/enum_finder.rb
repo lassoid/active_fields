@@ -4,7 +4,7 @@ module ActiveFields
   module Finders
     class EnumFinder < BaseFinder
       class << self
-        def call(scope:, operator:, value:)
+        def call(active_field:, operator:, value:)
           raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
         end
       end
