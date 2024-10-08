@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateDummyTables < ActiveRecord::Migration[7.0]
+class CreateDummyTables < ActiveRecord::Migration[7.1]
   def change
     create_table :groups do |t|
       t.string :name

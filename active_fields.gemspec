@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Dependencies
-  spec.add_dependency "rails", ">= 7.0"
+  spec.add_dependency "rails", ">= 7.1"
 
   spec.add_development_dependency "factory_bot"
   spec.add_development_dependency "pg"
