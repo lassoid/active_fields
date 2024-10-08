@@ -15,12 +15,38 @@ module ActiveFields
         dependent: :destroy
       # rubocop:enable Rails/ReflectionClassName
 
+      scope :where_active_values, ->(*filters) do
+        active_fields_by_name = active_fields.index_by(&:name)
+
+        filters.inject(self) do |scope, filter|
+          filter = filter.to_h if filter.respond_to?(:permitted?)
+          filter = filter.with_indifferent_access
+
+          active_field = active_fields_by_name[filter[:name]]
+          raise ArgumentError, "unable to find `active_field` in `where_active_values`" if active_field.nil?
+
+          next scope unless active_field.value_finder_class
+
+          active_values = active_field.value_finder_class.call(
+            active_field: active_field,
+            operator: filter[:operator],
+            value: filter[:value],
+          )
+
+          scope.where(id: active_values.select(:customizable_id))
+        end
+      end
+
       accepts_nested_attributes_for :active_values, allow_destroy: true
     end
 
-    def active_fields
-      ActiveFields.config.field_base_class.for(model_name.name)
+    class_methods do
+      def active_fields
+        ActiveFields.config.field_base_class.for(model_name.name)
+      end
     end
+
+    delegate :active_fields, to: :class
 
     # Assigns the given attributes to the active_values association.
     #
