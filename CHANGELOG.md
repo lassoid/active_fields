@@ -1,5 +1,6 @@
 ## [Unreleased]
-- Drop support for Rails < 7
+- Drop support for Rails < 7 (EOL)
+- Drop support for Ruby < 3.1 (EOL)
 
 ## [1.1.0] - 2024-09-10
 - Added scaffold generator
