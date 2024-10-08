@@ -507,8 +507,6 @@ For an example, refer to the [locale file](https://github.com/lassoid/active_fie
     leading to the associated _Customizables_ also becoming invalid,
     which could potentially result in update failures.
 
-3. Only _Zeitwerk_ autoloading mode is supported.
-
 ## API Overview
 
 ### Fields API

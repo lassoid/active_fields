@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Drop support for Rails < 7
 
 ## [1.1.0] - 2024-09-10
 - Added scaffold generator
