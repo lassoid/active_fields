@@ -9,18 +9,18 @@ module ActiveFields
           scope = active_values_cte(active_field)
 
           case operator
-          when "="
+          when "=", "eq"
             scope.where(casted_value_field("decimal").eq(value))
-          when ">"
-            scope.where(casted_value_field("decimal").gt(value))
-          when "=>"
-            scope.where(casted_value_field("decimal").gteq(value))
-          when "<"
-            scope.where(casted_value_field("decimal").lt(value))
-          when "<="
-            scope.where(casted_value_field("decimal").lteq(value))
-          when "!="
+          when "!=", "not_eq"
             scope.where(casted_value_field("decimal").not_eq(value))
+          when ">", "gt"
+            scope.where(casted_value_field("decimal").gt(value))
+          when "=>", "gte"
+            scope.where(casted_value_field("decimal").gteq(value))
+          when "<", "lt"
+            scope.where(casted_value_field("decimal").lt(value))
+          when "<=", "lte"
+            scope.where(casted_value_field("decimal").lteq(value))
           else
             raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
           end

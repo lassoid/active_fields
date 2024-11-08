@@ -9,9 +9,9 @@ module ActiveFields
           scope = active_values_cte(active_field)
 
           case operator
-          when "="
+          when "=", "eq"
             scope.where(casted_value_field("text").eq(value))
-          when "!="
+          when "!=", "not_eq"
             scope.where(casted_value_field("text").not_eq(value))
           when "like"
             scope.where(casted_value_field("text").matches(value, nil, true))

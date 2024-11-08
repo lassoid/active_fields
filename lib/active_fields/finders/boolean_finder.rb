@@ -9,9 +9,9 @@ module ActiveFields
           scope = active_values_cte(active_field)
 
           case operator
-          when "=", "is"
+          when "=", "eq"
             scope.where(is(casted_value_field("boolean"), value))
-          when "!=", "is_not"
+          when "!=", "not_eq"
             scope.where(is_not(casted_value_field("boolean"), value))
           else
             raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"

@@ -5,7 +5,7 @@ module ActiveFields
     class EnumArrayFinder < BaseFinder
       class << self
         def call(active_field:, operator:, value:)
-          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
+          # TODO
         end
       end
     end

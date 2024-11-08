@@ -16,7 +16,15 @@ module ActiveFields
           ActiveFields.config.value_class.with(cte_name => active_field.active_values).from(cte_name)
         end
 
-        def value_field
+        def value_field_json
+          Arel::Nodes::InfixOperation.new(
+            "->",
+            Arel::Table.new(cte_name)[:value_meta],
+            Arel::Nodes.build_quoted("const"),
+          )
+        end
+
+        def value_field_text
           Arel::Nodes::InfixOperation.new(
             "->>",
             Arel::Table.new(cte_name)[:value_meta],
@@ -25,7 +33,7 @@ module ActiveFields
         end
 
         def casted_value_field(to)
-          Arel::Nodes::NamedFunction.new("CAST", [value_field.as(to)])
+          Arel::Nodes::NamedFunction.new("CAST", [value_field_text.as(to)])
         end
 
         def is(target, value)
@@ -37,6 +45,10 @@ module ActiveFields
           Arel::Nodes::InfixOperation.new("IS NOT", target, Arel::Nodes.build_quoted(value))
         end
         # rubocop:enable Naming/PredicateName
+
+        def value_jsonb_path_exists(*queries)
+          Arel::Nodes::NamedFunction.new("jsonb_path_exists", [value_field_json, *queries.map { Arel::Nodes.build_quoted(_1) }])
+        end
       end
     end
   end
