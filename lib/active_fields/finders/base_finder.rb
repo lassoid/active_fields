@@ -16,7 +16,7 @@ module ActiveFields
           ActiveFields.config.value_class.with(cte_name => active_field.active_values).from(cte_name)
         end
 
-        def value_field_json
+        def value_field_jsonb
           Arel::Nodes::InfixOperation.new(
             "->",
             Arel::Table.new(cte_name)[:value_meta],
@@ -29,6 +29,14 @@ module ActiveFields
             "->>",
             Arel::Table.new(cte_name)[:value_meta],
             Arel::Nodes.build_quoted("const"),
+          )
+        end
+
+        def value_field_match(query)
+          Arel::Nodes::InfixOperation.new(
+            "@?",
+            value_field_jsonb,
+            Arel::Nodes.build_quoted(query),
           )
         end
 
@@ -46,9 +54,12 @@ module ActiveFields
         end
         # rubocop:enable Naming/PredicateName
 
-        def value_jsonb_path_exists(*queries)
-          Arel::Nodes::NamedFunction.new("jsonb_path_exists", [value_field_json, *queries.map { Arel::Nodes.build_quoted(_1) }])
-        end
+        # def value_jsonb_path_exists(*queries)
+        #   Arel::Nodes::NamedFunction.new(
+        #     "jsonb_path_exists",
+        #     [value_field_jsonb, *queries.map { Arel::Nodes.build_quoted(_1) }],
+        #   )
+        # end
       end
     end
   end
