@@ -11,9 +11,9 @@ module ActiveFields
 
           case operator
           when "include"
-            scope.where(value_field_match("$[*] ? (@ == #{value.to_json})"))
+            scope.where(value_jsonb_path_exists("$[*] ? (@ == $value)", { value: value }))
           when "not_include"
-            scope.where.not(value_field_match("$[*] ? (@ == #{value.to_json})"))
+            scope.where.not(value_jsonb_path_exists("$[*] ? (@ == $value)", { value: value }))
           else
             raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
           end

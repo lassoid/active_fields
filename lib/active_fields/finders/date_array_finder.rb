@@ -11,25 +11,25 @@ module ActiveFields
 
           case operator
           when "include"
-            scope.where(value_field_match("$[*] ? (@.date() == #{value.to_json}.date())"))
+            scope.where(value_jsonb_path_exists("$[*] ? (@.date() == $value.date())", { value: value }))
           when "not_include"
-            scope.where.not(value_field_match("$[*] ? (@.date() == #{value.to_json}.date())"))
+            scope.where.not(value_jsonb_path_exists("$[*] ? (@.date() == $value.date())", { value: value }))
           when "any_gt"
-            scope.where(value_field_match("$[*] ? (@.date() > #{value.to_json}.date())"))
+            scope.where(value_jsonb_path_exists("$[*] ? (@.date() > $value.date())", { value: value }))
           when "any_gte"
-            scope.where(value_field_match("$[*] ? (@.date() >= #{value.to_json}.date())"))
+            scope.where(value_jsonb_path_exists("$[*] ? (@.date() >= $value.date())", { value: value }))
           when "any_lt"
-            scope.where(value_field_match("$[*] ? (@.date() < #{value.to_json}.date())"))
+            scope.where(value_jsonb_path_exists("$[*] ? (@.date() < $value.date())", { value: value }))
           when "any_lte"
-            scope.where(value_field_match("$[*] ? (@.date() <= #{value.to_json}.date())"))
+            scope.where(value_jsonb_path_exists("$[*] ? (@.date() <= $value.date())", { value: value }))
           when "all_gt"
-            scope.where.not(value_field_match("$[*] ? (@.date() <= #{value.to_json}.date())"))
+            scope.where.not(value_jsonb_path_exists("$[*] ? (@.date() <= $value.date())", { value: value }))
           when "all_gte"
-            scope.where.not(value_field_match("$[*] ? (@.date() < #{value.to_json}.date())"))
+            scope.where.not(value_jsonb_path_exists("$[*] ? (@.date() < $value.date())", { value: value }))
           when "all_lt"
-            scope.where.not(value_field_match("$[*] ? (@.date() >= #{value.to_json}.date())"))
+            scope.where.not(value_jsonb_path_exists("$[*] ? (@.date() >= $value.date())", { value: value }))
           when "all_lte"
-            scope.where.not(value_field_match("$[*] ? (@.date() > #{value.to_json}.date())"))
+            scope.where.not(value_jsonb_path_exists("$[*] ? (@.date() > $value.date())", { value: value }))
           else
             raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
           end

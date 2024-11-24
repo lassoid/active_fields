@@ -32,13 +32,13 @@ module ActiveFields
           )
         end
 
-        def value_field_match(query)
-          Arel::Nodes::InfixOperation.new(
-            "@?",
-            value_field_jsonb,
-            Arel::Nodes.build_quoted(query),
-          )
-        end
+        # def value_field_match(query)
+        #   Arel::Nodes::InfixOperation.new(
+        #     "@?",
+        #     value_field_jsonb,
+        #     Arel::Nodes.build_quoted(query),
+        #   )
+        # end
 
         def casted_value_field(to)
           Arel::Nodes::NamedFunction.new("CAST", [value_field_text.as(to)])
@@ -54,12 +54,12 @@ module ActiveFields
         end
         # rubocop:enable Naming/PredicateName
 
-        # def value_jsonb_path_exists(*queries)
-        #   Arel::Nodes::NamedFunction.new(
-        #     "jsonb_path_exists",
-        #     [value_field_jsonb, *queries.map { Arel::Nodes.build_quoted(_1) }],
-        #   )
-        # end
+        def value_jsonb_path_exists(jsonpath, vars = nil)
+          Arel::Nodes::NamedFunction.new(
+            "jsonb_path_exists",
+            [value_field_jsonb, *[jsonpath, vars&.to_json].compact.map { Arel::Nodes.build_quoted(_1) }],
+          )
+        end
       end
     end
   end
