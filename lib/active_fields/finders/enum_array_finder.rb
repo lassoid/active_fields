@@ -3,20 +3,21 @@
 module ActiveFields
   module Finders
     class EnumArrayFinder < BaseFinder
-      class << self
-        def call(active_field:, operator:, value:)
-          caster = Casters::EnumCaster.new
-          value = caster.serialize(caster.deserialize(value))
-          scope = active_values_cte(active_field)
+      def search(operator:, value:)
+        caster = Casters::EnumCaster.new
+        value = caster.serialize(caster.deserialize(value))
 
-          case operator
-          when "include"
-            scope.where(value_jsonb_path_exists("$[*] ? (@ == $value)", { value: value }))
-          when "not_include"
-            scope.where.not(value_jsonb_path_exists("$[*] ? (@ == $value)", { value: value }))
-          else
-            raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
-          end
+        case operator
+        when "include"
+          active_values_cte.where(
+            value_jsonb_path_exists("$[*] ? (@ == $value)", { value: value }),
+          )
+        when "not_include"
+          active_values_cte.where.not(
+            value_jsonb_path_exists("$[*] ? (@ == $value)", { value: value }),
+          )
+        else
+          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
         end
       end
     end

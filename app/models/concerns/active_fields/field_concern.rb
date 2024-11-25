@@ -66,6 +66,10 @@ module ActiveFields
         define_method(:value_finder_class) do
           @value_finder_class ||= finder[:class_name]&.constantize
         end
+
+        define_method(:value_finder) do
+          value_finder_class.new(active_field: self)
+        end
       end
     end
 

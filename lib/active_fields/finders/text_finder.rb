@@ -3,23 +3,20 @@
 module ActiveFields
   module Finders
     class TextFinder < BaseFinder
-      class << self
-        def call(active_field:, operator:, value:)
-          value = Casters::TextCaster.new.deserialize(value)
-          scope = active_values_cte(active_field)
+      def search(operator:, value:)
+        value = Casters::TextCaster.new.deserialize(value)
 
-          case operator
-          when "=", "eq"
-            scope.where(casted_value_field("text").eq(value))
-          when "!=", "not_eq"
-            scope.where(casted_value_field("text").not_eq(value))
-          when "like"
-            scope.where(casted_value_field("text").matches(value, nil, true))
-          when "ilike"
-            scope.where(casted_value_field("text").matches(value, nil, false))
-          else
-            raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
-          end
+        case operator
+        when "=", "eq"
+          active_values_cte.where(casted_value_field("text").eq(value))
+        when "!=", "not_eq"
+          active_values_cte.where(casted_value_field("text").not_eq(value))
+        when "like"
+          active_values_cte.where(casted_value_field("text").matches(value, nil, true))
+        when "ilike"
+          active_values_cte.where(casted_value_field("text").matches(value, nil, false))
+        else
+          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
         end
       end
     end

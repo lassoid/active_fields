@@ -15,22 +15,60 @@ module ActiveFields
         dependent: :destroy
       # rubocop:enable Rails/ReflectionClassName
 
-      scope :where_active_values, ->(*filters) do
+      # Searches customizables by active_values.
+      #
+      # Accepts an Array of Hashes (symbol/string keys),
+      # a Hash of Hashes generated from HTTP/HTML parameters
+      # or permitted params.
+      # Each element should contain:
+      # - <tt>:name</tt> or <tt>:n</tt> key matching the active_field record name;
+      # - <tt>:operator</tt> or <tt>:op</tt> key specifying search operator;
+      # - <tt>:value</tt> or <tt>:v</tt> key specifying search value.
+      #
+      # Example:
+      #
+      #   # Array of hashes
+      #   CustomizableModel.where_active_values([
+      #     { name: "integer_array", operator: "any_gte", value: 5 }, # symbol keys
+      #     { "name" => "text", operator: "eq", "value" => "Lasso" }, # string keys
+      #     { n: "boolean", op: "eq", v: false }, # compact form
+      #   ])
+      #
+      #   # Hash of hashes generated from HTTP/HTML parameters
+      #   CustomizableModel.where_active_values(
+      #     {
+      #       "0" => { name: "integer_array", operator: "any_gte", value: 5 },
+      #       "1" => { "name" => "text", operator: "eq", "value" => "Lasso" },
+      #       "2" => { n: "boolean", op: "eq", v: false },
+      #     }
+      #   )
+      #
+      #   # Params
+      #   CustomizableModel.where_active_values(permitted_params) # params could be passed, but they must be permitted
+      scope :where_active_values, ->(filters) do
+        filters = filters.to_h if filters.respond_to?(:permitted?)
+
+        unless filters.is_a?(Array) || filters.is_a?(Hash)
+          raise ArgumentError, "Hash or Array expected for `where_active_values`, got #{filters.class.name}"
+        end
+
+        # Handle `fields_for` params
+        filters = filters.values if filters.is_a?(Hash)
+
         active_fields_by_name = active_fields.index_by(&:name)
 
         filters.inject(self) do |scope, filter|
           filter = filter.to_h if filter.respond_to?(:permitted?)
           filter = filter.with_indifferent_access
 
-          active_field = active_fields_by_name[filter[:name]]
+          active_field = active_fields_by_name[filter[:n] || filter[:name]]
           raise ArgumentError, "unable to find `active_field` in `where_active_values`" if active_field.nil?
 
-          next scope unless active_field.value_finder_class
+          next scope unless active_field.value_finder
 
-          active_values = active_field.value_finder_class.call(
-            active_field: active_field,
-            operator: filter[:operator],
-            value: filter[:value],
+          active_values = active_field.value_finder.search(
+            operator: filter[:op] || filter[:operator],
+            value: filter[:v] || filter[:value],
           )
 
           scope.where(id: active_values.select(:customizable_id))
@@ -50,7 +88,9 @@ module ActiveFields
 
     # Assigns the given attributes to the active_values association.
     #
-    # Accepts an Array of Hashes (symbol/string keys) or permitted params.
+    # Accepts an Array of Hashes (symbol/string keys),
+    # a Hash of Hashes generated from HTTP/HTML parameters
+    # or permitted params.
     # Each element should contain a <tt>:name</tt> key matching an existing active_field record.
     # Element with a <tt>:value</tt> key will create an active_value if it doesn't exist
     # or update an existing active_value, with the provided value.
@@ -66,6 +106,13 @@ module ActiveFields
     #     { "name" => "boolean", "_destroy" => true }, # destroy (string keys)
     #     permitted_params, # params could be passed, but they must be permitted
     #   ]
+    #
+    #   customizable.active_fields_attributes = {
+    #     "0" => { name: "integer_array", value: [1, 4, 5, 5, 0] }, # create or update (symbol keys)
+    #     "1" => { "name" => "text", "value" => "Lasso" }, # create or update (string keys)
+    #     "2" => { name: "date", _destroy: true }, # destroy (symbol keys)
+    #     "3" => { "name" => "boolean", "_destroy" => true }, # destroy (string keys)
+    #   }
     def active_fields_attributes=(attributes)
       attributes = attributes.to_h if attributes.respond_to?(:permitted?)
 

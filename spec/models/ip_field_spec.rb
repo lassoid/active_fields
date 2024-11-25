@@ -7,5 +7,6 @@ RSpec.describe IpField do
     factory: factory,
     available_traits: %i[required],
     validator_class: "IpValidator",
-    caster_class: "IpCaster"
+    caster_class: "IpCaster",
+    finder_class: "IpFinder"
 end

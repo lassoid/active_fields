@@ -53,6 +53,182 @@ RSpec.shared_examples "customizable" do
     end
   end
 
+  context "scopes" do
+    describe "#where_active_values" do
+      subject(:call_scope) { described_class.where_active_values(args).to_a }
+
+      def search_operator(active_field) = "operator_#{active_field.id}"
+      def search_value(active_field) = "value_#{active_field.id}"
+
+      let!(:active_fields) do
+        active_field_factories_for(described_class).sample(2).map do |active_field_factory|
+          create(active_field_factory, customizable_type: described_class.name)
+        end
+      end
+
+      let!(:records) do
+        Array.new(3) do
+          described_class.create!(
+            active_fields_attributes: active_fields.map do |active_field|
+              { active_field_id: active_field.id, value: active_value_for(active_field) }
+            end,
+          )
+        end
+      end
+
+      let(:mapping) do
+        active_fields.map { |active_field| [active_field.id, records.sample(2).map(&:id)] }.to_h
+      end
+
+      before do
+        active_fields.each do |active_field|
+          finder = instance_double(active_field.value_finder_class)
+          allow(finder).to receive(:search).with(
+            operator: search_operator(active_field),
+            value: search_value(active_field),
+          ).and_return(
+            active_field.active_values.where(customizable_id: mapping[active_field.id]),
+          )
+
+          allow(active_field).to receive(:value_finder).and_return(finder)
+        end
+      end
+
+      context "with array of symbol hashes" do
+        let(:args) do
+          active_fields.map do |active_field|
+            {
+              name: active_field.name,
+              operator: search_operator(active_field),
+              value: search_value(active_field),
+            }
+          end
+        end
+
+        it "returns records with matching active_values" do
+          expect(call_scope)
+            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+        end
+      end
+
+      context "with array of string hashes" do
+        let(:args) do
+          active_fields.map do |active_field|
+            {
+              "name" => active_field.name,
+              "operator" => search_operator(active_field),
+              "value" => search_value(active_field),
+            }
+          end
+        end
+
+        it "returns records with matching active_values" do
+          expect(call_scope)
+            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+        end
+      end
+
+      context "with array of compact keys hashes" do
+        let(:args) do
+          active_fields.map do |active_field|
+            {
+              (rand(0..1) == 0 ? "n" : :n) => active_field.name,
+              (rand(0..1) == 0 ? "op" : :op) => search_operator(active_field),
+              (rand(0..1) == 0 ? "v" : :v) => search_value(active_field),
+            }
+          end
+        end
+
+        it "returns records with matching active_values" do
+          expect(call_scope)
+            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+        end
+      end
+
+      context "with permitted params hash" do
+        let(:args) do
+          ActionController::Parameters.new(
+            active_fields.map.with_index(0) do |active_field, i|
+              [
+                i.to_s,
+                {
+                  "name" => active_field.name,
+                  "operator" => search_operator(active_field),
+                  "value" => search_value(active_field),
+                },
+              ]
+            end.to_h,
+          ).permit!
+        end
+
+        it "returns records with matching active_values" do
+          expect(call_scope)
+            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+        end
+      end
+
+      context "with permitted params compact keys hash" do
+        let(:args) do
+          ActionController::Parameters.new(
+            active_fields.map.with_index(0) do |active_field, i|
+              [
+                i.to_s,
+                {
+                  "n" => active_field.name,
+                  "op" => search_operator(active_field),
+                  "v" => search_value(active_field),
+                },
+              ]
+            end.to_h,
+          ).permit!
+        end
+
+        it "returns records with matching active_values" do
+          expect(call_scope)
+            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+        end
+      end
+
+      context "with hash unpermitted params" do
+        let(:args) do
+          ActionController::Parameters.new(
+            active_fields.map.with_index(0) do |active_field, i|
+              [
+                i.to_s,
+                {
+                  "name" => active_field.name,
+                  "operator" => search_operator(active_field),
+                  "value" => search_value(active_field),
+                },
+              ]
+            end.to_h,
+          )
+        end
+
+        it "raises an error" do
+          expect do
+            call_scope
+          end.to raise_error(ActionController::UnfilteredParameters)
+        end
+      end
+
+      context "with neither a params nor a hash nor an array" do
+        let(:args) { [nil, random_number, random_string].sample }
+
+        it "raises an error" do
+          expect do
+            call_scope
+          end.to raise_error(ArgumentError)
+        end
+      end
+    end
+  end
+
   context "callbacks" do
     describe "active_fields nested attributes autosave" do
       subject(:save_record) { record.save! }
@@ -112,6 +288,24 @@ RSpec.shared_examples "customizable" do
   end
 
   context "methods" do
+    describe "##active_fields" do
+      subject(:call_method) { described_class.active_fields }
+
+      let!(:active_fields) do
+        dummy_models.map do |model|
+          active_field_factories_for(model).map do |active_field_factory|
+            create(active_field_factory, customizable_type: model.name)
+          end
+        end.flatten
+      end
+
+      it "returns active_fields for provided model only" do
+        expect(call_method.to_a)
+          .to include(*active_fields.select { |field| field.customizable_type == described_class.name })
+          .and exclude(*active_fields.reject { |field| field.customizable_type == described_class.name })
+      end
+    end
+
     describe "#active_fields" do
       subject(:call_method) { record.active_fields }
 

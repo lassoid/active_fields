@@ -3,19 +3,16 @@
 module ActiveFields
   module Finders
     class BooleanFinder < BaseFinder
-      class << self
-        def call(active_field:, operator:, value:)
-          value = Casters::BooleanCaster.new.deserialize(value)
-          scope = active_values_cte(active_field)
+      def search(operator:, value:)
+        value = Casters::BooleanCaster.new.deserialize(value)
 
-          case operator
-          when "=", "eq"
-            scope.where(is(casted_value_field("boolean"), value))
-          when "!=", "not_eq"
-            scope.where(is_not(casted_value_field("boolean"), value))
-          else
-            raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{name}`"
-          end
+        case operator
+        when "=", "eq"
+          active_values_cte.where(is(casted_value_field("boolean"), value))
+        when "!=", "not_eq"
+          active_values_cte.where(is_not(casted_value_field("boolean"), value))
+        else
+          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
         end
       end
     end
