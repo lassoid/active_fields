@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
-  custom_validator_class = opts[:validator_class]
-  custom_caster_class = opts[:caster_class]
-  custom_finder_class = opts[:finder_class]
-
   it "is a subclass of the configured field base class" do
     expect(described_class.superclass).to eq(ActiveFields.config.field_base_class)
   end
@@ -15,7 +11,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
     let(:traits) { [] }
     let(:attributes) { {} }
 
-    available_traits.map { [nil, _1] }.then { _1[0].product(*_1[1..-1]) }.each do |traits_combination|
+    available_traits.map { [nil, _1] }.then { _1.any? ? _1[0].product(*_1[1..-1]) : [] }.each do |traits_combination|
       traits_combination = traits_combination.compact
 
       context "with traits: [#{traits_combination.join(", ")}]" do
@@ -186,7 +182,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
       it "returns validator class" do
         expect(call_method).to eq(
           (
-            custom_validator_class || "ActiveFields::Validators::#{record.model_name.name.demodulize}Validator"
+            opts[:validator_class] || "ActiveFields::Validators::#{record.model_name.name.demodulize}Validator"
           ).constantize,
         )
       end
@@ -203,7 +199,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
 
       it "returns caster class" do
         expect(call_method).to eq(
-          (custom_caster_class || "ActiveFields::Casters::#{record.model_name.name.demodulize}Caster").constantize,
+          (opts[:caster_class] || "ActiveFields::Casters::#{record.model_name.name.demodulize}Caster").constantize,
         )
       end
     end
@@ -218,16 +214,24 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
       subject(:call_method) { record.value_finder_class }
 
       it "returns finder class" do
-        expect(call_method).to eq(
-          (custom_finder_class || "ActiveFields::Finders::#{record.model_name.name.demodulize}Finder").constantize,
-        )
+        if opts.key?(:finder_class)
+          expect(call_method).to eq(opts[:finder_class]&.constantize)
+        else
+          expect(call_method).to eq("ActiveFields::Finders::#{record.model_name.name.demodulize}Finder".constantize)
+        end
       end
     end
 
     describe "#value_finder" do
       subject(:call_method) { record.value_finder }
 
-      it { is_expected.to be_an_instance_of(record.value_finder_class) }
+      it "returns an instance of configured class or nil" do
+        if record.value_finder_class
+          expect(call_method).to be_an_instance_of(record.value_finder_class)
+        else
+          expect(call_method).to be_nil
+        end
+      end
     end
 
     describe "#customizable_model" do

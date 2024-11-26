@@ -9,6 +9,9 @@ class IpField < ActiveFields.config.field_base_class
     caster: {
       class_name: "IpCaster",
     },
+    finder: {
+      class_name: "IpFinder",
+    },
   )
 
   store_accessor :options, :required

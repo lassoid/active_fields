@@ -12,7 +12,7 @@ module ActiveFields
         when "!=", "not_eq"
           active_values_cte.where(is_not(casted_value_field("boolean"), value))
         else
-          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
+          operator_not_found!(operator)
         end
       end
     end

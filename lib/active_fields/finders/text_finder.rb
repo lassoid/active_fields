@@ -16,7 +16,7 @@ module ActiveFields
         when "ilike"
           active_values_cte.where(casted_value_field("text").matches(value, nil, false))
         else
-          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
+          operator_not_found!(operator)
         end
       end
     end

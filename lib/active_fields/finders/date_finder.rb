@@ -20,7 +20,7 @@ module ActiveFields
         when "<=", "lte"
           active_values_cte.where(casted_value_field("date").lteq(value))
         else
-          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
+          operator_not_found!(operator)
         end
       end
     end

@@ -61,7 +61,7 @@ RSpec.shared_examples "customizable" do
       def search_value(active_field) = "value_#{active_field.id}"
 
       let!(:active_fields) do
-        active_field_factories_for(described_class).sample(2).map do |active_field_factory|
+        (active_field_factories_for(described_class) - [:ip_array_field]).sample(2).map do |active_field_factory|
           create(active_field_factory, customizable_type: described_class.name)
         end
       end
@@ -70,7 +70,7 @@ RSpec.shared_examples "customizable" do
         Array.new(3) do
           described_class.create!(
             active_fields_attributes: active_fields.map do |active_field|
-              { active_field_id: active_field.id, value: active_value_for(active_field) }
+              { name: active_field.name, value: active_value_for(active_field) }
             end,
           )
         end
@@ -83,14 +83,14 @@ RSpec.shared_examples "customizable" do
       before do
         active_fields.each do |active_field|
           finder = instance_double(active_field.value_finder_class)
+          allow(active_field.value_finder_class).to receive(:new).and_return(finder)
+
           allow(finder).to receive(:search).with(
             operator: search_operator(active_field),
             value: search_value(active_field),
           ).and_return(
             active_field.active_values.where(customizable_id: mapping[active_field.id]),
           )
-
-          allow(active_field).to receive(:value_finder).and_return(finder)
         end
       end
 
@@ -107,8 +107,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -125,8 +125,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -134,17 +134,17 @@ RSpec.shared_examples "customizable" do
         let(:args) do
           active_fields.map do |active_field|
             {
-              (rand(0..1) == 0 ? "n" : :n) => active_field.name,
-              (rand(0..1) == 0 ? "op" : :op) => search_operator(active_field),
-              (rand(0..1) == 0 ? "v" : :v) => search_value(active_field),
+              n: active_field.name,
+              op: search_operator(active_field),
+              v: search_value(active_field),
             }
           end
         end
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -155,9 +155,9 @@ RSpec.shared_examples "customizable" do
               [
                 i.to_s,
                 {
-                  "name" => active_field.name,
-                  "operator" => search_operator(active_field),
-                  "value" => search_value(active_field),
+                  name: active_field.name,
+                  operator: search_operator(active_field),
+                  value: search_value(active_field),
                 },
               ]
             end.to_h,
@@ -166,8 +166,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -178,9 +178,9 @@ RSpec.shared_examples "customizable" do
               [
                 i.to_s,
                 {
-                  "n" => active_field.name,
-                  "op" => search_operator(active_field),
-                  "v" => search_value(active_field),
+                  n: active_field.name,
+                  op: search_operator(active_field),
+                  v: search_value(active_field),
                 },
               ]
             end.to_h,
@@ -189,8 +189,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -201,9 +201,9 @@ RSpec.shared_examples "customizable" do
               [
                 i.to_s,
                 {
-                  "name" => active_field.name,
-                  "operator" => search_operator(active_field),
-                  "value" => search_value(active_field),
+                  name: active_field.name,
+                  operator: search_operator(active_field),
+                  value: search_value(active_field),
                 },
               ]
             end.to_h,
@@ -217,8 +217,40 @@ RSpec.shared_examples "customizable" do
         end
       end
 
+      context "with invalid active_field name" do
+        let(:args) do
+          [{
+            name: "not_exist",
+            operator: "operator",
+            value: "value",
+          }]
+        end
+
+        it "raises an error" do
+          expect do
+            call_scope
+          end.to raise_error(ArgumentError)
+        end
+      end
+
+      context "with active_field without finder" do
+        let!(:active_field_without_finder) { create(:ip_array_field, customizable_type: described_class.name) }
+
+        let(:args) do
+          [{
+            name: active_field_without_finder.name,
+            operator: "operator",
+            value: "value",
+          }]
+        end
+
+        it "skips search and returns all customizables" do
+          expect(call_scope).to include(*described_class.all.to_a)
+        end
+      end
+
       context "with neither a params nor a hash nor an array" do
-        let(:args) { [nil, random_number, random_string].sample }
+        let(:args) { "invalid" }
 
         it "raises an error" do
           expect do
@@ -678,7 +710,7 @@ RSpec.shared_examples "customizable" do
         end
       end
 
-      context "with not an Array, Hash or params" do
+      context "with neither a params nor a hash nor an array" do
         let(:attributes) { "invalid" }
 
         it "raises an error" do

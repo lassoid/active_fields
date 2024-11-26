@@ -49,7 +49,7 @@ module ActiveFields
             value_jsonb_path_exists("$[*] ? (@ > $value)", { value: value }),
           )
         else
-          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
+          operator_not_found!(operator)
         end
       end
     end

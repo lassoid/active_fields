@@ -37,14 +37,6 @@ module ActiveFields
         )
       end
 
-      # def value_field_match(query)
-      #   Arel::Nodes::InfixOperation.new(
-      #     "@?",
-      #     value_field_jsonb,
-      #     Arel::Nodes.build_quoted(query),
-      #   )
-      # end
-
       def casted_value_field(to)
         Arel::Nodes::NamedFunction.new("CAST", [value_field_text.as(to)])
       end
@@ -64,6 +56,10 @@ module ActiveFields
           "jsonb_path_exists",
           [value_field_jsonb, *[jsonpath, vars&.to_json].compact.map { Arel::Nodes.build_quoted(_1) }],
         )
+      end
+
+      def operator_not_found!(operator)
+        raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
       end
     end
   end

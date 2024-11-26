@@ -68,7 +68,7 @@ module ActiveFields
         end
 
         define_method(:value_finder) do
-          value_finder_class.new(active_field: self)
+          value_finder_class&.new(active_field: self)
         end
       end
     end
