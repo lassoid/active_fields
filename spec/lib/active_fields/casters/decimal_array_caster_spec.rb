@@ -96,7 +96,7 @@ RSpec.describe ActiveFields::Casters::DecimalArrayCaster do
     end
 
     context "when not an array" do
-      let(:value) { [random_integer.to_s, random_decimal(max_precision + 1).to_s, *random_numbers].sample }
+      let(:value) { [random_integer.to_s, random_decimal.to_s, *random_numbers].sample }
 
       it { is_expected.to be_nil }
     end
