@@ -21,13 +21,13 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     context "when internal value is an integer" do
       let(:internal_value) { random_integer }
 
-      it { is_expected.to eq(internal_value.to_d) }
+      it { is_expected.to eq(internal_value.to_d.truncate(max_precision)) }
     end
 
     context "when internal value is a float" do
       let(:internal_value) { random_float }
 
-      it { is_expected.to eq(internal_value.to_d) }
+      it { is_expected.to eq(internal_value.to_d.truncate(max_precision)) }
     end
 
     context "when internal value is a big decimal" do
@@ -39,7 +39,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     context "when internal value is an integer string" do
       let(:internal_value) { random_integer.to_s }
 
-      it { is_expected.to eq(internal_value.to_d) }
+      it { is_expected.to eq(internal_value.to_d.truncate(max_precision)) }
     end
 
     context "when internal value is a decimal string" do
@@ -82,7 +82,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.truncate(max_precision).to_s)
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.truncate(max_precision).to_s)
       end
     end
 
@@ -112,7 +112,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.truncate(max_precision).to_s)
       end
     end
 
