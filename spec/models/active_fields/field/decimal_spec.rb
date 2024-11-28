@@ -118,13 +118,38 @@ RSpec.describe ActiveFields::Field::Decimal do
         end
       end
 
-      context "when precision is positive" do
-        let(:precision) { rand(1..10) }
+      context "when precision is less than max allowed" do
+        let(:precision) { ActiveFields::MAX_DECIMAL_PRECISION - 1 }
 
         it "is valid" do
           record.valid?
 
           expect(record.errors.where(:precision)).to be_empty
+        end
+      end
+
+      context "when precision is max allowed" do
+        let(:precision) { ActiveFields::MAX_DECIMAL_PRECISION }
+
+        it "is valid" do
+          record.valid?
+
+          expect(record.errors.where(:precision)).to be_empty
+        end
+      end
+
+      context "when precision is greater than max allowed" do
+        let(:precision) { ActiveFields::MAX_DECIMAL_PRECISION + 1 }
+
+        it "is invalid" do
+          record.valid?
+
+          errors = record.errors.where(
+            :precision,
+            :less_than_or_equal_to,
+            count: ActiveFields::MAX_DECIMAL_PRECISION,
+          )
+          expect(errors).not_to be_empty
         end
       end
     end
@@ -151,7 +176,7 @@ RSpec.describe ActiveFields::Field::Decimal do
     end
 
     describe "before_save #reapply_precision" do
-      max_precision = rand(16..32) # But may be more
+      max_precision = ActiveFields::MAX_DECIMAL_PRECISION
       let(:record) { build(factory) }
       let(:precision) { rand(0..(max_precision - 1)) }
       let(:attrs) do

@@ -19,7 +19,7 @@ module ActiveFields
 
       validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
       validates :precision,
-        comparison: { greater_than_or_equal_to: 0, less_than_or_equal_to: Casters::DateTimeCaster::MAX_PRECISION },
+        comparison: { greater_than_or_equal_to: 0, less_than_or_equal_to: ActiveFields::MAX_DATETIME_PRECISION },
         allow_nil: true
 
       # If precision is set after attributes that depend on it, deserialization will work correctly,

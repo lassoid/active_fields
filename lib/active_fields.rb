@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "active_fields/version"
+require_relative "active_fields/constants"
 require_relative "active_fields/engine"
 
 module ActiveFields

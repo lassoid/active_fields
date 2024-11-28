@@ -18,7 +18,9 @@ module ActiveFields
       store_accessor :options, :min, :max, :precision
 
       validates :max, comparison: { greater_than_or_equal_to: :min }, allow_nil: true, if: :min
-      validates :precision, comparison: { greater_than_or_equal_to: 0 }, allow_nil: true
+      validates :precision,
+        comparison: { greater_than_or_equal_to: 0, less_than_or_equal_to: ActiveFields::MAX_DECIMAL_PRECISION },
+        allow_nil: true
 
       # If precision is set after attributes that depend on it, deserialization will work correctly,
       # but an incorrect internal value may be saved in the DB.

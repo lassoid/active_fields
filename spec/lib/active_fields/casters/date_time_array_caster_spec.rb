@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
-  max_precision = ActiveFields::Casters::DateTimeCaster::MAX_PRECISION
+  max_precision = ActiveFields::MAX_DATETIME_PRECISION
 
   let(:object) { described_class.new(**args) }
   let(:args) { {} }
@@ -59,7 +59,7 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       end
 
       context "when array of datetime strings" do
-        let(:value) { [random_datetime.iso8601, random_datetime.iso8601(max_precision)] }
+        let(:value) { [random_datetime.iso8601, random_datetime.iso8601(max_precision + 1)] }
 
         it { is_expected.to eq(value.map { Time.zone.parse(_1).utc.iso8601(max_precision) }) }
       end
@@ -91,7 +91,7 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       end
 
       context "when array of datetime strings" do
-        let(:value) { [random_datetime.iso8601, random_datetime.iso8601(max_precision)] }
+        let(:value) { [random_datetime.iso8601, random_datetime.iso8601(max_precision + 1)] }
 
         it { is_expected.to eq(value.map { Time.zone.parse(_1).utc.iso8601(max_precision) }) }
       end
@@ -119,7 +119,7 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       end
 
       context "when array of datetime strings" do
-        let(:value) { [random_datetime.iso8601, random_datetime.iso8601(max_precision)] }
+        let(:value) { [random_datetime.iso8601, random_datetime.iso8601(max_precision + 1)] }
 
         it { is_expected.to eq(value.map { Time.zone.parse(_1).utc.iso8601(args[:precision]) }) }
       end
@@ -163,13 +163,17 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       context "when array of dates" do
         let(:value) { [random_date, random_date] }
 
-        it { is_expected.to eq(value.map { _1.to_time(:utc).in_time_zone }) }
+        it { is_expected.to eq(value.map { apply_datetime_precision(_1.to_time(:utc).in_time_zone, max_precision) }) }
       end
 
       context "when array of date strings" do
         let(:value) { [random_date.iso8601, random_date.iso8601] }
 
-        it { is_expected.to eq(value.map { Date.parse(_1).to_time(:utc).in_time_zone }) }
+        it do
+          expect(call_method).to eq(
+            value.map { apply_datetime_precision(Date.parse(_1).to_time(:utc).in_time_zone, max_precision) },
+          )
+        end
       end
 
       context "when array of datetimes" do
@@ -179,7 +183,7 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       end
 
       context "when array of datetime strings" do
-        let(:value) { [random_datetime.utc.iso8601, random_datetime.utc.iso8601(max_precision)] }
+        let(:value) { [random_datetime.utc.iso8601, random_datetime.utc.iso8601(max_precision + 1)] }
 
         it "casts elements to time objects with max precision" do
           expect(call_method).to eq(
@@ -199,13 +203,17 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       context "when array of dates" do
         let(:value) { [random_date, random_date] }
 
-        it { is_expected.to eq(value.map { _1.to_time(:utc).in_time_zone }) }
+        it { is_expected.to eq(value.map { apply_datetime_precision(_1.to_time(:utc).in_time_zone, max_precision) }) }
       end
 
       context "when array of date strings" do
         let(:value) { [random_date.iso8601, random_date.iso8601] }
 
-        it { is_expected.to eq(value.map { Date.parse(_1).to_time(:utc).in_time_zone }) }
+        it do
+          expect(call_method).to eq(
+            value.map { apply_datetime_precision(Date.parse(_1).to_time(:utc).in_time_zone, max_precision) },
+          )
+        end
       end
 
       context "when array of datetimes" do
@@ -215,9 +223,9 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       end
 
       context "when array of datetime strings" do
-        let(:value) { [random_datetime.utc.iso8601, random_datetime.utc.iso8601(max_precision)] }
+        let(:value) { [random_datetime.utc.iso8601, random_datetime.utc.iso8601(max_precision + 1)] }
 
-        it "casts elements to time objects with max precision" do
+        it do
           expect(call_method).to eq(
             value.map { apply_datetime_precision(Time.zone.parse(_1).in_time_zone, max_precision) },
           )
@@ -231,13 +239,21 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       context "when array of dates" do
         let(:value) { [random_date, random_date] }
 
-        it { is_expected.to eq(value.map { _1.to_time(:utc).in_time_zone }) }
+        it do
+          expect(call_method).to eq(
+            value.map { apply_datetime_precision(_1.to_time(:utc).in_time_zone, args[:precision]) },
+          )
+        end
       end
 
       context "when array of date strings" do
         let(:value) { [random_date.iso8601, random_date.iso8601] }
 
-        it { is_expected.to eq(value.map { Date.parse(_1).to_time(:utc).in_time_zone }) }
+        it do
+          expect(call_method).to eq(
+            value.map { apply_datetime_precision(Date.parse(_1).to_time(:utc).in_time_zone, args[:precision]) },
+          )
+        end
       end
 
       context "when array of datetimes" do
@@ -247,7 +263,7 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       end
 
       context "when array of datetime strings" do
-        let(:value) { [random_datetime.utc.iso8601, random_datetime.utc.iso8601(max_precision)] }
+        let(:value) { [random_datetime.utc.iso8601, random_datetime.utc.iso8601(max_precision + 1)] }
 
         it "casts elements to time objects with provided precision" do
           expect(call_method).to eq(
