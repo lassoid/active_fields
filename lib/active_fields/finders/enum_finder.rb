@@ -6,11 +6,11 @@ module ActiveFields
       def search(operator:, value:)
         value = Casters::EnumCaster.new.deserialize(value)
 
-        case operator
+        case operator.to_s
         when "=", "eq"
-          active_values_cte.where(casted_value_field("text").eq(value))
+          active_values_cte.where(eq(casted_value_field("text"), value))
         when "!=", "not_eq"
-          active_values_cte.where(casted_value_field("text").not_eq(value))
+          active_values_cte.where(not_eq(casted_value_field("text"), value))
         else
           operator_not_found!(operator)
         end

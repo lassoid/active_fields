@@ -4,7 +4,7 @@ class IpFinder < ActiveFields::Finders::BaseFinder
   def search(operator:, value:)
     value = IpCaster.new.deserialize(value)
 
-    case operator
+    case operator.to_s
     when "=", "eq"
       active_values_cte.where(casted_value_field("text").eq(value))
     when "!=", "not_eq"

@@ -6,19 +6,19 @@ module ActiveFields
       def search(operator:, value:)
         value = Casters::IntegerCaster.new.deserialize(value)
 
-        case operator
+        case operator.to_s
         when "=", "eq"
-          active_values_cte.where(casted_value_field("integer").eq(value))
+          active_values_cte.where(eq(casted_value_field("bigint"), value))
         when "!=", "not_eq"
-          active_values_cte.where(casted_value_field("integer").not_eq(value))
+          active_values_cte.where(not_eq(casted_value_field("bigint"), value))
         when ">", "gt"
-          active_values_cte.where(casted_value_field("integer").gt(value))
-        when "=>", "gte"
-          active_values_cte.where(casted_value_field("integer").gteq(value))
+          active_values_cte.where(gt(casted_value_field("bigint"), value))
+        when ">=", "gteq", "gte"
+          active_values_cte.where(gteq(casted_value_field("bigint"), value))
         when "<", "lt"
-          active_values_cte.where(casted_value_field("integer").lt(value))
-        when "<=", "lte"
-          active_values_cte.where(casted_value_field("integer").lteq(value))
+          active_values_cte.where(lt(casted_value_field("bigint"), value))
+        when "<=", "lteq", "lte"
+          active_values_cte.where(lteq(casted_value_field("bigint"), value))
         else
           operator_not_found!(operator)
         end

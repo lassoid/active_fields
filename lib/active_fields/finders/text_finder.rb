@@ -6,18 +6,67 @@ module ActiveFields
       def search(operator:, value:)
         value = Casters::TextCaster.new.deserialize(value)
 
-        case operator
+        case operator.to_s
         when "=", "eq"
-          active_values_cte.where(casted_value_field("text").eq(value))
+          active_values_cte.where(eq(casted_value_field("text"), value))
         when "!=", "not_eq"
-          active_values_cte.where(casted_value_field("text").not_eq(value))
-        when "like"
-          active_values_cte.where(casted_value_field("text").matches(value, nil, true))
-        when "ilike"
-          active_values_cte.where(casted_value_field("text").matches(value, nil, false))
+          active_values_cte.where(not_eq(casted_value_field("text"), value))
+
+        when "~~", "like"
+          active_values_cte.where(like(casted_value_field("text"), value))
+        when "~~*", "ilike"
+          active_values_cte.where(ilike(casted_value_field("text"), value))
+        when "!~~", "not_like"
+          active_values_cte.where(not_like(casted_value_field("text"), value))
+        when "!~~*", "not_ilike"
+          active_values_cte.where(not_ilike(casted_value_field("text"), value))
+
+        when "^", "start_with"
+          active_values_cte.where(like(casted_value_field("text"), "#{value}%"))
+        when "$", "end_with"
+          active_values_cte.where(like(casted_value_field("text"), "%#{value}"))
+        when "~", "contain"
+          active_values_cte.where(like(casted_value_field("text"), "%#{value}%"))
+        when "!^", "not_start_with"
+          active_values_cte.where(not_like(casted_value_field("text"), "#{value}%"))
+        when "!$", "not_end_with"
+          active_values_cte.where(not_like(casted_value_field("text"), "%#{value}"))
+        when "!~", "not_contain"
+          active_values_cte.where(not_like(casted_value_field("text"), "%#{value}%"))
+
+        when "^*", "ci_start_with"
+          active_values_cte.where(ilike(casted_value_field("text"), "#{value}%"))
+        when "$*", "ci_end_with"
+          active_values_cte.where(ilike(casted_value_field("text"), "%#{value}"))
+        when "~*", "ci_contain"
+          active_values_cte.where(ilike(casted_value_field("text"), "%#{value}%"))
+        when "!^*", "ci_not_start_with"
+          active_values_cte.where(not_ilike(casted_value_field("text"), "#{value}%"))
+        when "!$*", "ci_not_end_with"
+          active_values_cte.where(not_ilike(casted_value_field("text"), "%#{value}"))
+        when "!~*", "ci_not_contain"
+          active_values_cte.where(not_ilike(casted_value_field("text"), "%#{value}%"))
         else
           operator_not_found!(operator)
         end
+      end
+
+      private
+
+      def like(target, value)
+        target.matches(value, nil, true)
+      end
+
+      def ilike(target, value)
+        target.matches(value, nil, false)
+      end
+
+      def not_like(target, value)
+        target.does_not_match(value, nil, true)
+      end
+
+      def not_ilike(target, value)
+        target.does_not_match(value, nil, false)
       end
     end
   end

@@ -7,7 +7,7 @@ module ActiveFields
         caster = Casters::DateCaster.new
         value = caster.serialize(caster.deserialize(value))
 
-        case operator
+        case operator.to_s
         when "include"
           active_values_cte.where(
             value_jsonb_path_exists("$[*] ? (@.date() == $value.date())", { value: value }),
