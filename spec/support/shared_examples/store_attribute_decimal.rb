@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, klass|
+  max_precision = ActiveFields::MAX_DECIMAL_PRECISION
+
   describe "##{attr_name}" do
     subject(:call_method) { record.public_send(attr_name) }
 
@@ -19,31 +21,31 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
     context "when internal value is an integer" do
       let(:internal_value) { random_integer }
 
-      it { is_expected.to eq(internal_value.to_d) }
+      it { is_expected.to eq(internal_value.to_d.truncate(max_precision)) }
     end
 
     context "when internal value is a float" do
       let(:internal_value) { random_float }
 
-      it { is_expected.to eq(internal_value.to_d) }
+      it { is_expected.to eq(internal_value.to_d.truncate(max_precision)) }
     end
 
     context "when internal value is a big decimal" do
-      let(:internal_value) { random_decimal }
+      let(:internal_value) { random_decimal(max_precision + 1) }
 
-      it { is_expected.to eq(internal_value) }
+      it { is_expected.to eq(internal_value.truncate(max_precision)) }
     end
 
     context "when internal value is an integer string" do
       let(:internal_value) { random_integer.to_s }
 
-      it { is_expected.to eq(internal_value.to_d) }
+      it { is_expected.to eq(internal_value.to_d.truncate(max_precision)) }
     end
 
     context "when internal value is a decimal string" do
-      let(:internal_value) { random_decimal.to_s }
+      let(:internal_value) { random_decimal(max_precision + 1).to_s }
 
-      it { is_expected.to eq(internal_value.to_d) }
+      it { is_expected.to eq(internal_value.to_d.truncate(max_precision)) }
     end
 
     context "when internal value is invalid" do
@@ -80,7 +82,7 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.truncate(max_precision).to_s)
       end
     end
 
@@ -90,17 +92,17 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.truncate(max_precision).to_s)
       end
     end
 
     context "when value is a big decimal" do
-      let(:value) { random_decimal }
+      let(:value) { random_decimal(max_precision + 1) }
 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_s)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.truncate(max_precision).to_s)
       end
     end
 
@@ -110,17 +112,17 @@ RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.truncate(max_precision).to_s)
       end
     end
 
     context "when value is a decimal string" do
-      let(:value) { random_decimal.to_s }
+      let(:value) { random_decimal(max_precision + 1).to_s }
 
       it "sets decimal" do
         call_method
 
-        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.to_s)
+        expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_d.truncate(max_precision).to_s)
       end
     end
 

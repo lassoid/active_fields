@@ -39,7 +39,7 @@
 
   <div class="form-input">
     <%= f.label :precision %>
-    <%= f.number_field :precision, min: 0, max: ActiveFields::Casters::DateTimeCaster::MAX_PRECISION, disabled: active_field.persisted? %>
+    <%= f.number_field :precision, min: 0, max: ActiveFields::MAX_DATETIME_PRECISION, disabled: active_field.persisted? %>
   </div>
 
   <div class="form-input">

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name, klass|
-  max_precision = ActiveFields::Casters::DateTimeCaster::MAX_PRECISION
+  max_precision = ActiveFields::MAX_DATETIME_PRECISION
 
   describe "##{attr_name}" do
     subject(:call_method) { record.public_send(attr_name) }
@@ -40,13 +40,17 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       context "when internal value is a date" do
         let(:internal_value) { random_date }
 
-        it { is_expected.to eq(internal_value.to_time(:utc).in_time_zone) }
+        it { is_expected.to eq(apply_datetime_precision(internal_value.to_time(:utc).in_time_zone, max_precision)) }
       end
 
       context "when internal value is a date string" do
         let(:internal_value) { random_date.iso8601 }
 
-        it { is_expected.to eq(Date.parse(internal_value).to_time(:utc).in_time_zone) }
+        it do
+          expect(call_method).to eq(
+            apply_datetime_precision(Date.parse(internal_value).to_time(:utc).in_time_zone, max_precision),
+          )
+        end
       end
 
       context "when internal value is a datetime" do
@@ -58,13 +62,13 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       context "when internal value is a datetime string" do
         let(:internal_value) { random_datetime.utc.iso8601 }
 
-        it { is_expected.to eq(Time.zone.parse(internal_value).in_time_zone) } # precision is skipped
+        it { is_expected.to eq(apply_datetime_precision(Time.zone.parse(internal_value).in_time_zone, max_precision)) }
       end
 
       context "when internal value is a datetime string with fractional seconds digits" do
-        let(:internal_value) { random_datetime.utc.iso8601(max_precision) }
+        let(:internal_value) { random_datetime.utc.iso8601(max_precision + 1) }
 
-        it { is_expected.to eq(Time.zone.parse(internal_value).in_time_zone) } # precision is skipped
+        it { is_expected.to eq(apply_datetime_precision(Time.zone.parse(internal_value).in_time_zone, max_precision)) }
       end
     end
 
@@ -78,13 +82,17 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       context "when internal value is a date" do
         let(:internal_value) { random_date }
 
-        it { is_expected.to eq(internal_value.to_time(:utc).in_time_zone) }
+        it { is_expected.to eq(apply_datetime_precision(internal_value.to_time(:utc).in_time_zone, max_precision)) }
       end
 
       context "when internal value is a date string" do
         let(:internal_value) { random_date.iso8601 }
 
-        it { is_expected.to eq(Date.parse(internal_value).to_time(:utc).in_time_zone) }
+        it do
+          expect(call_method).to eq(
+            apply_datetime_precision(Date.parse(internal_value).to_time(:utc).in_time_zone, max_precision),
+          )
+        end
       end
 
       context "when internal value is a datetime" do
@@ -96,13 +104,13 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
       context "when internal value is a datetime string" do
         let(:internal_value) { random_datetime.utc.iso8601 }
 
-        it { is_expected.to eq(Time.zone.parse(internal_value).in_time_zone) } # precision is skipped
+        it { is_expected.to eq(apply_datetime_precision(Time.zone.parse(internal_value).in_time_zone, max_precision)) }
       end
 
       context "when internal value is a datetime string with fractional seconds digits" do
-        let(:internal_value) { random_datetime.utc.iso8601(max_precision) }
+        let(:internal_value) { random_datetime.utc.iso8601(max_precision + 1) }
 
-        it { is_expected.to eq(Time.zone.parse(internal_value).in_time_zone) } # precision is skipped
+        it { is_expected.to eq(apply_datetime_precision(Time.zone.parse(internal_value).in_time_zone, max_precision)) }
       end
     end
   end
@@ -159,8 +167,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(value.to_time(:utc).iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_time(:utc).iso8601(max_precision))
         end
       end
 
@@ -170,8 +177,9 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Date.parse(value).to_time(:utc).iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(
+            Date.parse(value).to_time(:utc).iso8601(max_precision),
+          )
         end
       end
 
@@ -181,8 +189,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(value.utc.iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.utc.iso8601(max_precision))
         end
       end
 
@@ -192,19 +199,21 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Time.zone.parse(value).utc.iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(
+            Time.zone.parse(value).utc.iso8601(max_precision),
+          )
         end
       end
 
       context "when value is a datetime string with fractional seconds digits" do
-        let(:value) { random_datetime.iso8601(max_precision) }
+        let(:value) { random_datetime.iso8601(max_precision + 1) }
 
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Time.zone.parse(value).utc.iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(
+            Time.zone.parse(value).utc.iso8601(max_precision),
+          )
         end
       end
     end
@@ -222,8 +231,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(value.to_time(:utc).iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.to_time(:utc).iso8601(max_precision))
         end
       end
 
@@ -233,8 +241,9 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Date.parse(value).to_time(:utc).iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(
+            Date.parse(value).to_time(:utc).iso8601(max_precision),
+          )
         end
       end
 
@@ -244,8 +253,7 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(value.utc.iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(value.utc.iso8601(max_precision))
         end
       end
 
@@ -255,19 +263,21 @@ RSpec.shared_examples "store_attribute_datetime" do |attr_name, store_attr_name,
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Time.zone.parse(value).utc.iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(
+            Time.zone.parse(value).utc.iso8601(max_precision),
+          )
         end
       end
 
       context "when value is a datetime string with fractional seconds digits" do
-        let(:value) { random_datetime.iso8601(max_precision) }
+        let(:value) { random_datetime.iso8601(max_precision + 1) }
 
         it "sets datetime as string" do
           call_method
 
-          expect(record.public_send(store_attr_name)[attr_name.to_s])
-            .to eq(Time.zone.parse(value).utc.iso8601(max_precision))
+          expect(record.public_send(store_attr_name)[attr_name.to_s]).to eq(
+            Time.zone.parse(value).utc.iso8601(max_precision),
+          )
         end
       end
     end

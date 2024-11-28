@@ -3,8 +3,6 @@
 module ActiveFields
   module Casters
     class DateTimeCaster < BaseCaster
-      MAX_PRECISION = RUBY_VERSION >= "3.2" ? 9 : 6 # AR max precision is 6 for old Rubies
-
       def serialize(value)
         value = value.iso8601 if value.is_a?(Date)
         casted_value = caster.serialize(value)
@@ -28,7 +26,7 @@ module ActiveFields
       # Use maximum precision by default to prevent the caster from truncating useful time information
       # before precision is applied later
       def precision
-        [options[:precision], MAX_PRECISION].compact.min
+        [options[:precision], ActiveFields::MAX_DATETIME_PRECISION].compact.min
       end
 
       def apply_precision(value)

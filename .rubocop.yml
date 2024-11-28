@@ -31,6 +31,9 @@ Style/WordArray:
 Style/MethodCallWithArgsParentheses:
   Enabled: false
 
+Style/SafeNavigationChainLength:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*"

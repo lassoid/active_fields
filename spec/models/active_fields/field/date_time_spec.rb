@@ -119,7 +119,7 @@ RSpec.describe ActiveFields::Field::DateTime do
       end
 
       context "when precision is less than max allowed" do
-        let(:precision) { ActiveFields::Casters::DateTimeCaster::MAX_PRECISION - 1 }
+        let(:precision) { ActiveFields::MAX_DATETIME_PRECISION - 1 }
 
         it "is valid" do
           record.valid?
@@ -129,7 +129,7 @@ RSpec.describe ActiveFields::Field::DateTime do
       end
 
       context "when precision is max allowed" do
-        let(:precision) { ActiveFields::Casters::DateTimeCaster::MAX_PRECISION }
+        let(:precision) { ActiveFields::MAX_DATETIME_PRECISION }
 
         it "is valid" do
           record.valid?
@@ -139,7 +139,7 @@ RSpec.describe ActiveFields::Field::DateTime do
       end
 
       context "when precision is greater than max allowed" do
-        let(:precision) { ActiveFields::Casters::DateTimeCaster::MAX_PRECISION + 1 }
+        let(:precision) { ActiveFields::MAX_DATETIME_PRECISION + 1 }
 
         it "is invalid" do
           record.valid?
@@ -147,7 +147,7 @@ RSpec.describe ActiveFields::Field::DateTime do
           errors = record.errors.where(
             :precision,
             :less_than_or_equal_to,
-            count: ActiveFields::Casters::DateTimeCaster::MAX_PRECISION,
+            count: ActiveFields::MAX_DATETIME_PRECISION,
           )
           expect(errors).not_to be_empty
         end
@@ -176,7 +176,7 @@ RSpec.describe ActiveFields::Field::DateTime do
     end
 
     describe "before_save #reapply_precision" do
-      max_precision = ActiveFields::Casters::DateTimeCaster::MAX_PRECISION
+      max_precision = ActiveFields::MAX_DATETIME_PRECISION
       let(:record) { build(factory) }
       let(:precision) { rand(0..(max_precision - 1)) }
       let(:attrs) do

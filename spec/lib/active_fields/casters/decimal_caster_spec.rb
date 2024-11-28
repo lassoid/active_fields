@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::DecimalCaster do
+  max_precision = ActiveFields::MAX_DECIMAL_PRECISION
+
   let(:object) { described_class.new(**args) }
   let(:args) { {} }
 
@@ -16,31 +18,31 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     context "when integer" do
       let(:value) { random_integer }
 
-      it { is_expected.to eq(value.to_d.to_s) }
+      it { is_expected.to eq(value.to_d.truncate(max_precision).to_s) }
     end
 
     context "when float" do
       let(:value) { random_float }
 
-      it { is_expected.to eq(value.to_d.to_s) }
+      it { is_expected.to eq(value.to_d.truncate(max_precision).to_s) }
     end
 
     context "when big decimal" do
-      let(:value) { random_decimal }
+      let(:value) { random_decimal(max_precision + 1) }
 
-      it { is_expected.to eq(value.to_s) }
+      it { is_expected.to eq(value.truncate(max_precision).to_s) }
     end
 
     context "when integer string" do
       let(:value) { random_integer.to_s }
 
-      it { is_expected.to eq(value.to_d.to_s) }
+      it { is_expected.to eq(value.to_d.truncate(max_precision).to_s) }
     end
 
     context "when decimal string" do
-      let(:value) { random_decimal.to_s }
+      let(:value) { random_decimal(max_precision + 1).to_s }
 
-      it { is_expected.to eq(value.to_d.to_s) }
+      it { is_expected.to eq(value.to_d.truncate(max_precision).to_s) }
     end
 
     context "when invalid string" do
@@ -56,7 +58,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     end
 
     context "with precision" do
-      let(:args) { { precision: rand(0..10) } }
+      let(:args) { { precision: rand(0..max_precision) } }
 
       context "when integer" do
         let(:value) { random_integer }
@@ -71,7 +73,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       end
 
       context "when big decimal" do
-        let(:value) { random_decimal }
+        let(:value) { random_decimal(max_precision + 1) }
 
         it { is_expected.to eq(value.truncate(args[:precision]).to_s) }
       end
@@ -83,7 +85,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       end
 
       context "when decimal string" do
-        let(:value) { random_decimal.to_s }
+        let(:value) { random_decimal(max_precision + 1).to_s }
 
         it { is_expected.to eq(value.to_d.truncate(args[:precision]).to_s) }
       end
@@ -102,31 +104,31 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     context "when integer" do
       let(:value) { random_integer }
 
-      it { is_expected.to eq(value.to_d) }
+      it { is_expected.to eq(value.to_d.truncate(max_precision)) }
     end
 
     context "when float" do
       let(:value) { random_float }
 
-      it { is_expected.to eq(value.to_d) }
+      it { is_expected.to eq(value.to_d.truncate(max_precision)) }
     end
 
     context "when big decimal" do
-      let(:value) { random_decimal }
+      let(:value) { random_decimal(max_precision + 1) }
 
-      it { is_expected.to eq(value) }
+      it { is_expected.to eq(value.truncate(max_precision)) }
     end
 
     context "when integer string" do
       let(:value) { random_integer.to_s }
 
-      it { is_expected.to eq(value.to_d) }
+      it { is_expected.to eq(value.to_d.truncate(max_precision)) }
     end
 
     context "when decimal string" do
-      let(:value) { random_decimal.to_s }
+      let(:value) { random_decimal(max_precision + 1).to_s }
 
-      it { is_expected.to eq(value.to_d) }
+      it { is_expected.to eq(value.to_d.truncate(max_precision)) }
     end
 
     context "when invalid string" do
@@ -142,7 +144,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
     end
 
     context "with precision" do
-      let(:args) { { precision: rand(0..10) } }
+      let(:args) { { precision: rand(0..max_precision) } }
 
       context "when integer" do
         let(:value) { random_integer }
@@ -157,7 +159,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       end
 
       context "when big decimal" do
-        let(:value) { random_decimal }
+        let(:value) { random_decimal(max_precision + 1) }
 
         it { is_expected.to eq(value.truncate(args[:precision])) }
       end
@@ -169,7 +171,7 @@ RSpec.describe ActiveFields::Casters::DecimalCaster do
       end
 
       context "when decimal string" do
-        let(:value) { random_decimal.to_s }
+        let(:value) { random_decimal(max_precision + 1).to_s }
 
         it { is_expected.to eq(value.to_d.truncate(args[:precision])) }
       end

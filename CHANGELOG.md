@@ -2,6 +2,25 @@
 - Drop support for Rails < 7 (EOL)
 - Drop support for Ruby < 3.1 (EOL)
 
+**Breaking changes**:
+- Maximum datetime precision reduced to 6 for all _Ruby_/_Rails_ versions.
+
+    While _Ruby_ allows up to 9 fractional seconds, most databases, including _PostgreSQL_, support only 6.
+    To ensure compatibility and prevent potential issues,
+    we are standardizing the precision to the minimum supported across our technology stack.
+
+- Maximum datetime precision constant relocated.
+
+    The maximum precision value has been moved
+    from `ActiveFields::Casters::DateTimeCaster::MAX_PRECISION` to `ActiveFields::MAX_DATETIME_PRECISION`.
+
+- Maximum decimal precision set to to 16383 (2**14 - 1).
+
+    While _Ruby_'s `BigDecimal` class allows extremely high precision,
+    PostgreSQL supports a maximum of 16383 digits after the decimal point.
+    To ensure compatibility, we are capping the precision at this value.
+    The maximum precision value is now accessible via `ActiveFields::MAX_DECIMAL_PRECISION`.
+
 ## [1.1.0] - 2024-09-10
 - Added scaffold generator
 - Disabled models reloading to prevent STI issues

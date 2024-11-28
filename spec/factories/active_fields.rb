@@ -77,7 +77,7 @@ FactoryBot.define do
     end
 
     trait :with_precision do
-      precision { rand(0..ActiveFields::Casters::DateTimeCaster::MAX_PRECISION) }
+      precision { rand(0..ActiveFields::MAX_DATETIME_PRECISION) }
     end
   end
 
@@ -101,7 +101,7 @@ FactoryBot.define do
     end
 
     trait :with_precision do
-      precision { rand(0..ActiveFields::Casters::DateTimeCaster::MAX_PRECISION) }
+      precision { rand(0..ActiveFields::MAX_DATETIME_PRECISION) }
     end
   end
 
@@ -121,7 +121,7 @@ FactoryBot.define do
     end
 
     trait :with_precision do
-      precision { rand(0..10) }
+      precision { rand(0..ActiveFields::MAX_DECIMAL_PRECISION) }
     end
   end
 
@@ -145,7 +145,7 @@ FactoryBot.define do
     end
 
     trait :with_precision do
-      precision { rand(0..10) }
+      precision { rand(0..ActiveFields::MAX_DECIMAL_PRECISION) }
     end
   end
 

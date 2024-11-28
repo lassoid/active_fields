@@ -15,14 +15,11 @@ module ActiveFields
       private
 
       def cast(value)
-        casted = BigDecimal(value, 0, exception: false)
-        casted = casted.truncate(precision) if casted && precision
-
-        casted
+        BigDecimal(value, 0, exception: false)&.truncate(precision)
       end
 
       def precision
-        options[:precision]
+        [options[:precision], ActiveFields::MAX_DECIMAL_PRECISION].compact.min
       end
     end
   end

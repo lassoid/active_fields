@@ -16,8 +16,8 @@ module TestMethods
     rand(-10.0..10.0)
   end
 
-  def random_decimal
-    rand(-10.0..10.0).to_d
+  def random_decimal(precision = 16)
+    BigDecimal("#{random_integer}.#{Array.new(precision - 1) { rand(0..9) }.join}#{rand(1..9)}", 0)
   end
 
   def random_numbers
@@ -119,7 +119,7 @@ module TestMethods
     when ActiveFields::Field::DateTime
       min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
-      precision = [active_field.precision, ActiveFields::Casters::DateTimeCaster::MAX_PRECISION].compact.min
+      precision = [active_field.precision, ActiveFields::MAX_DATETIME_PRECISION].compact.min
 
       allowed = [apply_datetime_precision(rand(min..max), precision)]
       allowed << nil unless active_field.required?
@@ -128,7 +128,7 @@ module TestMethods
     when ActiveFields::Field::DateTimeArray
       min = active_field.min || ((active_field.max || Time.current) - rand(0..10).days)
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0..10).days
-      precision = [active_field.precision, ActiveFields::Casters::DateTimeCaster::MAX_PRECISION].compact.min
+      precision = [active_field.precision, ActiveFields::MAX_DATETIME_PRECISION].compact.min
 
       min_size = [active_field.min_size, 0].compact.max
       max_size =
@@ -142,14 +142,16 @@ module TestMethods
     when ActiveFields::Field::Decimal
       min = active_field.min || ((active_field.max || 0) - rand(0.0..10.0))
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0.0..10.0)
+      precision = [active_field.precision, ActiveFields::MAX_DECIMAL_PRECISION].compact.min
 
-      allowed = [rand(min..max).then { active_field.precision ? _1.truncate(active_field.precision) : _1 }]
+      allowed = [rand(min..max).truncate(precision)]
       allowed << nil unless active_field.required?
 
       allowed.sample
     when ActiveFields::Field::DecimalArray
       min = active_field.min || ((active_field.max || 0) - rand(0.0..10.0))
       max = active_field.max && active_field.max >= min ? active_field.max : min + rand(0.0..10.0)
+      precision = [active_field.precision, ActiveFields::MAX_DECIMAL_PRECISION].compact.min
 
       min_size = [active_field.min_size, 0].compact.max
       max_size =
@@ -159,9 +161,7 @@ module TestMethods
           min_size + rand(0..10)
         end
 
-      Array.new(rand(min_size..max_size)) do
-        rand(min..max).then { active_field.precision ? _1.truncate(active_field.precision) : _1 }
-      end
+      Array.new(rand(min_size..max_size)) { rand(min..max).truncate(precision) }
     when ActiveFields::Field::Enum
       allowed = active_field.allowed_values.dup || []
       allowed << nil unless active_field.required?
