@@ -4,7 +4,7 @@ module TestMethods
   extend self
 
   def random_string(size = 10)
-    charset = Array("A".."Z") + Array("a".."z")
+    charset = Array("\x20".."\x7E")
     Array.new(size) { charset.sample }.join
   end
 

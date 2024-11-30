@@ -22,30 +22,30 @@ module ActiveFields
           active_values_cte.where(not_ilike(casted_value_field("text"), value))
 
         when "^", "start_with"
-          active_values_cte.where(like(casted_value_field("text"), "#{value}%"))
+          active_values_cte.where(like(casted_value_field("text"), "#{escape_pattern(value)}%"))
         when "$", "end_with"
-          active_values_cte.where(like(casted_value_field("text"), "%#{value}"))
+          active_values_cte.where(like(casted_value_field("text"), "%#{escape_pattern(value)}"))
         when "~", "contain"
-          active_values_cte.where(like(casted_value_field("text"), "%#{value}%"))
+          active_values_cte.where(like(casted_value_field("text"), "%#{escape_pattern(value)}%"))
         when "!^", "not_start_with"
-          active_values_cte.where(not_like(casted_value_field("text"), "#{value}%"))
+          active_values_cte.where(not_like(casted_value_field("text"), "#{escape_pattern(value)}%"))
         when "!$", "not_end_with"
-          active_values_cte.where(not_like(casted_value_field("text"), "%#{value}"))
+          active_values_cte.where(not_like(casted_value_field("text"), "%#{escape_pattern(value)}"))
         when "!~", "not_contain"
-          active_values_cte.where(not_like(casted_value_field("text"), "%#{value}%"))
+          active_values_cte.where(not_like(casted_value_field("text"), "%#{escape_pattern(value)}%"))
 
-        when "^*", "ci_start_with"
-          active_values_cte.where(ilike(casted_value_field("text"), "#{value}%"))
-        when "$*", "ci_end_with"
-          active_values_cte.where(ilike(casted_value_field("text"), "%#{value}"))
-        when "~*", "ci_contain"
-          active_values_cte.where(ilike(casted_value_field("text"), "%#{value}%"))
-        when "!^*", "ci_not_start_with"
-          active_values_cte.where(not_ilike(casted_value_field("text"), "#{value}%"))
-        when "!$*", "ci_not_end_with"
-          active_values_cte.where(not_ilike(casted_value_field("text"), "%#{value}"))
-        when "!~*", "ci_not_contain"
-          active_values_cte.where(not_ilike(casted_value_field("text"), "%#{value}%"))
+        when "^*", "istart_with"
+          active_values_cte.where(ilike(casted_value_field("text"), "#{escape_pattern(value)}%"))
+        when "$*", "iend_with"
+          active_values_cte.where(ilike(casted_value_field("text"), "%#{escape_pattern(value)}"))
+        when "~*", "icontain"
+          active_values_cte.where(ilike(casted_value_field("text"), "%#{escape_pattern(value)}%"))
+        when "!^*", "not_istart_with"
+          active_values_cte.where(not_ilike(casted_value_field("text"), "#{escape_pattern(value)}%"))
+        when "!$*", "not_iend_with"
+          active_values_cte.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(value)}"))
+        when "!~*", "not_icontain"
+          active_values_cte.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(value)}%"))
         else
           operator_not_found!(operator)
         end
@@ -62,11 +62,19 @@ module ActiveFields
       end
 
       def not_like(target, value)
-        target.does_not_match(value, nil, true)
+        # We expect NULLs to never match the pattern
+        target.does_not_match(value, nil, true).or(target.eq(nil))
       end
 
       def not_ilike(target, value)
-        target.does_not_match(value, nil, false)
+        # We expect NULLs to never match the pattern
+        target.does_not_match(value, nil, false).or(target.eq(nil))
+      end
+
+      def escape_pattern(value)
+        return unless value.is_a?(String)
+
+        value.gsub("\\", "\\\\\\").gsub("%", "\\%").gsub("_", "\\_")
       end
     end
   end
