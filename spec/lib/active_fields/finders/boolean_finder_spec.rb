@@ -6,11 +6,9 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
   let!(:active_field) { create(:boolean_active_field, :nullable) }
 
   let!(:records) do
-    [
-      create(active_value_factory, active_field: active_field, value: true),
-      create(active_value_factory, active_field: active_field, value: false),
-      create(active_value_factory, active_field: active_field, value: nil),
-    ]
+    [true, false, nil].map do |value|
+      create(active_value_factory, active_field: active_field, value: value)
+    end
   end
 
   context "with eq operator" do
@@ -19,22 +17,31 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
     context "when value is true" do
       let(:value) { [true, "true"].sample }
 
-      it { is_expected.to include(*records.select { _1.value.is_a?(TrueClass) }) }
-      it { is_expected.to exclude(*records.reject { _1.value.is_a?(TrueClass) }) }
+      it "returns only records with truthy value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value.is_a?(TrueClass) })
+          .and exclude(*records.reject { _1.value.is_a?(TrueClass) })
+      end
     end
 
     context "when value is false" do
       let(:value) { [false, "false"].sample }
 
-      it { is_expected.to include(*records.select { _1.value.is_a?(FalseClass) }) }
-      it { is_expected.to exclude(*records.reject { _1.value.is_a?(FalseClass) }) }
+      it "returns only records with falsy value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value.is_a?(FalseClass) })
+          .and exclude(*records.reject { _1.value.is_a?(FalseClass) })
+      end
     end
 
     context "when value is nil" do
       let(:value) { [nil, ""].sample }
 
-      it { is_expected.to include(*records.select { _1.value.nil? }) }
-      it { is_expected.to exclude(*records.reject { _1.value.nil? }) }
+      it "returns only records with null value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value.nil? })
+          .and exclude(*records.reject { _1.value.nil? })
+      end
     end
   end
 
@@ -44,22 +51,31 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
     context "when value is true" do
       let(:value) { [true, "true"].sample }
 
-      it { is_expected.to include(*records.reject { _1.value.is_a?(TrueClass) }) }
-      it { is_expected.to exclude(*records.select { _1.value.is_a?(TrueClass) }) }
+      it "returns only records with not truthy value" do
+        expect(perform_search)
+          .to include(*records.reject { _1.value.is_a?(TrueClass) })
+          .and exclude(*records.select { _1.value.is_a?(TrueClass) })
+      end
     end
 
     context "when value is false" do
       let(:value) { [false, "false"].sample }
 
-      it { is_expected.to include(*records.reject { _1.value.is_a?(FalseClass) }) }
-      it { is_expected.to exclude(*records.select { _1.value.is_a?(FalseClass) }) }
+      it "returns only records with not falsy value" do
+        expect(perform_search)
+          .to include(*records.reject { _1.value.is_a?(FalseClass) })
+          .and exclude(*records.select { _1.value.is_a?(FalseClass) })
+      end
     end
 
     context "when value is nil" do
       let(:value) { [nil, ""].sample }
 
-      it { is_expected.to include(*records.reject { _1.value.nil? }) }
-      it { is_expected.to exclude(*records.select { _1.value.nil? }) }
+      it "returns only records with not null value" do
+        expect(perform_search)
+          .to include(*records.reject { _1.value.nil? })
+          .and exclude(*records.select { _1.value.nil? })
+      end
     end
   end
 

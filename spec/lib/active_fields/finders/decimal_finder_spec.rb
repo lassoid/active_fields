@@ -15,13 +15,15 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
     minimum_delta = 10**-calculated_precision
 
     [
-      create(active_value_factory, active_field: active_field, value: saved_value),
-      create(active_value_factory, active_field: active_field, value: saved_value - minimum_delta),
-      create(active_value_factory, active_field: active_field, value: saved_value + minimum_delta),
-      create(active_value_factory, active_field: active_field, value: saved_value - 1),
-      create(active_value_factory, active_field: active_field, value: saved_value + 1),
-      create(active_value_factory, active_field: active_field, value: nil),
-    ]
+      saved_value,
+      saved_value - minimum_delta,
+      saved_value + minimum_delta,
+      saved_value - rand(1..10),
+      saved_value + rand(1..10),
+      nil,
+    ].map do |value|
+      create(active_value_factory, active_field: active_field, value: value)
+    end
   end
 
   context "without precision" do
@@ -31,24 +33,23 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value == saved_value.truncate(max_precision) },
-          )
-        end
+        it "returns only records with such value" do
+          casted_value = saved_value.truncate(max_precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value == saved_value.truncate(max_precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value == casted_value })
+            .and exclude(*records.reject { _1.value == casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to include(*records.select { _1.value.nil? }) }
-        it { is_expected.to exclude(*records.reject { _1.value.nil? }) }
+        it "returns only records with null value" do
+          expect(perform_search)
+            .to include(*records.select { _1.value.nil? })
+            .and exclude(*records.reject { _1.value.nil? })
+        end
       end
     end
 
@@ -58,24 +59,23 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.reject { _1.value == saved_value.truncate(max_precision) },
-          )
-        end
+        it "returns all records except with such value" do
+          casted_value = saved_value.truncate(max_precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.select { _1.value == saved_value.truncate(max_precision) },
-          )
+          expect(perform_search)
+            .to include(*records.reject { _1.value == casted_value })
+            .and exclude(*records.select { _1.value == casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to include(*records.reject { _1.value.nil? }) }
-        it { is_expected.to exclude(*records.select { _1.value.nil? }) }
+        it "returns only records with not null value" do
+          expect(perform_search)
+            .to include(*records.reject { _1.value.nil? })
+            .and exclude(*records.select { _1.value.nil? })
+        end
       end
     end
 
@@ -85,23 +85,21 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value && _1.value > saved_value.truncate(max_precision) },
-          )
-        end
+        it "returns records greater than the value" do
+          casted_value = saved_value.truncate(max_precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value && _1.value > saved_value.truncate(max_precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value && _1.value > casted_value })
+            .and exclude(*records.reject { _1.value && _1.value > casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to exclude(*records) }
+        it "returns no records" do
+          expect(perform_search).to exclude(*records)
+        end
       end
     end
 
@@ -111,23 +109,21 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value && _1.value >= saved_value.truncate(max_precision) },
-          )
-        end
+        it "returns records greater than or equal to the value" do
+          casted_value = saved_value.truncate(max_precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value && _1.value >= saved_value.truncate(max_precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value && _1.value >= casted_value })
+            .and exclude(*records.reject { _1.value && _1.value >= casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to exclude(*records) }
+        it "returns no records" do
+          expect(perform_search).to exclude(*records)
+        end
       end
     end
 
@@ -137,23 +133,21 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value && _1.value < saved_value.truncate(max_precision) },
-          )
-        end
+        it "returns records less than the value" do
+          casted_value = saved_value.truncate(max_precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value && _1.value < saved_value.truncate(max_precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value && _1.value < casted_value })
+            .and exclude(*records.reject { _1.value && _1.value < casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to exclude(*records) }
+        it "returns no records" do
+          expect(perform_search).to exclude(*records)
+        end
       end
     end
 
@@ -163,23 +157,21 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value && _1.value <= saved_value.truncate(max_precision) },
-          )
-        end
+        it "returns records less than or equal to the value" do
+          casted_value = saved_value.truncate(max_precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value && _1.value <= saved_value.truncate(max_precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value && _1.value <= casted_value })
+            .and exclude(*records.reject { _1.value && _1.value <= casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to exclude(*records) }
+        it "returns no records" do
+          expect(perform_search).to exclude(*records)
+        end
       end
     end
   end
@@ -193,24 +185,23 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value == saved_value.truncate(precision) },
-          )
-        end
+        it "returns only records with such value" do
+          casted_value = saved_value.truncate(precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value == saved_value.truncate(precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value == casted_value })
+            .and exclude(*records.reject { _1.value == casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to include(*records.select { _1.value.nil? }) }
-        it { is_expected.to exclude(*records.reject { _1.value.nil? }) }
+        it "returns only records with null value" do
+          expect(perform_search)
+            .to include(*records.select { _1.value.nil? })
+            .and exclude(*records.reject { _1.value.nil? })
+        end
       end
     end
 
@@ -220,24 +211,23 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.reject { _1.value == saved_value.truncate(precision) },
-          )
-        end
+        it "returns all records except with such value" do
+          casted_value = saved_value.truncate(precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.select { _1.value == saved_value.truncate(precision) },
-          )
+          expect(perform_search)
+            .to include(*records.reject { _1.value == casted_value })
+            .and exclude(*records.select { _1.value == casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to include(*records.reject { _1.value.nil? }) }
-        it { is_expected.to exclude(*records.select { _1.value.nil? }) }
+        it "returns only records with not null value" do
+          expect(perform_search)
+            .to include(*records.reject { _1.value.nil? })
+            .and exclude(*records.select { _1.value.nil? })
+        end
       end
     end
 
@@ -247,23 +237,21 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value && _1.value > saved_value.truncate(precision) },
-          )
-        end
+        it "returns records greater than the value" do
+          casted_value = saved_value.truncate(precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value && _1.value > saved_value.truncate(precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value && _1.value > casted_value })
+            .and exclude(*records.reject { _1.value && _1.value > casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to exclude(*records) }
+        it "returns no records" do
+          expect(perform_search).to exclude(*records)
+        end
       end
     end
 
@@ -273,23 +261,21 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value && _1.value >= saved_value.truncate(precision) },
-          )
-        end
+        it "returns records greater than or equal to the value" do
+          casted_value = saved_value.truncate(precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value && _1.value >= saved_value.truncate(precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value && _1.value >= casted_value })
+            .and exclude(*records.reject { _1.value && _1.value >= casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to exclude(*records) }
+        it "returns no records" do
+          expect(perform_search).to exclude(*records)
+        end
       end
     end
 
@@ -299,23 +285,21 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value && _1.value < saved_value.truncate(precision) },
-          )
-        end
+        it "returns records less than the value" do
+          casted_value = saved_value.truncate(precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value && _1.value < saved_value.truncate(precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value && _1.value < casted_value })
+            .and exclude(*records.reject { _1.value && _1.value < casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to exclude(*records) }
+        it "returns no records" do
+          expect(perform_search).to exclude(*records)
+        end
       end
     end
 
@@ -325,23 +309,21 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
 
-        it do
-          expect(perform_search).to include(
-            *records.select { _1.value && _1.value <= saved_value.truncate(precision) },
-          )
-        end
+        it "returns records less than or equal to the value" do
+          casted_value = saved_value.truncate(precision)
 
-        it do
-          expect(perform_search).to exclude(
-            *records.reject { _1.value && _1.value <= saved_value.truncate(precision) },
-          )
+          expect(perform_search)
+            .to include(*records.select { _1.value && _1.value <= casted_value })
+            .and exclude(*records.reject { _1.value && _1.value <= casted_value })
         end
       end
 
       context "when value is nil" do
         let(:value) { [nil, ""].sample }
 
-        it { is_expected.to exclude(*records) }
+        it "returns no records" do
+          expect(perform_search).to exclude(*records)
+        end
       end
     end
   end

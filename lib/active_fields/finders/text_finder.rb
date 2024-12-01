@@ -12,15 +12,6 @@ module ActiveFields
         when "!=", "not_eq"
           active_values_cte.where(not_eq(casted_value_field("text"), value))
 
-        when "~~", "like"
-          active_values_cte.where(like(casted_value_field("text"), value))
-        when "~~*", "ilike"
-          active_values_cte.where(ilike(casted_value_field("text"), value))
-        when "!~~", "not_like"
-          active_values_cte.where(not_like(casted_value_field("text"), value))
-        when "!~~*", "not_ilike"
-          active_values_cte.where(not_ilike(casted_value_field("text"), value))
-
         when "^", "start_with"
           active_values_cte.where(like(casted_value_field("text"), "#{escape_pattern(value)}%"))
         when "$", "end_with"

@@ -8,11 +8,15 @@ RSpec.describe ActiveFields::Finders::IntegerFinder do
 
   let!(:records) do
     [
-      create(active_value_factory, active_field: active_field, value: saved_value),
-      create(active_value_factory, active_field: active_field, value: saved_value - 1),
-      create(active_value_factory, active_field: active_field, value: saved_value + 1),
-      create(active_value_factory, active_field: active_field, value: nil),
-    ]
+      saved_value,
+      saved_value - 1,
+      saved_value + 1,
+      saved_value - rand(2..10),
+      saved_value + rand(2..10),
+      nil,
+    ].map do |value|
+      create(active_value_factory, active_field: active_field, value: value)
+    end
   end
 
   context "with eq operator" do
@@ -21,15 +25,21 @@ RSpec.describe ActiveFields::Finders::IntegerFinder do
     context "when value is an integer" do
       let(:value) { [saved_value, saved_value.to_s].sample }
 
-      it { is_expected.to include(*records.select { _1.value == saved_value }) }
-      it { is_expected.to exclude(*records.reject { _1.value == saved_value }) }
+      it "returns only records with such value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value == saved_value })
+          .and exclude(*records.reject { _1.value == saved_value })
+      end
     end
 
     context "when value is nil" do
       let(:value) { [nil, ""].sample }
 
-      it { is_expected.to include(*records.select { _1.value.nil? }) }
-      it { is_expected.to exclude(*records.reject { _1.value.nil? }) }
+      it "returns only records with null value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value.nil? })
+          .and exclude(*records.reject { _1.value.nil? })
+      end
     end
   end
 
@@ -39,15 +49,21 @@ RSpec.describe ActiveFields::Finders::IntegerFinder do
     context "when value is an integer" do
       let(:value) { [saved_value, saved_value.to_s].sample }
 
-      it { is_expected.to include(*records.reject { _1.value == saved_value }) }
-      it { is_expected.to exclude(*records.select { _1.value == saved_value }) }
+      it "returns all records except with such value" do
+        expect(perform_search)
+          .to include(*records.reject { _1.value == saved_value })
+          .and exclude(*records.select { _1.value == saved_value })
+      end
     end
 
     context "when value is nil" do
       let(:value) { [nil, ""].sample }
 
-      it { is_expected.to include(*records.reject { _1.value.nil? }) }
-      it { is_expected.to exclude(*records.select { _1.value.nil? }) }
+      it "returns only records with not null value" do
+        expect(perform_search)
+          .to include(*records.reject { _1.value.nil? })
+          .and exclude(*records.select { _1.value.nil? })
+      end
     end
   end
 
@@ -57,14 +73,19 @@ RSpec.describe ActiveFields::Finders::IntegerFinder do
     context "when value is an integer" do
       let(:value) { [saved_value, saved_value.to_s].sample }
 
-      it { is_expected.to include(*records.select { _1.value && _1.value > saved_value }) }
-      it { is_expected.to exclude(*records.reject { _1.value && _1.value > saved_value }) }
+      it "returns records greater than the value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value && _1.value > saved_value })
+          .and exclude(*records.reject { _1.value && _1.value > saved_value })
+      end
     end
 
     context "when value is nil" do
       let(:value) { [nil, ""].sample }
 
-      it { is_expected.to exclude(*records) }
+      it "returns no records" do
+        expect(perform_search).to exclude(*records)
+      end
     end
   end
 
@@ -74,14 +95,19 @@ RSpec.describe ActiveFields::Finders::IntegerFinder do
     context "when value is an integer" do
       let(:value) { [saved_value, saved_value.to_s].sample }
 
-      it { is_expected.to include(*records.select { _1.value && _1.value >= saved_value }) }
-      it { is_expected.to exclude(*records.reject { _1.value && _1.value >= saved_value }) }
+      it "returns records greater than or equal to the value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value && _1.value >= saved_value })
+          .and exclude(*records.reject { _1.value && _1.value >= saved_value })
+      end
     end
 
     context "when value is nil" do
       let(:value) { [nil, ""].sample }
 
-      it { is_expected.to exclude(*records) }
+      it "returns no records" do
+        expect(perform_search).to exclude(*records)
+      end
     end
   end
 
@@ -91,14 +117,19 @@ RSpec.describe ActiveFields::Finders::IntegerFinder do
     context "when value is an integer" do
       let(:value) { [saved_value, saved_value.to_s].sample }
 
-      it { is_expected.to include(*records.select { _1.value && _1.value < saved_value }) }
-      it { is_expected.to exclude(*records.reject { _1.value && _1.value < saved_value }) }
+      it "returns records less than the value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value && _1.value < saved_value })
+          .and exclude(*records.reject { _1.value && _1.value < saved_value })
+      end
     end
 
     context "when value is nil" do
       let(:value) { [nil, ""].sample }
 
-      it { is_expected.to exclude(*records) }
+      it "returns no records" do
+        expect(perform_search).to exclude(*records)
+      end
     end
   end
 
@@ -108,14 +139,19 @@ RSpec.describe ActiveFields::Finders::IntegerFinder do
     context "when value is an integer" do
       let(:value) { [saved_value, saved_value.to_s].sample }
 
-      it { is_expected.to include(*records.select { _1.value && _1.value <= saved_value }) }
-      it { is_expected.to exclude(*records.reject { _1.value && _1.value <= saved_value }) }
+      it "returns records less than or equal to the value" do
+        expect(perform_search)
+          .to include(*records.select { _1.value && _1.value <= saved_value })
+          .and exclude(*records.reject { _1.value && _1.value <= saved_value })
+      end
     end
 
     context "when value is nil" do
       let(:value) { [nil, ""].sample }
 
-      it { is_expected.to exclude(*records) }
+      it "returns no records" do
+        expect(perform_search).to exclude(*records)
+      end
     end
   end
 

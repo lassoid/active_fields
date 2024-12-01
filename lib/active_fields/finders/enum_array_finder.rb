@@ -8,11 +8,11 @@ module ActiveFields
         value = caster.serialize(caster.deserialize(value))
 
         case operator.to_s
-        when "include"
+        when "|=", "include"
           active_values_cte.where(
             value_jsonb_path_exists("$[*] ? (@ == $value)", { value: value }),
           )
-        when "not_include"
+        when "!|=", "not_include"
           active_values_cte.where.not(
             value_jsonb_path_exists("$[*] ? (@ == $value)", { value: value }),
           )
