@@ -160,8 +160,8 @@ RSpec.describe ActiveFields::Finders::DateArrayFinder do
 
       it "returns only records where all elements are greater than the value" do
         expect(perform_search)
-          .to include(*records.select { _1.value.all? { |elem| elem > saved_value } })
-          .and exclude(*records.reject { _1.value.all? { |elem| elem > saved_value } })
+          .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem > saved_value } })
+          .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem > saved_value } })
       end
     end
 
@@ -182,8 +182,8 @@ RSpec.describe ActiveFields::Finders::DateArrayFinder do
 
       it "returns only records where all elements are greater than or equal to the value" do
         expect(perform_search)
-          .to include(*records.select { _1.value.all? { |elem| elem >= saved_value } })
-          .and exclude(*records.reject { _1.value.all? { |elem| elem >= saved_value } })
+          .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem >= saved_value } })
+          .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem >= saved_value } })
       end
     end
 
@@ -204,8 +204,8 @@ RSpec.describe ActiveFields::Finders::DateArrayFinder do
 
       it "returns only records where all elements are less than the value" do
         expect(perform_search)
-          .to include(*records.select { _1.value.all? { |elem| elem < saved_value } })
-          .and exclude(*records.reject { _1.value.all? { |elem| elem < saved_value } })
+          .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem < saved_value } })
+          .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem < saved_value } })
       end
     end
 
@@ -226,8 +226,8 @@ RSpec.describe ActiveFields::Finders::DateArrayFinder do
 
       it "returns only records where all elements are less than or equal to the value" do
         expect(perform_search)
-          .to include(*records.select { _1.value.all? { |elem| elem <= saved_value } })
-          .and exclude(*records.reject { _1.value.all? { |elem| elem <= saved_value } })
+          .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem <= saved_value } })
+          .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem <= saved_value } })
       end
     end
 

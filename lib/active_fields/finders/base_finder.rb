@@ -41,11 +41,22 @@ module ActiveFields
         Arel::Nodes::NamedFunction.new("CAST", [value_field_text.as(to)])
       end
 
-      def value_jsonb_path_exists(jsonpath, vars = nil)
+      def jsonb_path_exists(target, jsonpath, vars = nil)
         Arel::Nodes::NamedFunction.new(
           "jsonb_path_exists",
-          [value_field_jsonb, *[jsonpath, vars&.to_json].compact.map { Arel::Nodes.build_quoted(_1) }],
+          [target, *[jsonpath, vars&.to_json].compact.map { Arel::Nodes.build_quoted(_1) }],
         )
+      end
+
+      def jsonb_path_query_array(target, jsonpath, vars = nil)
+        Arel::Nodes::NamedFunction.new(
+          "jsonb_path_query_array",
+          [target, *[jsonpath, vars&.to_json].compact.map { Arel::Nodes.build_quoted(_1) }],
+        )
+      end
+
+      def jsonb_array_length(target)
+        Arel::Nodes::NamedFunction.new("jsonb_array_length", [target])
       end
 
       def eq(target, value)
