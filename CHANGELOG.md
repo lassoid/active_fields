@@ -1,5 +1,5 @@
 ## [Unreleased]
-- Drop support for Rails < 7 (EOL)
+- Drop support for Rails < 7.1
 - Drop support for Ruby < 3.1 (EOL)
 
 **Breaking changes**:

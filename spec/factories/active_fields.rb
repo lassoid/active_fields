@@ -257,4 +257,8 @@ FactoryBot.define do
       required { true }
     end
   end
+
+  factory :ip_array_field, parent: base_factory, class: "IpArrayField" do
+    type { "IpArrayField" }
+  end
 end
