@@ -7,9 +7,9 @@ module ActiveFields
         value = Casters::BooleanCaster.new.deserialize(value)
 
         case operator.to_s
-        when "=", "eq"
+        when *OPS[:eq]
           active_values_cte.where(eq(casted_value_field("boolean"), value))
-        when "!=", "not_eq"
+        when *OPS[:not_eq]
           active_values_cte.where(not_eq(casted_value_field("boolean"), value))
         else
           operator_not_found!(operator)

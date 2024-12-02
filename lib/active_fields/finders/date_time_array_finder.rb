@@ -8,43 +8,43 @@ module ActiveFields
         value = caster.serialize(caster.deserialize(value))
 
         case operator.to_s
-        when "|=", "include"
+        when *OPS[:include]
           active_values_cte.where(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() == $value.timestamp_tz())", { value: value }),
           )
-        when "!|=", "not_include"
+        when *OPS[:not_include]
           active_values_cte.where.not(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() == $value.timestamp_tz())", { value: value }),
           )
-        when "|>", "any_gt"
+        when *OPS[:any_gt]
           active_values_cte.where(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() > $value.timestamp_tz())", { value: value }),
           )
-        when "|>=", "any_gteq", "any_gte"
+        when *OPS[:any_gteq]
           active_values_cte.where(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() >= $value.timestamp_tz())", { value: value }),
           )
-        when "|<", "any_lt"
+        when *OPS[:any_lt]
           active_values_cte.where(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() < $value.timestamp_tz())", { value: value }),
           )
-        when "|<=", "any_lteq", "any_lte"
+        when *OPS[:any_lteq]
           active_values_cte.where(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() <= $value.timestamp_tz())", { value: value }),
           )
-        when "&>", "all_gt"
+        when *OPS[:all_gt]
           active_values_cte.where.not(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() <= $value.timestamp_tz())", { value: value }),
           )
-        when "&>=", "all_gteq", "all_gte"
+        when *OPS[:all_gteq]
           active_values_cte.where.not(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() < $value.timestamp_tz())", { value: value }),
           )
-        when "&<", "all_lt"
+        when *OPS[:all_lt]
           active_values_cte.where.not(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() >= $value.timestamp_tz())", { value: value }),
           )
-        when "&<=", "all_lteq", "all_lte"
+        when *OPS[:all_lteq]
           active_values_cte.where.not(
             value_jsonb_path_exists("$[*] ? (@.timestamp_tz() > $value.timestamp_tz())", { value: value }),
           )

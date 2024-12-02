@@ -7,35 +7,35 @@ module ActiveFields
         value = Casters::TextCaster.new.deserialize(value)
 
         case operator.to_s
-        when "=", "eq"
+        when *OPS[:eq]
           active_values_cte.where(eq(casted_value_field("text"), value))
-        when "!=", "not_eq"
+        when *OPS[:not_eq]
           active_values_cte.where(not_eq(casted_value_field("text"), value))
 
-        when "^", "start_with"
+        when *OPS[:start_with]
           active_values_cte.where(like(casted_value_field("text"), "#{escape_pattern(value)}%"))
-        when "$", "end_with"
+        when *OPS[:end_with]
           active_values_cte.where(like(casted_value_field("text"), "%#{escape_pattern(value)}"))
-        when "~", "contain"
+        when *OPS[:contain]
           active_values_cte.where(like(casted_value_field("text"), "%#{escape_pattern(value)}%"))
-        when "!^", "not_start_with"
+        when *OPS[:not_start_with]
           active_values_cte.where(not_like(casted_value_field("text"), "#{escape_pattern(value)}%"))
-        when "!$", "not_end_with"
+        when *OPS[:not_end_with]
           active_values_cte.where(not_like(casted_value_field("text"), "%#{escape_pattern(value)}"))
-        when "!~", "not_contain"
+        when *OPS[:not_contain]
           active_values_cte.where(not_like(casted_value_field("text"), "%#{escape_pattern(value)}%"))
 
-        when "^*", "istart_with"
+        when *OPS[:istart_with]
           active_values_cte.where(ilike(casted_value_field("text"), "#{escape_pattern(value)}%"))
-        when "$*", "iend_with"
+        when *OPS[:iend_with]
           active_values_cte.where(ilike(casted_value_field("text"), "%#{escape_pattern(value)}"))
-        when "~*", "icontain"
+        when *OPS[:icontain]
           active_values_cte.where(ilike(casted_value_field("text"), "%#{escape_pattern(value)}%"))
-        when "!^*", "not_istart_with"
+        when *OPS[:not_istart_with]
           active_values_cte.where(not_ilike(casted_value_field("text"), "#{escape_pattern(value)}%"))
-        when "!$*", "not_iend_with"
+        when *OPS[:not_iend_with]
           active_values_cte.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(value)}"))
-        when "!~*", "not_icontain"
+        when *OPS[:not_icontain]
           active_values_cte.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(value)}%"))
         else
           operator_not_found!(operator)

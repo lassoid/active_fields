@@ -5,9 +5,9 @@ class IpFinder < ActiveFields::Finders::BaseFinder
     value = IpCaster.new.deserialize(value)
 
     case operator.to_s
-    when "=", "eq"
+    when *ActiveFields::OPS[:eq]
       active_values_cte.where(casted_value_field("text").eq(value))
-    when "!=", "not_eq"
+    when *ActiveFields::OPS[:not_eq]
       active_values_cte.where(casted_value_field("text").not_eq(value))
     else
       operator_not_found!(operator)

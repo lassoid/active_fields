@@ -366,7 +366,7 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       it "returns records that don't insensitively contain with the value" do
         expect(perform_search)
           .to include(*records.reject { _1.value&.downcase&.include?(value.downcase) })
-                .and exclude(*records.select { _1.value&.downcase&.include?(value.downcase) })
+          .and exclude(*records.select { _1.value&.downcase&.include?(value.downcase) })
       end
     end
 
