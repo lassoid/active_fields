@@ -2,16 +2,25 @@
 
 module ActiveFields
   module Finders
-    class EnumArrayFinder < BaseFinder
+    class EnumArrayFinder < ArrayFinder
       def search(operator:, value:)
-        caster = Casters::EnumCaster.new
-        value = caster.serialize(caster.deserialize(value))
-
         case operator.to_s
         when *OPS[:include]
-          active_values_cte.where(value_match_any("==", value))
+          scope.where(value_match_any("==", cast(value)))
         when *OPS[:not_include]
-          active_values_cte.where.not(value_match_any("==", value))
+          scope.where.not(value_match_any("==", cast(value)))
+        when *OPS[:size_eq]
+          scope.where(value_size_eq(cast_int(value)))
+        when *OPS[:size_not_eq]
+          scope.where(value_size_not_eq(cast_int(value)))
+        when *OPS[:size_gt]
+          scope.where(value_size_gt(cast_int(value)))
+        when *OPS[:size_gteq]
+          scope.where(value_size_gteq(cast_int(value)))
+        when *OPS[:size_lt]
+          scope.where(value_size_lt(cast_int(value)))
+        when *OPS[:size_lteq]
+          scope.where(value_size_lteq(cast_int(value)))
         else
           operator_not_found!(operator)
         end
@@ -19,13 +28,12 @@ module ActiveFields
 
       private
 
-      def value_match_any(operator, value)
-        jsonb_path_exists(
-          value_field_jsonb,
-          "$[*] ? (@ #{operator} $value)",
-          { value: value },
-        )
+      def cast(value)
+        caster = Casters::EnumCaster.new
+        caster.serialize(caster.deserialize(value))
       end
+
+      def jsonpath(operator) = "$[*] ? (@ #{operator} $value)"
     end
   end
 end

@@ -69,6 +69,9 @@ module ActiveFields
 
     eager_autoload do
       autoload :BaseFinder
+      autoload :SingularFinder
+      autoload :ArrayFinder
+
       autoload :BooleanFinder
       autoload :DateFinder
       autoload :DateArrayFinder

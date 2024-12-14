@@ -23,13 +23,13 @@ RSpec.describe ActiveFields::Finders::EnumFinder do
 
       it "returns only records with such value" do
         expect(perform_search)
-          .to include(*records.select { _1.value == saved_value })
-          .and exclude(*records.reject { _1.value == saved_value })
+          .to include(*records.select { _1.value == value })
+          .and exclude(*records.reject { _1.value == value })
       end
     end
 
     context "when value is nil" do
-      let(:value) { [nil, ""].sample }
+      let(:value) { nil }
 
       it "returns only records with null value" do
         expect(perform_search)
@@ -55,13 +55,13 @@ RSpec.describe ActiveFields::Finders::EnumFinder do
 
       it "returns all records except with such value" do
         expect(perform_search)
-          .to include(*records.reject { _1.value == saved_value })
-          .and exclude(*records.select { _1.value == saved_value })
+          .to include(*records.reject { _1.value == value })
+          .and exclude(*records.select { _1.value == value })
       end
     end
 
     context "when value is nil" do
-      let(:value) { [nil, ""].sample }
+      let(:value) { nil }
 
       it "returns only records with not null value" do
         expect(perform_search)

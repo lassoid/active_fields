@@ -2,47 +2,49 @@
 
 module ActiveFields
   module Finders
-    class TextFinder < BaseFinder
+    class TextFinder < SingularFinder
       def search(operator:, value:)
-        value = Casters::TextCaster.new.deserialize(value)
-
         case operator.to_s
         when *OPS[:eq]
-          active_values_cte.where(eq(casted_value_field("text"), value))
+          scope.where(eq(casted_value_field("text"), cast(value)))
         when *OPS[:not_eq]
-          active_values_cte.where(not_eq(casted_value_field("text"), value))
+          scope.where(not_eq(casted_value_field("text"), cast(value)))
 
         when *OPS[:start_with]
-          active_values_cte.where(like(casted_value_field("text"), "#{escape_pattern(value)}%"))
+          scope.where(like(casted_value_field("text"), "#{escape_pattern(cast(value))}%"))
         when *OPS[:end_with]
-          active_values_cte.where(like(casted_value_field("text"), "%#{escape_pattern(value)}"))
+          scope.where(like(casted_value_field("text"), "%#{escape_pattern(cast(value))}"))
         when *OPS[:contain]
-          active_values_cte.where(like(casted_value_field("text"), "%#{escape_pattern(value)}%"))
+          scope.where(like(casted_value_field("text"), "%#{escape_pattern(cast(value))}%"))
         when *OPS[:not_start_with]
-          active_values_cte.where(not_like(casted_value_field("text"), "#{escape_pattern(value)}%"))
+          scope.where(not_like(casted_value_field("text"), "#{escape_pattern(cast(value))}%"))
         when *OPS[:not_end_with]
-          active_values_cte.where(not_like(casted_value_field("text"), "%#{escape_pattern(value)}"))
+          scope.where(not_like(casted_value_field("text"), "%#{escape_pattern(cast(value))}"))
         when *OPS[:not_contain]
-          active_values_cte.where(not_like(casted_value_field("text"), "%#{escape_pattern(value)}%"))
+          scope.where(not_like(casted_value_field("text"), "%#{escape_pattern(cast(value))}%"))
 
         when *OPS[:istart_with]
-          active_values_cte.where(ilike(casted_value_field("text"), "#{escape_pattern(value)}%"))
+          scope.where(ilike(casted_value_field("text"), "#{escape_pattern(cast(value))}%"))
         when *OPS[:iend_with]
-          active_values_cte.where(ilike(casted_value_field("text"), "%#{escape_pattern(value)}"))
+          scope.where(ilike(casted_value_field("text"), "%#{escape_pattern(cast(value))}"))
         when *OPS[:icontain]
-          active_values_cte.where(ilike(casted_value_field("text"), "%#{escape_pattern(value)}%"))
+          scope.where(ilike(casted_value_field("text"), "%#{escape_pattern(cast(value))}%"))
         when *OPS[:not_istart_with]
-          active_values_cte.where(not_ilike(casted_value_field("text"), "#{escape_pattern(value)}%"))
+          scope.where(not_ilike(casted_value_field("text"), "#{escape_pattern(cast(value))}%"))
         when *OPS[:not_iend_with]
-          active_values_cte.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(value)}"))
+          scope.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(cast(value))}"))
         when *OPS[:not_icontain]
-          active_values_cte.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(value)}%"))
+          scope.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(cast(value))}%"))
         else
           operator_not_found!(operator)
         end
       end
 
       private
+
+      def cast(value)
+        Casters::TextCaster.new.deserialize(value)
+      end
 
       def like(target, value)
         target.matches(value, nil, true)
@@ -62,6 +64,7 @@ module ActiveFields
         target.does_not_match(value, nil, false).or(target.eq(nil))
       end
 
+      # Escape special chars (\, %, _) in LIKE/ILIKE pattern
       def escape_pattern(value)
         return unless value.is_a?(String)
 

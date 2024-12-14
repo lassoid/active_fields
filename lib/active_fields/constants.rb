@@ -17,6 +17,7 @@ module ActiveFields
     gteq: %w[>= gteq gte],
     lt: %w[< lt],
     lteq: %w[<= lteq lte],
+
     start_with: %w[^ start_with],
     end_with: %w[$ end_with],
     contain: %w[~ contain],
@@ -29,6 +30,7 @@ module ActiveFields
     not_istart_with: %w[!^* not_istart_with],
     not_iend_with: %w[!$* not_iend_with],
     not_icontain: %w[!~* not_icontain],
+
     include: %w[|= include],
     not_include: %w[!|= not_include],
     any_gt: %w[|> any_gt],
@@ -39,5 +41,15 @@ module ActiveFields
     all_gteq: %w[&>= all_gteq all_gte],
     all_lt: %w[&< all_lt],
     all_lteq: %w[&<= all_lteq all_lte],
+
+    size_eq: %w[# size_eq],
+    size_not_eq: %w[!# size_not_eq],
+    size_gt: %w[#> size_gt],
+    size_gteq: %w[#>= size_gteq size_gte],
+    size_lt: %w[#< size_lt],
+    size_lteq: %w[#<= size_lteq size_lte],
+
+    any_start_with: %w[|^ any_start_with],
+    all_start_with: %w[&^ all_start_with],
   }.freeze
 end

@@ -240,6 +240,8 @@ RSpec.describe ActiveFields::Finders::DateArrayFinder do
     end
   end
 
+  include_examples "finder_array_size"
+
   context "with invalid operator" do
     let(:operator) { "invalid" }
     let(:value) { nil }

@@ -2,18 +2,22 @@
 
 module ActiveFields
   module Finders
-    class BooleanFinder < BaseFinder
+    class BooleanFinder < SingularFinder
       def search(operator:, value:)
-        value = Casters::BooleanCaster.new.deserialize(value)
-
         case operator.to_s
         when *OPS[:eq]
-          active_values_cte.where(eq(casted_value_field("boolean"), value))
+          scope.where(eq(casted_value_field("boolean"), cast(value)))
         when *OPS[:not_eq]
-          active_values_cte.where(not_eq(casted_value_field("boolean"), value))
+          scope.where(not_eq(casted_value_field("boolean"), cast(value)))
         else
           operator_not_found!(operator)
         end
+      end
+
+      private
+
+      def cast(value)
+        Casters::BooleanCaster.new.deserialize(value)
       end
     end
   end
