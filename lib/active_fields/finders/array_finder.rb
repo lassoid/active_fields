@@ -54,6 +54,8 @@ module ActiveFields
           )
       end
 
+      def jsonpath(operator) = raise NotImplementedError
+
       def value_size_eq(value)
         jsonb_array_length(value_field_jsonb).eq(value)
       end

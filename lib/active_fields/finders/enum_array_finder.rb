@@ -3,27 +3,29 @@
 module ActiveFields
   module Finders
     class EnumArrayFinder < ArrayFinder
-      def search(operator:, value:)
-        case operator.to_s
-        when *OPS[:include]
-          scope.where(value_match_any("==", cast(value)))
-        when *OPS[:not_include]
-          scope.where.not(value_match_any("==", cast(value)))
-        when *OPS[:size_eq]
-          scope.where(value_size_eq(cast_int(value)))
-        when *OPS[:size_not_eq]
-          scope.where(value_size_not_eq(cast_int(value)))
-        when *OPS[:size_gt]
-          scope.where(value_size_gt(cast_int(value)))
-        when *OPS[:size_gteq]
-          scope.where(value_size_gteq(cast_int(value)))
-        when *OPS[:size_lt]
-          scope.where(value_size_lt(cast_int(value)))
-        when *OPS[:size_lteq]
-          scope.where(value_size_lteq(cast_int(value)))
-        else
-          operator_not_found!(operator)
-        end
+      operation :include, operators: OPS[:include] do |value|
+        scope.where(value_match_any("==", cast(value)))
+      end
+      operation :not_include, operators: OPS[:not_include] do |value|
+        scope.where.not(value_match_any("==", cast(value)))
+      end
+      operation :size_eq, operators: OPS[:size_eq] do |value|
+        scope.where(value_size_eq(cast_int(value)))
+      end
+      operation :size_not_eq, operators: OPS[:size_not_eq] do |value|
+        scope.where(value_size_not_eq(cast_int(value)))
+      end
+      operation :size_gt, operators: OPS[:size_gt] do |value|
+        scope.where(value_size_gt(cast_int(value)))
+      end
+      operation :size_gteq, operators: OPS[:size_gteq] do |value|
+        scope.where(value_size_gteq(cast_int(value)))
+      end
+      operation :size_lt, operators: OPS[:size_lt] do |value|
+        scope.where(value_size_lt(cast_int(value)))
+      end
+      operation :size_lteq, operators: OPS[:size_lteq] do |value|
+        scope.where(value_size_lteq(cast_int(value)))
       end
 
       private

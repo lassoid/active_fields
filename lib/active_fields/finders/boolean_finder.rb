@@ -3,15 +3,11 @@
 module ActiveFields
   module Finders
     class BooleanFinder < SingularFinder
-      def search(operator:, value:)
-        case operator.to_s
-        when *OPS[:eq]
-          scope.where(eq(casted_value_field("boolean"), cast(value)))
-        when *OPS[:not_eq]
-          scope.where(not_eq(casted_value_field("boolean"), cast(value)))
-        else
-          operator_not_found!(operator)
-        end
+      operation :eq, operators: OPS[:eq] do |value|
+        scope.where(eq(casted_value_field("boolean"), cast(value)))
+      end
+      operation :not_eq, operators: OPS[:not_eq] do |value|
+        scope.where(not_eq(casted_value_field("boolean"), cast(value)))
       end
 
       private

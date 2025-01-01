@@ -103,8 +103,10 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
     context "when value is an empty string" do
       let(:value) { "" }
 
-      it "returns all records" do
-        expect(perform_search).to include(*records)
+      it "returns all non-empty records" do
+        expect(perform_search)
+          .to include(*records.select { _1.value.any? })
+          .and exclude(*records.reject { _1.value.any? })
       end
     end
 
@@ -133,8 +135,10 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
     context "when value is an empty string" do
       let(:value) { "" }
 
-      it "returns all records" do
-        expect(perform_search).to include(*records)
+      it "returns all non-empty records" do
+        expect(perform_search)
+          .to include(*records.select { _1.value.any? })
+          .and exclude(*records.reject { _1.value.any? })
       end
     end
 

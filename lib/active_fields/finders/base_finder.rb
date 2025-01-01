@@ -3,6 +3,24 @@
 module ActiveFields
   module Finders
     class BaseFinder
+      class << self
+        def operation(name, operators:, &block)
+          __operations__[name.to_sym] = operators.map(&:to_s)
+
+          __operations__[name.to_sym].each do |operator|
+            __operators__[operator] = block
+          end
+        end
+
+        def __operations__
+          @__operations__ ||= {}
+        end
+
+        def __operators__
+          @__operators__ ||= {}
+        end
+      end
+
       attr_reader :active_field
 
       def initialize(active_field:)
@@ -10,7 +28,13 @@ module ActiveFields
       end
 
       def search(operator:, value:)
-        raise NotImplementedError
+        operator = operator.to_s
+
+        unless self.class.__operators__.key?(operator)
+          raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
+        end
+
+        instance_exec(value, &self.class.__operators__[operator])
       end
 
       private
@@ -19,10 +43,6 @@ module ActiveFields
 
       def scope
         ActiveFields.config.value_class.with(cte_name => active_field.active_values)
-      end
-
-      def operator_not_found!(operator)
-        raise ArgumentError, "invalid search operator `#{operator.inspect}` for `#{self.class.name}`"
       end
     end
   end
