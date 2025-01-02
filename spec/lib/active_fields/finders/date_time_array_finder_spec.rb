@@ -109,7 +109,7 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
 
     context "with any_gteq operator" do
-      let(:operator) { ["|>=", :"|>=", "any_gteq", :any_gteq, "any_gte", :any_gte].sample }
+      let(:operator) { ["|>=", :"|>=", "any_gteq", :any_gteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(max_precision + 1)].sample }
@@ -157,7 +157,7 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
 
     context "with any_lteq operator" do
-      let(:operator) { ["|<=", :"|<=", "any_lteq", :any_lteq, "any_lte", :any_lte].sample }
+      let(:operator) { ["|<=", :"|<=", "any_lteq", :any_lteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(max_precision + 1)].sample }
@@ -205,7 +205,7 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
 
     context "with all_gteq operator" do
-      let(:operator) { ["&>=", :"&>=", "all_gteq", :all_gteq, "all_gte", :all_gte].sample }
+      let(:operator) { ["&>=", :"&>=", "all_gteq", :all_gteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(max_precision + 1)].sample }
@@ -253,7 +253,7 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
 
     context "with all_lteq operator" do
-      let(:operator) { ["&<=", :"&<=", "all_lteq", :all_lteq, "all_lte", :all_lte].sample }
+      let(:operator) { ["&<=", :"&<=", "all_lteq", :all_lteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(max_precision + 1)].sample }
@@ -353,7 +353,7 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
 
     context "with any_gteq operator" do
-      let(:operator) { ["|>=", :"|>=", "any_gteq", :any_gteq, "any_gte", :any_gte].sample }
+      let(:operator) { ["|>=", :"|>=", "any_gteq", :any_gteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(precision + 1)].sample }
@@ -401,7 +401,7 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
 
     context "with any_lteq operator" do
-      let(:operator) { ["|<=", :"|<=", "any_lteq", :any_lteq, "any_lte", :any_lte].sample }
+      let(:operator) { ["|<=", :"|<=", "any_lteq", :any_lteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(precision + 1)].sample }
@@ -449,7 +449,7 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
 
     context "with all_gteq operator" do
-      let(:operator) { ["&>=", :"&>=", "all_gteq", :all_gteq, "all_gte", :all_gte].sample }
+      let(:operator) { ["&>=", :"&>=", "all_gteq", :all_gteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(precision + 1)].sample }
@@ -497,7 +497,7 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
 
     context "with all_lteq operator" do
-      let(:operator) { ["&<=", :"&<=", "all_lteq", :all_lteq, "all_lte", :all_lte].sample }
+      let(:operator) { ["&<=", :"&<=", "all_lteq", :all_lteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(precision + 1)].sample }

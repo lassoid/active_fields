@@ -29,7 +29,7 @@ module ActiveFields
       #
       #   # Array of hashes
       #   CustomizableModel.where_active_values([
-      #     { name: "integer_array", operator: "any_gte", value: 5 }, # symbol keys
+      #     { name: "integer_array", operator: "any_gteq", value: 5 }, # symbol keys
       #     { "name" => "text", operator: "eq", "value" => "Lasso" }, # string keys
       #     { n: "boolean", op: "eq", v: false }, # compact form
       #   ])
@@ -37,7 +37,7 @@ module ActiveFields
       #   # Hash of hashes generated from HTTP/HTML parameters
       #   CustomizableModel.where_active_values(
       #     {
-      #       "0" => { name: "integer_array", operator: "any_gte", value: 5 },
+      #       "0" => { name: "integer_array", operator: "any_gteq", value: 5 },
       #       "1" => { "name" => "text", operator: "eq", "value" => "Lasso" },
       #       "2" => { n: "boolean", op: "eq", v: false },
       #     }

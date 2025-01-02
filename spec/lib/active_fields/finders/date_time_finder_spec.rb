@@ -104,7 +104,7 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
     end
 
     context "with gteq operator" do
-      let(:operator) { [">=", :">=", "gteq", :gteq, "gte", :gte].sample }
+      let(:operator) { [">=", :">=", "gteq", :gteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(max_precision + 1)].sample }
@@ -152,7 +152,7 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
     end
 
     context "with lteq operator" do
-      let(:operator) { ["<=", :"<=", "lteq", :lteq, "lte", :lte].sample }
+      let(:operator) { ["<=", :"<=", "lteq", :lteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(max_precision + 1)].sample }
@@ -256,7 +256,7 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
     end
 
     context "with gteq operator" do
-      let(:operator) { [">=", :">=", "gteq", :gteq, "gte", :gte].sample }
+      let(:operator) { [">=", :">=", "gteq", :gteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(max_precision + 1)].sample }
@@ -304,7 +304,7 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
     end
 
     context "with lteq operator" do
-      let(:operator) { ["<=", :"<=", "lteq", :lteq, "lte", :lte].sample }
+      let(:operator) { ["<=", :"<=", "lteq", :lteq].sample }
 
       context "when value is a datetime" do
         let(:value) { [saved_value, saved_value.iso8601(max_precision + 1)].sample }

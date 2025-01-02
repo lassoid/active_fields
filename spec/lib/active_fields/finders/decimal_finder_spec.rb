@@ -104,7 +104,7 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
     end
 
     context "with gteq operator" do
-      let(:operator) { [">=", :">=", "gteq", :gteq, "gte", :gte].sample }
+      let(:operator) { [">=", :">=", "gteq", :gteq].sample }
 
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
@@ -152,7 +152,7 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
     end
 
     context "with lteq operator" do
-      let(:operator) { ["<=", :"<=", "lteq", :lteq, "lte", :lte].sample }
+      let(:operator) { ["<=", :"<=", "lteq", :lteq].sample }
 
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
@@ -256,7 +256,7 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
     end
 
     context "with gteq operator" do
-      let(:operator) { [">=", :">=", "gteq", :gteq, "gte", :gte].sample }
+      let(:operator) { [">=", :">=", "gteq", :gteq].sample }
 
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
@@ -304,7 +304,7 @@ RSpec.describe ActiveFields::Finders::DecimalFinder do
     end
 
     context "with lteq operator" do
-      let(:operator) { ["<=", :"<=", "lteq", :lteq, "lte", :lte].sample }
+      let(:operator) { ["<=", :"<=", "lteq", :lteq].sample }
 
       context "when value is a decimal" do
         let(:value) { [saved_value, saved_value.to_s].sample }
