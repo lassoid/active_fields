@@ -12,6 +12,14 @@ module ActiveFields
           end
         end
 
+        def operators_for(operation_name)
+          __operations__[operation_name.to_sym]
+        end
+
+        def operations
+          __operations__.keys
+        end
+
         def __operations__
           @__operations__ ||= {}
         end
