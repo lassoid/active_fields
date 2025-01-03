@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
 class IpFinder < ActiveFields::Finders::SingularFinder
-  def search(operator:, value:)
-    value = IpCaster.new.deserialize(value)
+  operation :eq, operators: ActiveFields::OPS[:eq] do |value|
+    scope.where(eq(casted_value_field("text"), cast(value)))
+  end
+  operation :not_eq, operators: ActiveFields::OPS[:not_eq] do |value|
+    scope.where(not_eq(casted_value_field("text"), cast(value)))
+  end
 
-    case operator.to_s
-    when *ActiveFields::OPS[:eq]
-      scope.where(eq(casted_value_field("text"), value))
-    when *ActiveFields::OPS[:not_eq]
-      scope.where(not_eq(casted_value_field("text"), value))
-    else
-      operator_not_found!(operator)
-    end
+  def cast(value)
+    IpCaster.new.deserialize(value)
   end
 end
