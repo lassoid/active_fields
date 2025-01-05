@@ -105,6 +105,12 @@ RSpec.describe ActiveFields::Finders::EnumArrayFinder do
     end
   end
 
+  describe "##operation_for" do
+    subject(:call_method) { described_class.operation_for(operator) }
+
+    # TODO
+  end
+
   describe "##operations" do
     subject(:call_method) { described_class.operations }
 

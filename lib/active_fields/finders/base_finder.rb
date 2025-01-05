@@ -16,6 +16,10 @@ module ActiveFields
           __operations__[operation_name.to_sym]
         end
 
+        def operation_for(operator)
+          __operations__.find { |_operation_name, operators| operators.include?(operator.to_s) }.first
+        end
+
         def operations
           __operations__.keys
         end

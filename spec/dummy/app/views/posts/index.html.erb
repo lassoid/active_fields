@@ -4,12 +4,15 @@
   <%= link_to "New", new_post_path %>
 </div>
 
+<%= render_active_fields_finders_form(active_fields: Post.active_fields, url: posts_path) %>
+
 <table class="table">
   <thead>
     <tr>
       <th>ID</th>
       <th>Title</th>
       <th>Author</th>
+      <th>Active Fields</th>
       <th></th>
     </tr>
   </thead>
@@ -19,6 +22,14 @@
         <td><%= link_to "##{post.id}", edit_post_path(post) %></td>
         <td><%= post.title %></td>
         <td><%= post.author&.name %></td>
+        <td>
+          <% post.active_values.each do |active_value| %>
+            <div>
+              <b><%= active_value.name %>:</b>
+              <%= active_value.value.inspect %>
+            </div>
+          <% end %>
+        </td>
         <td><%= button_to "Destroy", post_path(post), method: :delete %></td>
       </tr>
     <% end %>
