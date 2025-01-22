@@ -17,7 +17,7 @@ module ActiveFields
         end
 
         def operation_for(operator)
-          __operations__.find { |_operation_name, operators| operators.include?(operator.to_s) }.first
+          __operations__.find { |_operation_name, operators| operators.include?(operator.to_s) }&.first
         end
 
         def operations

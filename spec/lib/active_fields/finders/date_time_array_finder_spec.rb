@@ -564,6 +564,23 @@ RSpec.describe ActiveFields::Finders::DateTimeArrayFinder do
     end
   end
 
+  describe "##operation_for" do
+    subject(:call_method) { described_class.operation_for(operator) }
+
+    let(:operator) { described_class.__operators__.keys.sample }
+
+    it "returns operation name for given operator" do
+      expect(call_method)
+        .to eq(described_class.__operations__.find { |_name, operators| operators.include?(operator) }.first)
+    end
+
+    context "when such operator doesn't exist" do
+      let(:operator) { "invalid" }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe "##operations" do
     subject(:call_method) { described_class.operations }
 
