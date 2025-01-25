@@ -197,11 +197,22 @@ RSpec.describe ActiveFields::Finders::DateFinder do
   describe "##operation_for" do
     subject(:call_method) { described_class.operation_for(operator) }
 
-    let(:operator) { described_class.__operators__.keys.sample }
+    context "with symbol provided" do
+      let(:operator) { described_class.__operators__.keys.sample.to_sym }
 
-    it "returns operation name for given operator" do
-      expect(call_method)
-        .to eq(described_class.__operations__.find { |_name, operators| operators.include?(operator) }.first)
+      it "returns operation name for given operator" do
+        expect(call_method)
+          .to eq(described_class.__operations__.find { |_name, operators| operators.include?(operator.to_s) }.first)
+      end
+    end
+
+    context "with string provided" do
+      let(:operator) { described_class.__operators__.keys.sample.to_s }
+
+      it "returns operation name for given operator" do
+        expect(call_method)
+          .to eq(described_class.__operations__.find { |_name, operators| operators.include?(operator) }.first)
+      end
     end
 
     context "when such operator doesn't exist" do
