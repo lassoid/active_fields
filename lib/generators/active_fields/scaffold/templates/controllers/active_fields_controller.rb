@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ActiveFieldsController < ApplicationController
-  helper ActiveFieldsHelper
-
   before_action :set_active_field, only: %i[show edit update destroy]
 
   def index

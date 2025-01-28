@@ -17,6 +17,34 @@ module ActiveFields
         end
       end
 
+      def insert_into_application_controller
+        content = <<~CODE
+          helper ActiveFieldsHelper
+          helper_method :active_fields_finders_params
+
+          def active_fields_finders_params
+            @active_fields_finders_params ||=
+              params.permit(
+                f: [
+                  :n,
+                  :name,
+                  :op,
+                  :operator,
+                  :v,
+                  :value,
+                  v: [],
+                  value: [],
+                ],
+              )[:f] || {}
+          end
+
+        CODE
+
+        insert_into_file "app/controllers/application_controller.rb",
+          content,
+          after: "class ApplicationController < ActionController::Base\n"
+      end
+
       def add_routes
         route "resources :active_fields"
       end

@@ -2,6 +2,7 @@
 
 module ActiveFieldsHelper
   ARRAY_SIZE_OPERATIONS = %i[size_eq size_not_eq size_gt size_gteq size_lt size_lteq].freeze
+  private_constant :ARRAY_SIZE_OPERATIONS
 
   def render_array_field(form:, name:, value:, field_method:, field_opts: {})
     render partial: "shared/array_field", locals: {
