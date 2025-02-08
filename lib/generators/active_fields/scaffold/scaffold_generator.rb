@@ -18,31 +18,12 @@ module ActiveFields
       end
 
       def insert_into_application_controller
-        content = <<~CODE
-          helper ActiveFieldsHelper
-          helper_method :active_fields_finders_params
-
-          def active_fields_finders_params
-            @active_fields_finders_params ||=
-              params.permit(
-                f: [
-                  :n,
-                  :name,
-                  :op,
-                  :operator,
-                  :v,
-                  :value,
-                  v: [],
-                  value: [],
-                ],
-              )[:f] || {}
-          end
-
-        CODE
-
-        insert_into_file "app/controllers/application_controller.rb",
-          content,
-          after: "class ApplicationController < ActionController::Base\n"
+        inject_into_class "app/controllers/application_controller.rb", "ApplicationController" do
+          optimize_indentation(<<~CODE, 2)
+            include ActiveFieldsControllerConcern
+            helper ActiveFieldsHelper
+          CODE
+        end
       end
 
       def add_routes
