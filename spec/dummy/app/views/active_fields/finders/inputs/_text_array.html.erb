@@ -8,8 +8,8 @@
   <%= form.label :n, active_field.name, for: nil %>
   <%= form.hidden_field :n, value: active_field.name, id: nil %>
   <%= form.select :op,
-        operations.map { |operation_name| [operation_name, active_field.value_finder_class.operators_for(operation_name).first] },
-        { selected: selected[:operation] ? active_field.value_finder_class.operators_for(selected[:operation])&.first : nil },
+        operations.map { |operation_name| [operation_name, active_field.value_finder_class.operator_for(operation_name)] },
+        { selected: selected[:operator] },
         { id: nil }
   %>
   <%= form.text_field :v, { value: selected[:value], maxlength: active_field.max_length, id: nil } %>

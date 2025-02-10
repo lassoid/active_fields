@@ -57,14 +57,6 @@ class ActiveFieldsController < ApplicationController
     end
   end
 
-  def compact_array_param(value)
-    if value.first == ""
-      value[1..-1]
-    else
-      value
-    end
-  end
-
   # It is strongly recommended to move it to, for example, policies.
   def permitted_attributes_for_create(model_class)
     if model_class == ActiveFields::Field::Boolean

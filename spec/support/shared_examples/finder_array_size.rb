@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "finder_array_size" do
-  context "with size_eq operator" do
-    let(:operator) { ["#", :"#", "size_eq", :size_eq].sample }
+  context "with size_eq op" do
+    let(:op) { ["#=", :"#=", "size_eq", :size_eq].sample }
 
     context "when value is a number" do
       let(:value) do
@@ -26,8 +26,8 @@ RSpec.shared_examples "finder_array_size" do
     end
   end
 
-  context "with size_not_eq operator" do
-    let(:operator) { ["!#", :"!#", "size_not_eq", :size_not_eq].sample }
+  context "with size_not_eq op" do
+    let(:op) { ["#!=", :"#!=", "size_not_eq", :size_not_eq].sample }
 
     context "when value is a number" do
       let(:value) do
@@ -51,8 +51,8 @@ RSpec.shared_examples "finder_array_size" do
     end
   end
 
-  context "with size_gt operator" do
-    let(:operator) { ["#>", :"#>", "size_gt", :size_gt].sample }
+  context "with size_gt op" do
+    let(:op) { ["#>", :"#>", "size_gt", :size_gt].sample }
 
     context "when value is a number" do
       let(:value) do
@@ -76,8 +76,8 @@ RSpec.shared_examples "finder_array_size" do
     end
   end
 
-  context "with size_gteq operator" do
-    let(:operator) { ["#>=", :"#>=", "size_gteq", :size_gteq].sample }
+  context "with size_gteq op" do
+    let(:op) { ["#>=", :"#>=", "size_gteq", :size_gteq].sample }
 
     context "when value is a number" do
       let(:value) do
@@ -101,8 +101,8 @@ RSpec.shared_examples "finder_array_size" do
     end
   end
 
-  context "with size_lt operator" do
-    let(:operator) { ["#<", :"#<", "size_lt", :size_lt].sample }
+  context "with size_lt op" do
+    let(:op) { ["#<", :"#<", "size_lt", :size_lt].sample }
 
     context "when value is a number" do
       let(:value) do
@@ -127,8 +127,8 @@ RSpec.shared_examples "finder_array_size" do
     end
   end
 
-  context "with size_lteq operator" do
-    let(:operator) { ["#<=", :"#<=", "size_lteq", :size_lteq].sample }
+  context "with size_lteq op" do
+    let(:op) { ["#<=", :"#<=", "size_lteq", :size_lteq].sample }
 
     context "when value is a number" do
       let(:value) do

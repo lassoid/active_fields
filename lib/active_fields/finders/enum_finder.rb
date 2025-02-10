@@ -3,10 +3,10 @@
 module ActiveFields
   module Finders
     class EnumFinder < SingularFinder
-      operation :eq, operators: OPS[:eq] do |value|
+      operation :eq, operator: OPS[:eq] do |value|
         scope.where(eq(casted_value_field("text"), cast(value)))
       end
-      operation :not_eq, operators: OPS[:not_eq] do |value|
+      operation :not_eq, operator: OPS[:not_eq] do |value|
         scope.where(not_eq(casted_value_field("text"), cast(value)))
       end
 

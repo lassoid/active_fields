@@ -1,6 +1,7 @@
 ## [Unreleased]
 - Drop support for Rails < 7.1
 - Drop support for Ruby < 3.1 (EOL)
+- Added search functionality
 
 **Breaking changes**:
 - Maximum datetime precision reduced to 6 for all _Ruby_/_Rails_ versions.
@@ -14,7 +15,7 @@
     The maximum precision value has been moved
     from `ActiveFields::Casters::DateTimeCaster::MAX_PRECISION` to `ActiveFields::MAX_DATETIME_PRECISION`.
 
-- Maximum decimal precision set to to 16383 (2**14 - 1).
+- Maximum decimal precision set to 16383 (2**14 - 1).
 
     While _Ruby_'s `BigDecimal` class allows extremely high precision,
     PostgreSQL supports a maximum of 16383 digits after the decimal point.
@@ -37,7 +38,7 @@
 - Added datetime and datetime array field types
 - Added fields configuration DSL
 - Introduced new _Customizable_ setter for _Active Values_ (`active_fields_attributes=`) with a more convenient syntax
-    to replace the default setter (`active_values_attributes=`) from Rails nested attributes feature.
+    to replace the default setter (`active_values_attributes=`) from Rails nested attributes feature
 
 ## [0.2.0] - 2024-06-13
 

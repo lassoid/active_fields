@@ -21,30 +21,32 @@ module ActiveFields
       # a Hash of Hashes generated from HTTP/HTML parameters
       # or permitted params.
       # Each element should contain:
-      # - <tt>:name</tt> or <tt>:n</tt> key matching the active_field record name;
-      # - <tt>:operator</tt> or <tt>:op</tt> key specifying search operator;
-      # - <tt>:value</tt> or <tt>:v</tt> key specifying search value.
+      # - <tt>:n</tt> or <tt>:name</tt> key matching the active_field record name;
+      # - <tt>:op</tt> or <tt>:operator</tt> key specifying search operation or operator;
+      # - <tt>:v</tt> or <tt>:value</tt> key specifying search value.
       #
       # Example:
       #
       #   # Array of hashes
-      #   CustomizableModel.where_active_values([
-      #     { name: "integer_array", operator: "any_gteq", value: 5 }, # symbol keys
-      #     { "name" => "text", operator: "eq", "value" => "Lasso" }, # string keys
-      #     { n: "boolean", op: "eq", v: false }, # compact form
-      #   ])
+      #   CustomizableModel.where_active_values(
+      #     [
+      #       { name: "integer_array", operator: "any_gteq", value: 5 }, # symbol keys
+      #       { "name" => "text", operator: "=", "value" => "Lasso" }, # string keys
+      #       { n: "boolean", op: "!=", v: false }, # compact form (string or symbol keys)
+      #     ],
+      #   )
       #
       #   # Hash of hashes generated from HTTP/HTML parameters
       #   CustomizableModel.where_active_values(
       #     {
       #       "0" => { name: "integer_array", operator: "any_gteq", value: 5 },
-      #       "1" => { "name" => "text", operator: "eq", "value" => "Lasso" },
-      #       "2" => { n: "boolean", op: "eq", v: false },
-      #     }
+      #       "1" => { "name" => "text", operator: "=", "value" => "Lasso" },
+      #       "2" => { n: "boolean", op: "!=", v: false },
+      #     },
       #   )
       #
-      #   # Params
-      #   CustomizableModel.where_active_values(permitted_params) # params could be passed, but they must be permitted
+      #   # Params (must be permitted)
+      #   CustomizableModel.where_active_values(permitted_params)
       scope :where_active_values, ->(filters) do
         filters = filters.to_h if filters.respond_to?(:permitted?)
 
@@ -62,14 +64,14 @@ module ActiveFields
           filter = filter.with_indifferent_access
 
           active_field = active_fields_by_name[filter[:n] || filter[:name]]
-          raise ArgumentError, "unable to find `active_field` in `where_active_values`" if active_field.nil?
-
-          next scope unless active_field.value_finder
+          next scope if active_field.nil?
+          next scope if active_field.value_finder.nil?
 
           active_values = active_field.value_finder.search(
-            operator: filter[:op] || filter[:operator],
+            op: filter[:op] || filter[:operator],
             value: filter[:v] || filter[:value],
           )
+          next scope if active_values.nil?
 
           scope.where(id: active_values.select(:customizable_id))
         end

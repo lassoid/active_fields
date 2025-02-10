@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Finders::TextFinder do
+  include_examples "field_finder"
+
   describe "#search" do
     subject(:perform_search) do
-      described_class.new(active_field: active_field).search(operator: operator, value: value)
+      described_class.new(active_field: active_field).search(op: op, value: value)
     end
 
     let!(:active_field) { create(:text_active_field) }
@@ -28,8 +30,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with eq operator" do
-      let(:operator) { ["=", :"=", "eq", :eq].sample }
+    context "with eq op" do
+      let(:op) { ["=", :"=", "eq", :eq].sample }
 
       context "when value is a string" do
         let(:value) { saved_value }
@@ -62,8 +64,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with not_eq operator" do
-      let(:operator) { ["!=", :"!=", "not_eq", :not_eq].sample }
+    context "with not_eq op" do
+      let(:op) { ["!=", :"!=", "not_eq", :not_eq].sample }
 
       context "when value is a string" do
         let(:value) { saved_value }
@@ -96,8 +98,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with start_with operator" do
-      let(:operator) { ["^", :"^", "start_with", :start_with].sample }
+    context "with start_with op" do
+      let(:op) { ["^", :"^", "start_with", :start_with].sample }
 
       context "when value is a string" do
         let(:value) { "start_" }
@@ -120,8 +122,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with end_with operator" do
-      let(:operator) { ["$", :"$", "end_with", :end_with].sample }
+    context "with end_with op" do
+      let(:op) { ["$", :"$", "end_with", :end_with].sample }
 
       context "when value is a string" do
         let(:value) { "_end" }
@@ -144,8 +146,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with contain operator" do
-      let(:operator) { ["~", :"~", "contain", :contain].sample }
+    context "with contain op" do
+      let(:op) { ["~", :"~", "contain", :contain].sample }
 
       context "when value is a string" do
         let(:value) { saved_value }
@@ -168,8 +170,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with not_start_with operator" do
-      let(:operator) { ["!^", :"!^", "not_start_with", :not_start_with].sample }
+    context "with not_start_with op" do
+      let(:op) { ["!^", :"!^", "not_start_with", :not_start_with].sample }
 
       context "when value is a string" do
         let(:value) { "start_" }
@@ -192,8 +194,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with not_end_with operator" do
-      let(:operator) { ["!$", :"!$", "not_end_with", :not_end_with].sample }
+    context "with not_end_with op" do
+      let(:op) { ["!$", :"!$", "not_end_with", :not_end_with].sample }
 
       context "when value is a string" do
         let(:value) { "_end" }
@@ -216,8 +218,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with not_contain operator" do
-      let(:operator) { ["!~", :"!~", "not_contain", :not_contain].sample }
+    context "with not_contain op" do
+      let(:op) { ["!~", :"!~", "not_contain", :not_contain].sample }
 
       context "when value is a string" do
         let(:value) { saved_value }
@@ -240,8 +242,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with istart_with operator" do
-      let(:operator) { ["^*", :"^*", "istart_with", :istart_with].sample }
+    context "with istart_with op" do
+      let(:op) { ["^*", :"^*", "istart_with", :istart_with].sample }
 
       context "when value is a string" do
         let(:value) { "sTaRt_" }
@@ -264,8 +266,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with iend_with operator" do
-      let(:operator) { ["$*", :"$*", "iend_with", :iend_with].sample }
+    context "with iend_with op" do
+      let(:op) { ["$*", :"$*", "iend_with", :iend_with].sample }
 
       context "when value is a string" do
         let(:value) { "_EnD" }
@@ -288,8 +290,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with icontain operator" do
-      let(:operator) { ["~*", :"~*", "icontain", :icontain].sample }
+    context "with icontain op" do
+      let(:op) { ["~*", :"~*", "icontain", :icontain].sample }
 
       context "when value is a string" do
         let(:value) { saved_value }
@@ -312,8 +314,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with not_istart_with operator" do
-      let(:operator) { ["!^*", :"!^*", "not_istart_with", :not_istart_with].sample }
+    context "with not_istart_with op" do
+      let(:op) { ["!^*", :"!^*", "not_istart_with", :not_istart_with].sample }
 
       context "when value is a string" do
         let(:value) { "StArT_" }
@@ -336,8 +338,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with not_iend_with operator" do
-      let(:operator) { ["!$*", :"!$*", "not_iend_with", :not_iend_with].sample }
+    context "with not_iend_with op" do
+      let(:op) { ["!$*", :"!$*", "not_iend_with", :not_iend_with].sample }
 
       context "when value is a string" do
         let(:value) { "_eNd" }
@@ -360,8 +362,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with not_icontain operator" do
-      let(:operator) { ["!~*", :"!~*", "not_icontain", :not_icontain].sample }
+    context "with not_icontain op" do
+      let(:op) { ["!~*", :"!~*", "not_icontain", :not_icontain].sample }
 
       context "when value is a string" do
         let(:value) { saved_value }
@@ -384,77 +386,13 @@ RSpec.describe ActiveFields::Finders::TextFinder do
       end
     end
 
-    context "with invalid operator" do
-      let(:operator) { "invalid" }
+    context "with invalid op" do
+      let(:op) { "invalid" }
       let(:value) { nil }
 
-      it "raises an error" do
-        expect do
-          perform_search
-        end.to raise_error(ArgumentError)
+      it "returns nil" do
+        expect(perform_search).to be_nil
       end
-    end
-  end
-
-  describe "##operators_for" do
-    subject(:call_method) { described_class.operators_for(operation_name) }
-
-    context "with symbol provided" do
-      let(:operation_name) { described_class.operations.sample.to_sym }
-
-      it "returns declared operators for given operation name" do
-        expect(call_method).to eq(described_class.__operations__[operation_name])
-      end
-    end
-
-    context "with string provided" do
-      let(:operation_name) { described_class.operations.sample.to_s }
-
-      it "returns declared operators for given operation name" do
-        expect(call_method).to eq(described_class.__operations__[operation_name.to_sym])
-      end
-    end
-
-    context "when such operation doesn't exist" do
-      let(:operation_name) { "invalid" }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
-  describe "##operation_for" do
-    subject(:call_method) { described_class.operation_for(operator) }
-
-    context "with symbol provided" do
-      let(:operator) { described_class.__operators__.keys.sample.to_sym }
-
-      it "returns operation name for given operator" do
-        expect(call_method)
-          .to eq(described_class.__operations__.find { |_name, operators| operators.include?(operator.to_s) }.first)
-      end
-    end
-
-    context "with string provided" do
-      let(:operator) { described_class.__operators__.keys.sample.to_s }
-
-      it "returns operation name for given operator" do
-        expect(call_method)
-          .to eq(described_class.__operations__.find { |_name, operators| operators.include?(operator) }.first)
-      end
-    end
-
-    context "when such operator doesn't exist" do
-      let(:operator) { "invalid" }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
-  describe "##operations" do
-    subject(:call_method) { described_class.operations }
-
-    it "returns all declared operations names" do
-      expect(call_method).to eq(described_class.__operations__.keys)
     end
   end
 end

@@ -3,46 +3,46 @@
 module ActiveFields
   module Finders
     class TextFinder < SingularFinder
-      operation :eq, operators: OPS[:eq] do |value|
+      operation :eq, operator: OPS[:eq] do |value|
         scope.where(eq(casted_value_field("text"), cast(value)))
       end
-      operation :not_eq, operators: OPS[:not_eq] do |value|
+      operation :not_eq, operator: OPS[:not_eq] do |value|
         scope.where(not_eq(casted_value_field("text"), cast(value)))
       end
-      operation :start_with, operators: OPS[:start_with] do |value|
+      operation :start_with, operator: OPS[:start_with] do |value|
         scope.where(like(casted_value_field("text"), "#{escape_pattern(cast(value))}%"))
       end
-      operation :end_with, operators: OPS[:end_with] do |value|
+      operation :end_with, operator: OPS[:end_with] do |value|
         scope.where(like(casted_value_field("text"), "%#{escape_pattern(cast(value))}"))
       end
-      operation :contain, operators: OPS[:contain] do |value|
+      operation :contain, operator: OPS[:contain] do |value|
         scope.where(like(casted_value_field("text"), "%#{escape_pattern(cast(value))}%"))
       end
-      operation :not_start_with, operators: OPS[:not_start_with] do |value|
+      operation :not_start_with, operator: OPS[:not_start_with] do |value|
         scope.where(not_like(casted_value_field("text"), "#{escape_pattern(cast(value))}%"))
       end
-      operation :not_end_with, operators: OPS[:not_end_with] do |value|
+      operation :not_end_with, operator: OPS[:not_end_with] do |value|
         scope.where(not_like(casted_value_field("text"), "%#{escape_pattern(cast(value))}"))
       end
-      operation :not_contain, operators: OPS[:not_contain] do |value|
+      operation :not_contain, operator: OPS[:not_contain] do |value|
         scope.where(not_like(casted_value_field("text"), "%#{escape_pattern(cast(value))}%"))
       end
-      operation :istart_with, operators: OPS[:istart_with] do |value|
+      operation :istart_with, operator: OPS[:istart_with] do |value|
         scope.where(ilike(casted_value_field("text"), "#{escape_pattern(cast(value))}%"))
       end
-      operation :iend_with, operators: OPS[:iend_with] do |value|
+      operation :iend_with, operator: OPS[:iend_with] do |value|
         scope.where(ilike(casted_value_field("text"), "%#{escape_pattern(cast(value))}"))
       end
-      operation :icontain, operators: OPS[:icontain] do |value|
+      operation :icontain, operator: OPS[:icontain] do |value|
         scope.where(ilike(casted_value_field("text"), "%#{escape_pattern(cast(value))}%"))
       end
-      operation :not_istart_with, operators: OPS[:not_istart_with] do |value|
+      operation :not_istart_with, operator: OPS[:not_istart_with] do |value|
         scope.where(not_ilike(casted_value_field("text"), "#{escape_pattern(cast(value))}%"))
       end
-      operation :not_iend_with, operators: OPS[:not_iend_with] do |value|
+      operation :not_iend_with, operator: OPS[:not_iend_with] do |value|
         scope.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(cast(value))}"))
       end
-      operation :not_icontain, operators: OPS[:not_icontain] do |value|
+      operation :not_icontain, operator: OPS[:not_icontain] do |value|
         scope.where(not_ilike(casted_value_field("text"), "%#{escape_pattern(cast(value))}%"))
       end
 

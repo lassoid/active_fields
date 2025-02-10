@@ -57,7 +57,7 @@ RSpec.shared_examples "customizable" do
     describe "#where_active_values" do
       subject(:call_scope) { described_class.where_active_values(args).to_a }
 
-      def search_operator(active_field) = "operator_#{active_field.id}"
+      def search_op(active_field) = "operator_#{active_field.id}"
       def search_value(active_field) = "value_#{active_field.id}"
 
       let!(:active_fields) do
@@ -86,7 +86,7 @@ RSpec.shared_examples "customizable" do
           allow(active_field.value_finder_class).to receive(:new).and_return(finder)
 
           allow(finder).to receive(:search).with(
-            operator: search_operator(active_field),
+            op: search_op(active_field),
             value: search_value(active_field),
           ).and_return(
             active_field.active_values.where(customizable_id: mapping[active_field.id]),
@@ -99,7 +99,7 @@ RSpec.shared_examples "customizable" do
           active_fields.map do |active_field|
             {
               name: active_field.name,
-              operator: search_operator(active_field),
+              operator: search_op(active_field),
               value: search_value(active_field),
             }
           end
@@ -117,7 +117,7 @@ RSpec.shared_examples "customizable" do
           active_fields.map do |active_field|
             {
               "name" => active_field.name,
-              "operator" => search_operator(active_field),
+              "operator" => search_op(active_field),
               "value" => search_value(active_field),
             }
           end
@@ -135,7 +135,7 @@ RSpec.shared_examples "customizable" do
           active_fields.map do |active_field|
             {
               n: active_field.name,
-              op: search_operator(active_field),
+              op: search_op(active_field),
               v: search_value(active_field),
             }
           end
@@ -156,7 +156,7 @@ RSpec.shared_examples "customizable" do
                 i.to_s,
                 {
                   name: active_field.name,
-                  operator: search_operator(active_field),
+                  operator: search_op(active_field),
                   value: search_value(active_field),
                 },
               ]
@@ -179,7 +179,7 @@ RSpec.shared_examples "customizable" do
                 i.to_s,
                 {
                   n: active_field.name,
-                  op: search_operator(active_field),
+                  op: search_op(active_field),
                   v: search_value(active_field),
                 },
               ]
@@ -202,7 +202,7 @@ RSpec.shared_examples "customizable" do
                 i.to_s,
                 {
                   name: active_field.name,
-                  operator: search_operator(active_field),
+                  operator: search_op(active_field),
                   value: search_value(active_field),
                 },
               ]
@@ -226,10 +226,8 @@ RSpec.shared_examples "customizable" do
           }]
         end
 
-        it "raises an error" do
-          expect do
-            call_scope
-          end.to raise_error(ArgumentError)
+        it "skips search and returns all customizables" do
+          expect(call_scope).to include(*described_class.all.to_a)
         end
       end
 

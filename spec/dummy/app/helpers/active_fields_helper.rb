@@ -59,13 +59,20 @@ module ActiveFieldsHelper
 
   def render_selected_active_field_finder_input(form:, active_fields:, finder_params:)
     active_field_name = finder_params[:n] || finder_params[:name]
-    operator = finder_params[:op] || finder_params[:operator]
-    value = finder_params[:v] || finder_params[:value]
-
     active_field = active_fields.find { |active_field| active_field.name == active_field_name }
     return if active_field&.value_finder_class.nil?
 
-    operation = active_field.value_finder_class.operation_for(operator)
+    op = (finder_params[:op] || finder_params[:operator])&.to_sym
+    if active_field.value_finder_class.operations.include?(op)
+      operation = op
+      operator = active_field.value_finder_class.operator_for(op)
+    else
+      operation = active_field.value_finder_class.operation_for(op)
+      operator = op
+    end
+    return if operation.nil? || operator.nil?
+
+    value = finder_params[:v] || finder_params[:value]
 
     type =
       if ARRAY_SIZE_OPERATIONS.include?(operation)
@@ -79,7 +86,7 @@ module ActiveFieldsHelper
       type: type,
       active_field: active_field,
       template: false,
-      selected: { operation: operation, value: value },
+      selected: { operation: operation, operator: operator, value: value },
     )
   end
 

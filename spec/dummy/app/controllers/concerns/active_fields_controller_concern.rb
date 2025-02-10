@@ -22,4 +22,12 @@ module ActiveFieldsControllerConcern
         ],
       )[:f] || {}
   end
+
+  def compact_array_param(value)
+    if value.first == ""
+      value[1..-1]
+    else
+      value
+    end
+  end
 end

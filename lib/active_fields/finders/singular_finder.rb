@@ -5,6 +5,7 @@ module ActiveFields
     class SingularFinder < BaseFinder
       private
 
+      # Arel node for `active_fields.value_meta->>const`
       def value_field_text
         Arel::Nodes::InfixOperation.new(
           "->>",
@@ -13,10 +14,13 @@ module ActiveFields
         )
       end
 
+      # Arel node with stored value casted to provided type
+      # E.g. `CAST active_fields.value_meta->>const AS bigint`
       def casted_value_field(to)
         Arel::Nodes::NamedFunction.new("CAST", [value_field_text.as(to)])
       end
 
+      # Equal operation, that respects boolean and NULL values
       def eq(target, value)
         if value.is_a?(TrueClass) || value.is_a?(FalseClass) || value.is_a?(NilClass)
           Arel::Nodes::InfixOperation.new("IS", target, Arel::Nodes.build_quoted(value))
@@ -25,6 +29,7 @@ module ActiveFields
         end
       end
 
+      # Not equal operation, that respects boolean and NULL values
       def not_eq(target, value)
         if value.is_a?(TrueClass) || value.is_a?(FalseClass) || value.is_a?(NilClass)
           Arel::Nodes::InfixOperation.new("IS NOT", target, Arel::Nodes.build_quoted(value))
@@ -37,18 +42,22 @@ module ActiveFields
         end
       end
 
+      # Greater than operation
       def gt(target, value)
         target.gt(value)
       end
 
+      # Greater than or equal to operation
       def gteq(target, value)
         target.gteq(value)
       end
 
+      # Less than operation
       def lt(target, value)
         target.lt(value)
       end
 
+      # Less than or equal to operation
       def lteq(target, value)
         target.lteq(value)
       end
