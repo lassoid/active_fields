@@ -5,4 +5,5 @@ ActiveFields.configure do |config|
   config.value_class_name = "CustomValue" if ENV["CHANGE_VALUE_CLASS"].present?
 
   config.register_field :ip, "IpField"
+  config.register_field :ip_array, "IpArrayField"
 end

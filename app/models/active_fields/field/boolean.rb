@@ -11,6 +11,9 @@ module ActiveFields
         caster: {
           class_name: "ActiveFields::Casters::BooleanCaster",
         },
+        finder: {
+          class_name: "ActiveFields::Finders::BooleanFinder",
+        },
       )
 
       store_accessor :options, :required, :nullable

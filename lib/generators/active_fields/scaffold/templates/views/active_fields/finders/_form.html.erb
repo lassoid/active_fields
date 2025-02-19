@@ -1,0 +1,42 @@
+<div data-controller="active-fields-finders-form">
+  <% selector_options = [["-", [["< Add filter >", ""]]]] + active_fields.map do |active_field|
+    [
+      active_field.name,
+      active_field_finder_input_types(active_field: active_field).map do |type|
+        [
+          "#{active_field.name} [#{type}]",
+          type,
+          { data: { "active-field-name": active_field.name } },
+        ]
+      end
+    ]
+  end
+  %>
+  <%= select_tag :selector,
+    grouped_options_for_select(selector_options),
+    data: { "active-fields-finders-form-target": "selector", action: "change->active-fields-finders-form#addInput" }
+  %>
+
+  <div data-active-fields-finders-form-target="inputTemplatesContainer" style="display: none;">
+    <% active_fields.each do |active_field| %>
+      <%= fields_for :f, nil, index: 0 do |ff| %>
+        <% active_field_finder_input_types(active_field: active_field).each do |type| %>
+          <%= render_active_field_finder_input(form: ff, type: type, active_field: active_field, template: true) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= form_with(url: url, method: :get) do |f| %>
+    <div data-active-fields-finders-form-target="inputsContainer">
+      <% active_fields_finders_params.each do |index, finder_params| %>
+        <%= fields_for :f, nil, index: index do |ff| %>
+          <%= render_selected_active_field_finder_input(form: ff, active_fields: active_fields, finder_params: finder_params) %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%= f.submit "Filter" %>
+    <%= link_to "Reset", url %>
+  <% end %>
+</div>

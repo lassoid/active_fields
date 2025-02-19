@@ -4,7 +4,8 @@ class AuthorsController < ApplicationController
   before_action :set_author, only: %i[edit update destroy]
 
   def index
-    @authors = Author.order(id: :desc)
+    @authors = Author.where_active_values(active_fields_finders_params)
+      .includes(active_values: :active_field).order(id: :desc)
   end
 
   def new

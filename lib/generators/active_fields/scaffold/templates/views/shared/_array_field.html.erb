@@ -1,5 +1,5 @@
 <div data-controller="array-field">
-  <div data-array-field-target="templateFieldGroup">
+  <div data-array-field-target="templateFieldGroup" style="display: none;">
     <%= form.public_send(field_method, name, { multiple: true, value: "", **field_opts }) %>
     <% unless field_opts[:disabled] %>
       <%= button_tag "Remove", type: "button", data: { action: "click->array-field#removeField" } %>

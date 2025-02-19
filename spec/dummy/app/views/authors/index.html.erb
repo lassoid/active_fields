@@ -4,12 +4,15 @@
   <%= link_to "New", new_author_path %>
 </div>
 
+<%= render_active_fields_finders_form(active_fields: Author.active_fields, url: authors_path) %>
+
 <table class="table">
   <thead>
     <tr>
       <th>ID</th>
       <th>Name</th>
       <th>Group</th>
+      <th>Active Fields</th>
       <th></th>
     </tr>
   </thead>
@@ -19,6 +22,14 @@
         <td><%= link_to "##{author.id}", edit_author_path(author) %></td>
         <td><%= author.name %></td>
         <td><%= author.group&.name %></td>
+        <td>
+          <% author.active_values.each do |active_value| %>
+            <div>
+              <b><%= active_value.name %>:</b>
+              <%= active_value.value.inspect %>
+            </div>
+          <% end %>
+        </td>
         <td><%= button_to "Destroy", author_path(author), method: :delete %></td>
       </tr>
     <% end %>

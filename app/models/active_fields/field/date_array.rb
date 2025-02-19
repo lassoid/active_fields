@@ -12,6 +12,9 @@ module ActiveFields
         caster: {
           class_name: "ActiveFields::Casters::DateArrayCaster",
         },
+        finder: {
+          class_name: "ActiveFields::Finders::DateArrayFinder",
+        },
       )
 
       store_accessor :options, :min, :max

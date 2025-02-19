@@ -1,0 +1,11 @@
+<div class="form-input">
+  <%= form.label :value, active_field.name %>
+  <%=
+    render_array_field(
+      form: form,
+      name: :value,
+      value: active_value.value,
+      field_method: :text_field,
+    )
+  %>
+</div>

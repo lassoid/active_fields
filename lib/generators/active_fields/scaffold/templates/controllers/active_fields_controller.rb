@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ActiveFieldsController < ApplicationController
-  helper ActiveFieldsHelper
-
   before_action :set_active_field, only: %i[show edit update destroy]
 
   def index
@@ -56,14 +54,6 @@ class ActiveFieldsController < ApplicationController
       attrs.transform_values! do |value|
         value.is_a?(Array) ? compact_array_param(value) : value
       end
-    end
-  end
-
-  def compact_array_param(value)
-    if value.first == ""
-      value[1..-1]
-    else
-      value
     end
   end
 

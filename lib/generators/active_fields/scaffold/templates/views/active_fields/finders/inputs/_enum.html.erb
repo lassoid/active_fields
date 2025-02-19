@@ -1,0 +1,16 @@
+<div
+  data-active-fields-finders-form-target="<%= template ? "inputTemplate" : "input" %>"
+  data-type="<%= active_field.type_name %>"
+  data-active-field-name="<%= active_field.name %>"
+  data-index="<%= form.index %>"
+>
+  <%= form.label :n, active_field.name, for: nil %>
+  <%= form.hidden_field :n, value: active_field.name, id: nil %>
+  <%= form.select :op,
+        operations.map { |operation_name| [operation_name, active_field.value_finder_class.operator_for(operation_name)] },
+        { selected: selected[:operator] },
+        { id: nil }
+  %>
+  <%= form.select :v, active_field.allowed_values, { selected: selected[:value], include_blank: true }, { id: nil } %>
+  <%= button_tag "Remove", type: "button", data: { action: "click->active-fields-finders-form#removeInput" } %>
+</div>

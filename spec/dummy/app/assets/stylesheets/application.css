@@ -38,3 +38,10 @@
 .form-array-field-group {
     margin-bottom: 0.5em;
 }
+
+.finders-form {
+    margin-bottom: 1em;
+    padding: 0.5em;
+    border: 2px solid black;
+    width: fit-content;
+}

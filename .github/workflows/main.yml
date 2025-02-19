@@ -33,7 +33,7 @@ jobs:
         - "3.3.5"
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_DB: active_fields_dummy_test
           PGUSER: postgres # Fixes 'FATAL:  role "root" does not exist'

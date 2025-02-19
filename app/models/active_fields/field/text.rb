@@ -11,6 +11,9 @@ module ActiveFields
         caster: {
           class_name: "ActiveFields::Casters::TextCaster",
         },
+        finder: {
+          class_name: "ActiveFields::Finders::TextFinder",
+        },
       )
 
       store_accessor :options, :required, :min_length, :max_length

@@ -17,6 +17,15 @@ module ActiveFields
         end
       end
 
+      def insert_into_application_controller
+        inject_into_class "app/controllers/application_controller.rb", "ApplicationController" do
+          optimize_indentation(<<~CODE, 2)
+            include ActiveFieldsControllerConcern
+            helper ActiveFieldsHelper
+          CODE
+        end
+      end
+
       def add_routes
         route "resources :active_fields"
       end
