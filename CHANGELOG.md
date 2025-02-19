@@ -1,6 +1,6 @@
 ## [Unreleased]
-- Drop support for Rails < 7.1
-- Drop support for Ruby < 3.1 (EOL)
+- Drop support for _Rails_ < 7.1
+- Drop support for _Ruby_ < 3.1 (EOL)
 - Added search functionality
 
 **Breaking changes**:
@@ -38,11 +38,11 @@
 - Added datetime and datetime array field types
 - Added fields configuration DSL
 - Introduced new _Customizable_ setter for _Active Values_ (`active_fields_attributes=`) with a more convenient syntax
-    to replace the default setter (`active_values_attributes=`) from Rails nested attributes feature
+    to replace the default setter (`active_values_attributes=`) from _Rails_ nested attributes feature
 
 ## [0.2.0] - 2024-06-13
 
-- Rewritten as a Rails plugin!
+- Rewritten as a _Rails_ plugin!
 - Custom field types support
 - Global configuration options for changing field and value classes
 - Per-model configuration option for enabling specific field types only
