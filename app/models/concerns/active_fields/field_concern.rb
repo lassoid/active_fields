@@ -90,7 +90,7 @@ module ActiveFields
     end
 
     def available_customizable_types
-      ActiveFields.registry.customizable_types_for(type_name) || []
+      ActiveFields.registry.customizable_types_for(type_name).to_a
     end
 
     private
@@ -111,8 +111,8 @@ module ActiveFields
     end
 
     def validate_customizable_model_allows_type
-      allowed_types = ActiveFields.registry.field_types_for(customizable_type) || []
-      return true if allowed_types.include?(type_name)
+      allowed_type_names = ActiveFields.registry.field_type_names_for(customizable_type).to_a
+      return true if allowed_type_names.include?(type_name)
 
       errors.add(:customizable_type, :inclusion)
       false

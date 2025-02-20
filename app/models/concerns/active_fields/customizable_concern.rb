@@ -85,12 +85,12 @@ module ActiveFields
         ActiveFields.config.field_base_class.for(model_name.name)
       end
 
-      def available_field_types
-        ActiveFields.registry.field_types_for(model_name.name) || []
+      def available_field_type_names
+        ActiveFields.registry.field_type_names_for(model_name.name).to_a
       end
 
       def available_field_class_names
-        ActiveFields.config.fields.values_at(*available_field_types)
+        ActiveFields.config.fields.values_at(*available_field_type_names)
       end
     end
 
