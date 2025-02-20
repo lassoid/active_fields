@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::CustomizableConfig do
-  let(:object) { described_class.new(dummy_models.sample) }
+  let(:object) { described_class.new(dummy_models.sample.name) }
 
   describe "types=" do
     subject(:call_method) { object.types = value }

@@ -86,7 +86,7 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
 
     describe "#validate_customizable_model_allows_type" do
       let(:config) do
-        ActiveFields::CustomizableConfig.new(described_class).tap { _1.types = allowed_types }
+        ActiveFields::CustomizableConfig.new(described_class.name).tap { _1.types = allowed_types }
       end
 
       context "when customizable_model allows this type" do

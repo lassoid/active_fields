@@ -84,6 +84,14 @@ module ActiveFields
       def active_fields
         ActiveFields.config.field_base_class.for(model_name.name)
       end
+
+      def available_field_types
+        ActiveFields.registry.field_types_for(model_name.name) || []
+      end
+
+      def available_field_class_names
+        ActiveFields.config.fields.values_at(*available_field_types)
+      end
     end
 
     delegate :active_fields, to: :class
