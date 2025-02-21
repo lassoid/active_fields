@@ -8,7 +8,8 @@ module ActiveFields
 
     # Disable models reloading to avoid STI issues.
     # Reloading can prevent subclasses from recognizing the base class.
-    config.autoload_once_paths = %W[#{root}/app/models #{root}/app/models/concerns]
+    config.autoload_once_paths << "#{root}/app/models"
+    config.autoload_once_paths << "#{root}/app/models/concerns"
 
     initializer "active_fields.active_record" do
       ActiveSupport.on_load(:active_record) do

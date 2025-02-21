@@ -32,6 +32,13 @@ module Dummy
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
 
+    # Disable custom models reloading to avoid STI issues.
+    custom_models_dir = "#{root}/app/models/active_fields"
+    Rails.autoloaders.main.ignore(custom_models_dir)
+    Rails.autoloaders.once.collapse(custom_models_dir)
+    config.autoload_once_paths << custom_models_dir
+    config.eager_load_paths << custom_models_dir
+
     # Force UTC time zone
     config.time_zone = "UTC"
     config.active_record.default_timezone = :utc
