@@ -85,15 +85,12 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
     end
 
     describe "#validate_customizable_model_allows_type" do
-      let(:config) do
-        ActiveFields::CustomizableConfig.new(described_class.name).tap { _1.types = allowed_types }
-      end
-
       context "when customizable_model allows this type" do
         let(:allowed_types) { [record.type_name] }
 
         before do
-          allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
+          allow(ActiveFields.registry).to receive(:field_type_names_for).with(record.customizable_type)
+            .and_return(allowed_types)
         end
 
         it "is valid" do
@@ -107,7 +104,8 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
         let(:allowed_types) { ActiveFields.config.type_names - [record.type_name] }
 
         before do
-          allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
+          allow(ActiveFields.registry).to receive(:field_type_names_for).with(record.customizable_type)
+            .and_return(allowed_types)
         end
 
         it "is invalid" do
@@ -118,10 +116,8 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
       end
 
       context "when customizable_model does not have active_fields" do
-        let(:config) { nil }
-
         before do
-          allow(record.customizable_model).to receive(:active_fields_config).and_return(config)
+          allow(ActiveFields.registry).to receive(:field_type_names_for).with(record.customizable_type).and_return([])
         end
 
         it "is invalid" do

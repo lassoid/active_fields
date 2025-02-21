@@ -817,13 +817,13 @@ Once defined, every _Active Value_ of this type will support the specified searc
 ```ruby
 # Find customizables
 Author.where_active_values([
-  { name: "main_ip", operator: "=", value: "127.0.0.1" },
+  { name: "main_ip", operator: "eq", value: "127.0.0.1" },
   { n: "all_ips", op: "#>=", v: 5 },
   { name: "all_ips", operator: "|=", value: "0.0.0.0" },
 ])
 
 # Find Active Values
-IpFinder.new(active_field: ip_active_field).search(op: "=", value: "127.0.0.1")
+IpFinder.new(active_field: ip_active_field).search(op: "eq", value: "127.0.0.1")
 IpArrayFinder.new(active_field: ip_array_active_field).search(op: "#>=", value: 5)
 ```
 
@@ -875,6 +875,7 @@ active_field.value_caster_class # Class used for values casting
 active_field.value_caster # Caster object that performs values casting
 active_field.customizable_model # Customizable model class
 active_field.type_name # Identifier of the type of this Active Field (instead of class name)
+active_field.available_customizable_types # Available Customizable types for this Active Field
 
 # Scopes:
 ActiveFields::Field::Boolean.for("Post") # Collection of Active Fields registered for the specified Customizable type
@@ -908,6 +909,8 @@ customizable.active_values # `has_many` association with Active Values linked to
 # Methods:
 customizable.active_fields # Collection of Active Fields registered for this record
 Post.active_fields # Collection of Active Fields registered for this model
+Post.allowed_field_type_names # Active Fields type names allowed for this Customizable model
+Post.allowed_field_class_names # Active Fields class names allowed for this Customizable model
 
 # Create, update or destroy Active Values.
 customizable.active_fields_attributes = [
@@ -967,11 +970,9 @@ ActiveFields.config.register_field(:ip, "IpField") # Register a custom Active Fi
 ### Registry
 
 ```ruby
-customizable_model = Post
-customizable_model.active_fields_config # Access the Customizable's configuration
-customizable_model.active_fields_config.customizable_type # The Customizable model name
-customizable_model.active_fields_config.types # Allowed Active Field types (e.g., `[:boolean]`)
-customizable_model.active_fields_config.types_class_names # Allowed Active Field class names (e.g., `[ActiveFields::Field::Boolean]`)
+ActiveFields.registry.add(:boolean, "Post") # Stores relation between Active Field type and customizable type. Please do not use directly.
+ActiveFields.registry.customizable_types_for(:boolean) # Returns Customizable types that allow provided Active Field type name
+ActiveFields.registry.field_type_names_for("Post") # Returns Active Field type names, allowed for given Customizable type
 ```
 
 ## Development
