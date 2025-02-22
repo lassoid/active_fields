@@ -16,7 +16,7 @@ jobs:
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.5
+          ruby-version: 3.4.2
           bundler-cache: true
 
       - name: Run Rubocop
@@ -29,8 +29,9 @@ jobs:
       matrix:
         ruby:
         - "3.1.6"
-        - "3.2.5"
-        - "3.3.5"
+        - "3.2.7"
+        - "3.3.7"
+        - "3.4.2"
     services:
       postgres:
         image: postgres:17
