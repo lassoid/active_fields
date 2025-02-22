@@ -3,9 +3,21 @@
 RSpec.describe Author do
   include_examples "customizable"
 
-  context "active_fields configuration" do
-    it "allows all types by default" do
-      expect(described_class.active_fields_config.types).to eq(ActiveFields.config.type_names)
+  context "methods" do
+    describe "##allowed_field_type_names" do
+      subject(:call_method) { described_class.allowed_field_type_names }
+
+      it "contains all field types" do
+        expect(call_method).to eq(ActiveFields.config.type_names)
+      end
+    end
+
+    describe "##allowed_field_class_names" do
+      subject(:call_method) { described_class.allowed_field_class_names }
+
+      it "contains all field class names" do
+        expect(call_method).to eq(ActiveFields.config.type_class_names)
+      end
     end
   end
 end

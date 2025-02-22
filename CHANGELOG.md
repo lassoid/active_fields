@@ -2,6 +2,7 @@
 - Drop support for _Rails_ < 7.1
 - Drop support for _Ruby_ < 3.1 (EOL)
 - Added search functionality
+- Added registry to store relationships between _Customizable_ types and _Active Field_ types
 
 **Breaking changes**:
 - Maximum datetime precision reduced to 6 for all _Ruby_/_Rails_ versions.

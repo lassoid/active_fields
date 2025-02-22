@@ -24,7 +24,7 @@
 
   <div>
     <%= f.label :customizable_type %>
-    <%= f.select :customizable_type, ["TODO: add allowed customizable model names"], {}, { disabled: active_field.persisted? } %>
+    <%= f.select :customizable_type, active_field.available_customizable_types, {}, { disabled: active_field.persisted? } %>
   </div>
 
   <div>

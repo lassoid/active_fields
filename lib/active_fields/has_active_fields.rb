@@ -6,13 +6,12 @@ module ActiveFields
     extend ActiveSupport::Concern
 
     class_methods do
-      attr_reader :active_fields_config
-
       def has_active_fields(types: ActiveFields.config.type_names)
         include CustomizableConcern
 
-        @active_fields_config = CustomizableConfig.new(self)
-        @active_fields_config.types = types
+        types.each do |field_type|
+          ActiveFields.registry.add(field_type, name)
+        end
       end
     end
   end

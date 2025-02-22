@@ -18,7 +18,7 @@ module ActiveFields
 
   eager_autoload do
     autoload :Config
-    autoload :CustomizableConfig
+    autoload :Registry
     autoload :HasActiveFields
   end
 
@@ -95,5 +95,7 @@ module ActiveFields
     end
 
     alias_method :configure, :config
+
+    def registry = Registry.instance
   end
 end

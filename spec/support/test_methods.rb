@@ -50,13 +50,13 @@ module TestMethods
 
   def customizable_models_for(active_field_class_name)
     dummy_models.select do |model|
-      model.active_fields_config.types_class_names.include?(active_field_class_name)
+      model.allowed_field_class_names.include?(active_field_class_name)
     end
   end
 
   def active_field_factories_for(customizable_model)
     active_field_factory_mappings.values_at(
-      *customizable_model.active_fields_config&.types_class_names,
+      *customizable_model.allowed_field_class_names,
     )
   end
 

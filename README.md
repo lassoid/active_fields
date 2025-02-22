@@ -4,7 +4,7 @@
 [![Gem downloads count](https://img.shields.io/gem/dt/active_fields)](https://rubygems.org/gems/active_fields)
 [![Github Actions CI](https://github.com/lassoid/active_fields/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/lassoid/active_fields/actions/workflows/main.yml)
 
-**ActiveFields** is a Rails plugin that implements the Entity-Attribute-Value (EAV) pattern,
+**ActiveFields** is a _Rails_ plugin that implements the _Entity-Attribute-Value (EAV)_ pattern,
 enabling the addition of custom fields to any model at runtime without requiring changes to the database schema.
 
 ## Key Concepts
@@ -75,8 +75,6 @@ such as booleans, strings, numbers, arrays, etc.
     This command generates a controller, routes, views for managing _Active Fields_,
     along with form inputs for _Active Values_, search form and some useful helper methods that will be used in next steps.
 
-    **Note:** Don't forget to add available _Customizable_ types in generated _Active Fields_ forms.
-
     **Note:** The array field helper and search form use _Stimulus_ for interactivity.
     If your app doesn't already include _Stimulus_, you can [easily add it](https://github.com/hotwired/stimulus-rails).
     Alternatively, if you prefer not to use _Stimulus_, you should implement your own JavaScript code.
@@ -122,7 +120,7 @@ such as booleans, strings, numbers, arrays, etc.
     ```
 
     **Note:** Here we use the `active_fields_attributes=` method (as a permitted parameter),
-    that integrates well with Rails `fields_for` to generate appropriate form fields.
+    that integrates well with _Rails_ `fields_for` to generate appropriate form fields.
     Alternatively, the alias `active_fields=` can be used in contexts without `fields_for`, such as API controllers.
 
     **Note:** `compact_array_param` is a helper method, that was added by scaffold generator.
@@ -157,7 +155,7 @@ fill in _Active Values_ within _Customizable_ forms
 and search _Customizables_ using their index actions.
 
 You can also explore the [Demo app](https://github.com/lassoid/active_fields/blob/main/spec/dummy)
-where the plugin is fully integrated into a full-stack Rails application.
+where the plugin is fully integrated into a full-stack _Rails_ application.
 Feel free to explore the source code and run it locally:
 
 ```shell
@@ -819,13 +817,13 @@ Once defined, every _Active Value_ of this type will support the specified searc
 ```ruby
 # Find customizables
 Author.where_active_values([
-  { name: "main_ip", operator: "=", value: "127.0.0.1" },
+  { name: "main_ip", operator: "eq", value: "127.0.0.1" },
   { n: "all_ips", op: "#>=", v: 5 },
   { name: "all_ips", operator: "|=", value: "0.0.0.0" },
 ])
 
 # Find Active Values
-IpFinder.new(active_field: ip_active_field).search(op: "=", value: "127.0.0.1")
+IpFinder.new(active_field: ip_active_field).search(op: "eq", value: "127.0.0.1")
 IpArrayFinder.new(active_field: ip_array_active_field).search(op: "#>=", value: 5)
 ```
 
@@ -877,6 +875,7 @@ active_field.value_caster_class # Class used for values casting
 active_field.value_caster # Caster object that performs values casting
 active_field.customizable_model # Customizable model class
 active_field.type_name # Identifier of the type of this Active Field (instead of class name)
+active_field.available_customizable_types # Available Customizable types for this Active Field
 
 # Scopes:
 ActiveFields::Field::Boolean.for("Post") # Collection of Active Fields registered for the specified Customizable type
@@ -910,6 +909,8 @@ customizable.active_values # `has_many` association with Active Values linked to
 # Methods:
 customizable.active_fields # Collection of Active Fields registered for this record
 Post.active_fields # Collection of Active Fields registered for this model
+Post.allowed_field_type_names # Active Fields type names allowed for this Customizable model
+Post.allowed_field_class_names # Active Fields class names allowed for this Customizable model
 
 # Create, update or destroy Active Values.
 customizable.active_fields_attributes = [
@@ -966,14 +967,12 @@ ActiveFields.config.type_class_names # Registered Active Fields class names
 ActiveFields.config.register_field(:ip, "IpField") # Register a custom Active Field type
 ```
 
-### Customizable Config
+### Registry
 
 ```ruby
-customizable_model = Post
-customizable_model.active_fields_config # Access the Customizable's configuration
-customizable_model.active_fields_config.customizable_model # The Customizable model itself
-customizable_model.active_fields_config.types # Allowed Active Field types (e.g., `[:boolean]`)
-customizable_model.active_fields_config.types_class_names # Allowed Active Field class names (e.g., `[ActiveFields::Field::Boolean]`)
+ActiveFields.registry.add(:boolean, "Post") # Stores relation between Active Field type and customizable type. Please do not use directly.
+ActiveFields.registry.customizable_types_for(:boolean) # Returns Customizable types that allow provided Active Field type name
+ActiveFields.registry.field_type_names_for("Post") # Returns Active Field type names, allowed for given Customizable type
 ```
 
 ## Development

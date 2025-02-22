@@ -81,8 +81,19 @@ module ActiveFields
     end
 
     class_methods do
+      # Collection of active fields registered for this customizable
       def active_fields
-        ActiveFields.config.field_base_class.for(model_name.name)
+        ActiveFields.config.field_base_class.for(name)
+      end
+
+      # Returns field type names allowed for this customizable model.
+      def allowed_field_type_names
+        ActiveFields.registry.field_type_names_for(name).to_a
+      end
+
+      # Returns field class names allowed for this customizable model.
+      def allowed_field_class_names
+        ActiveFields.config.fields.values_at(*allowed_field_type_names)
       end
     end
 
