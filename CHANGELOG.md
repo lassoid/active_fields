@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [2.0.0] - 2025-02-22
 - Drop support for _Rails_ < 7.1
 - Drop support for _Ruby_ < 3.1 (EOL)
 - Added search functionality
