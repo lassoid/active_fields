@@ -89,6 +89,17 @@ module ActiveFields
       ActiveFields.config.fields.key(type)
     end
 
+    # Returns customizable types that allow this field type.
+    #
+    # Notes:
+    # - The customizable model must be loaded to appear in this list.
+    #   Relationships between customizable models and field types are established in the `has_active_fields` method,
+    #   which is typically called within the customizable model.
+    #   If eager loading is enabled, there should be no issues.
+    #   However, if eager loading is disabled (common in development),
+    #   the list will remain incomplete until all customizable models are loaded.
+    # - Code reloading may behave incorrectly at times.
+    #   Restart your application if you make changes to the allowed types list in `has_active_fields`.
     def available_customizable_types
       ActiveFields.registry.customizable_types_for(type_name).to_a
     end
