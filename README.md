@@ -4,7 +4,7 @@
 [![Gem downloads count](https://img.shields.io/gem/dt/active_fields)](https://rubygems.org/gems/active_fields)
 [![Github Actions CI](https://github.com/lassoid/active_fields/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/lassoid/active_fields/actions/workflows/main.yml)
 
-**ActiveFields** is a _Rails_ plugin that implements the _Entity-Attribute-Value (EAV)_ pattern,
+**ActiveFields** is a _Rails_ plugin that implements the _Entity-Attribute-Value_ (_EAV_) pattern,
 enabling the addition of custom fields to any model at runtime without requiring changes to the database schema.
 
 ## Key Concepts
@@ -596,6 +596,25 @@ class CustomValue < ApplicationRecord
 end
 ```
 
+**Note:** To avoid _STI_ (_Single Table Inheritance_) issues in environments with code reloading (`config.enable_reloading = true`),
+you should ensure that your custom model classes, along with all their superclasses and mix-ins, are non-reloadable.
+Follow these steps:
+- Move your custom model classes to a separate folder, such as `app/models/active_fields`.
+- If your custom model classes subclass `ApplicationRecord` (or other reloadable class) or include/extend reloadable mix-ins,
+move those superclasses or mix-ins to another folder, such as `app/models/core`.
+- After organizing your files, add the following code to your `config/application.rb`:
+    ```ruby
+    # Disable custom models reloading to avoid STI issues.
+    custom_models_dir = "#{root}/app/models/active_fields"
+    models_core_dir = "#{root}/app/models/core"
+    Rails.autoloaders.main.ignore(custom_models_dir, models_core_dir)
+    Rails.autoloaders.once.collapse(custom_models_dir, models_core_dir)
+    config.autoload_once_paths += [custom_models_dir, models_core_dir]
+    config.eager_load_paths += [custom_models_dir, models_core_dir]
+    ```
+    This configuration disables namespaces for these folders
+    and adds them to `autoload_once_paths`, ensuring they are not reloaded.
+
 ### Adding Custom Field Types
 
 To add a custom _Active Field_ type, create a subclass of the `ActiveFields.config.field_base_class`,
@@ -681,6 +700,9 @@ class IpArrayField < ActiveFields.config.field_base_class
   # ...
 end
 ```
+
+**Note:** Similar to custom model classes, you should disable code reloading for custom _Active Field_ type models.
+Place them in the `app/models/active_fields` folder too.
 
 For each custom _Active Field_ type, you must define a **validator**, a **caster** and optionally a **finder**:
 

@@ -3,6 +3,8 @@
 - Drop support for _Ruby_ < 3.1 (EOL)
 - Added search functionality
 - Added registry to store relationships between _Customizable_ types and _Active Field_ types
+- Added notes about the necessity of disabling reloading for custom model classes and custom _Active Field_ type models
+to prevent _STI_ (_Single Table Inheritance_) issues
 
 **Breaking changes**:
 - Maximum datetime precision reduced to 6 for all _Ruby_/_Rails_ versions.
