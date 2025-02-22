@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[edit update destroy]
 
   def index
-    @posts = Post.where_active_values(active_fields_finders_params)
+    @posts = Post.where_active_fields(active_fields_finders_params)
       .includes(active_values: :active_field).order(id: :desc)
   end
 

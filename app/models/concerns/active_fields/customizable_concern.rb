@@ -28,7 +28,7 @@ module ActiveFields
       # Example:
       #
       #   # Array of hashes
-      #   CustomizableModel.where_active_values(
+      #   CustomizableModel.where_active_fields(
       #     [
       #       { name: "integer_array", operator: "any_gteq", value: 5 }, # symbol keys
       #       { "name" => "text", operator: "=", "value" => "Lasso" }, # string keys
@@ -37,7 +37,7 @@ module ActiveFields
       #   )
       #
       #   # Hash of hashes generated from HTTP/HTML parameters
-      #   CustomizableModel.where_active_values(
+      #   CustomizableModel.where_active_fields(
       #     {
       #       "0" => { name: "integer_array", operator: "any_gteq", value: 5 },
       #       "1" => { "name" => "text", operator: "=", "value" => "Lasso" },
@@ -46,12 +46,12 @@ module ActiveFields
       #   )
       #
       #   # Params (must be permitted)
-      #   CustomizableModel.where_active_values(permitted_params)
-      scope :where_active_values, ->(filters) do
+      #   CustomizableModel.where_active_fields(permitted_params)
+      scope :where_active_fields, ->(filters) do
         filters = filters.to_h if filters.respond_to?(:permitted?)
 
         unless filters.is_a?(Array) || filters.is_a?(Hash)
-          raise ArgumentError, "Hash or Array expected for `where_active_values`, got #{filters.class.name}"
+          raise ArgumentError, "Hash or Array expected for `where_active_fields`, got #{filters.class.name}"
         end
 
         # Handle `fields_for` params
@@ -86,14 +86,14 @@ module ActiveFields
         ActiveFields.config.field_base_class.for(name)
       end
 
-      # Returns field type names allowed for this customizable model.
-      def allowed_field_type_names
+      # Returns active fields type names allowed for this customizable model.
+      def allowed_active_fields_type_names
         ActiveFields.registry.field_type_names_for(name).to_a
       end
 
-      # Returns field class names allowed for this customizable model.
-      def allowed_field_class_names
-        ActiveFields.config.fields.values_at(*allowed_field_type_names)
+      # Returns active fields class names allowed for this customizable model.
+      def allowed_active_fields_class_names
+        ActiveFields.config.fields.values_at(*allowed_active_fields_type_names)
       end
     end
 

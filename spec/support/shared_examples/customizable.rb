@@ -54,8 +54,8 @@ RSpec.shared_examples "customizable" do
   end
 
   context "scopes" do
-    describe "#where_active_values" do
-      subject(:call_scope) { described_class.where_active_values(args).to_a }
+    describe "#where_active_fields" do
+      subject(:call_scope) { described_class.where_active_fields(args).to_a }
 
       def search_op(active_field) = "operator_#{active_field.id}"
       def search_value(active_field) = "value_#{active_field.id}"
