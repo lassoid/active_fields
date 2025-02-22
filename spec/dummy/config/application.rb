@@ -33,7 +33,8 @@ module Dummy
     config.autoload_lib(ignore: %w(assets tasks))
 
     # Disable custom models reloading to avoid STI issues.
-    # ApplicationRecord is in the class hierarchy, so it should not be reloadable too.
+    # Since custom models are subclasses of ApplicationRecord, it should also not be reloadable.
+    # Move it to `app/models/core`.
     custom_models_dir = "#{root}/app/models/active_fields"
     models_core_dir = "#{root}/app/models/core"
     Rails.autoloaders.main.ignore(custom_models_dir, models_core_dir)
