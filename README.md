@@ -600,8 +600,8 @@ end
 you should ensure that your custom model classes, along with all their superclasses and mix-ins, are non-reloadable.
 Follow these steps:
 - Move your custom model classes to a separate folder, such as `app/models/active_fields`.
-- If your custom model classes subclass `ApplicationRecord` (or other reloadable class) or include/extend reloadable mix-ins,
-move those superclasses or mix-ins to another folder, such as `app/models/core`.
+- If your custom model classes subclass `ApplicationRecord` (or other reloadable class) or mix-in reloadable modules,
+move those superclasses and modules to another folder, such as `app/models/core`.
 - After organizing your files, add the following code to your `config/application.rb`:
     ```ruby
     # Disable custom models reloading to avoid STI issues.
