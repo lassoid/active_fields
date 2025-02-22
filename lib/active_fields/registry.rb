@@ -6,8 +6,8 @@ module ActiveFields
     include Singleton
 
     def initialize
-      @fields = {}
       @customizables = {}
+      @fields = {}
     end
 
     # Add relation between active field type and customizable type
@@ -16,23 +16,23 @@ module ActiveFields
         raise ArgumentError, "undefined ActiveFields type provided for #{customizable_type}: #{field_type_name}"
       end
 
-      @fields[field_type_name] ||= Set.new
-      @fields[field_type_name] << customizable_type
+      @customizables[field_type_name] ||= Set.new
+      @customizables[field_type_name] << customizable_type
 
-      @customizables[customizable_type] ||= Set.new
-      @customizables[customizable_type] << field_type_name
+      @fields[customizable_type] ||= Set.new
+      @fields[customizable_type] << field_type_name
 
       nil
     end
 
     # Returns customizable types that allow provided active field type name
     def customizable_types_for(field_type_name)
-      @fields[field_type_name]
+      @customizables[field_type_name]
     end
 
     # Returns active field type names, allowed for given customizable type
     def field_type_names_for(customizable_type)
-      @customizables[customizable_type]
+      @fields[customizable_type]
     end
   end
 end
