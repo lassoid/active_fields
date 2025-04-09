@@ -1,6 +1,6 @@
 ## [Unreleased]
 
-# [2.0.1] - 2025-04-09
+## [2.0.1] - 2025-04-09
 - Fixed search with `nil` operator
 
 ## [2.0.0] - 2025-02-22
