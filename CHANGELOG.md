@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Fixed search with `nil` operator
 
 ## [2.0.0] - 2025-02-22
 - Drop support for _Rails_ < 7.1

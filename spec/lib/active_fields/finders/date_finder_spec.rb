@@ -158,8 +158,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
       end
     end
 
-    context "with invalid op" do
-      let(:op) { "invalid" }
+    context "with not existing or nil op" do
+      let(:op) { ["invalid", nil].sample }
       let(:value) { nil }
 
       it "returns nil" do

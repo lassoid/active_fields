@@ -6,14 +6,12 @@ module ActiveFields
     extend ActiveSupport::Concern
 
     included do
-      # rubocop:disable Rails/ReflectionClassName
       has_many :active_values,
         class_name: ActiveFields.config.value_class_name,
         as: :customizable,
         inverse_of: :customizable,
         autosave: true,
         dependent: :destroy
-      # rubocop:enable Rails/ReflectionClassName
 
       # Searches customizables by active_values.
       #

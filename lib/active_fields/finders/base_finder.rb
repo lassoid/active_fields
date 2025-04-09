@@ -52,7 +52,7 @@ module ActiveFields
       # @param op [String, Symbol] Operation name or operator
       # @param value [Any] The value to search for
       def search(op:, value:)
-        op = op.to_sym
+        op = op.to_sym if op.respond_to?(:to_sym)
         operation = self.class.__operations__.key?(op) ? op : self.class.__operators__[op]
         return if operation.nil?
 

@@ -7,12 +7,10 @@ module ActiveFields
 
     included do
       belongs_to :customizable, polymorphic: true, optional: false, inverse_of: :active_values
-      # rubocop:disable Rails/ReflectionClassName
       belongs_to :active_field,
         class_name: ActiveFields.config.field_base_class_name,
         optional: false,
         inverse_of: :active_values
-      # rubocop:enable Rails/ReflectionClassName
 
       validates :active_field, uniqueness: { scope: :customizable }
       validate :validate_value

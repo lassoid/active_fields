@@ -6,13 +6,11 @@ module ActiveFields
     extend ActiveSupport::Concern
 
     included do
-      # rubocop:disable Rails/ReflectionClassName
       has_many :active_values,
         class_name: ActiveFields.config.value_class_name,
         foreign_key: :active_field_id,
         inverse_of: :active_field,
         dependent: :destroy
-      # rubocop:enable Rails/ReflectionClassName
 
       scope :for, ->(customizable_type) { where(customizable_type: customizable_type) }
 
