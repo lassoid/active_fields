@@ -7,10 +7,10 @@ RSpec.describe ActiveFields::Field::Decimal do
     factory: factory,
     available_traits: %i[required with_min with_max with_precision]
 
-  include_examples "store_attribute_boolean", :required, :options, described_class
-  include_examples "store_attribute_decimal", :min, :options, described_class
-  include_examples "store_attribute_decimal", :max, :options, described_class
-  include_examples "store_attribute_integer", :precision, :options, described_class
+  it_behaves_like "store_attribute_boolean", :required, :options, described_class
+  it_behaves_like "store_attribute_decimal", :min, :options, described_class
+  it_behaves_like "store_attribute_decimal", :max, :options, described_class
+  it_behaves_like "store_attribute_integer", :precision, :options, described_class
 
   context "validations" do
     describe "#max" do

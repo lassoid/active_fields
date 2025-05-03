@@ -7,9 +7,9 @@ RSpec.describe ActiveFields::Field::Text do
     factory: factory,
     available_traits: %i[required with_min_length with_max_length]
 
-  include_examples "store_attribute_boolean", :required, :options, described_class
-  include_examples "store_attribute_integer", :min_length, :options, described_class
-  include_examples "store_attribute_integer", :max_length, :options, described_class
+  it_behaves_like "store_attribute_boolean", :required, :options, described_class
+  it_behaves_like "store_attribute_integer", :min_length, :options, described_class
+  it_behaves_like "store_attribute_integer", :max_length, :options, described_class
 
   context "validations" do
     describe "#min_length" do

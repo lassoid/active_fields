@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Author do
-  include_examples "customizable"
+  it_behaves_like "customizable"
 
   context "methods" do
     describe "##allowed_active_fields_type_names" do

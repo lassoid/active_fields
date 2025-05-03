@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Finders::TextArrayFinder do
-  include_examples "field_finder"
+  it_behaves_like "field_finder"
 
   describe "#search" do
     subject(:perform_search) do
@@ -156,7 +156,7 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
       end
     end
 
-    include_examples "finder_array_size"
+    it_behaves_like "finder_array_size"
 
     context "with not existing or nil op" do
       let(:op) { ["invalid", nil].sample }

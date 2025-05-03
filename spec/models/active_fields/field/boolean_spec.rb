@@ -7,8 +7,8 @@ RSpec.describe ActiveFields::Field::Boolean do
     factory: factory,
     available_traits: %i[required nullable]
 
-  include_examples "store_attribute_boolean", :required, :options, described_class
-  include_examples "store_attribute_boolean", :nullable, :options, described_class
+  it_behaves_like "store_attribute_boolean", :required, :options, described_class
+  it_behaves_like "store_attribute_boolean", :nullable, :options, described_class
 
   context "callbacks" do
     describe "after_initialize #set_defaults" do

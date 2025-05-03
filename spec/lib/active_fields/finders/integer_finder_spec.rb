@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Finders::IntegerFinder do
-  include_examples "field_finder"
+  it_behaves_like "field_finder"
 
   describe "#search" do
     subject(:perform_search) do

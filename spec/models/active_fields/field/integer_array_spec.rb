@@ -7,13 +7,13 @@ RSpec.describe ActiveFields::Field::IntegerArray do
     factory: factory,
     available_traits: %i[with_min with_max with_min_size with_max_size]
 
-  include_examples "store_attribute_integer", :min_size, :options, described_class
-  include_examples "store_attribute_integer", :max_size, :options, described_class
-  include_examples "store_attribute_integer", :min, :options, described_class
-  include_examples "store_attribute_integer", :max, :options, described_class
+  it_behaves_like "store_attribute_integer", :min_size, :options, described_class
+  it_behaves_like "store_attribute_integer", :max_size, :options, described_class
+  it_behaves_like "store_attribute_integer", :min, :options, described_class
+  it_behaves_like "store_attribute_integer", :max, :options, described_class
 
   context "validations" do
-    include_examples "field_sizes_validate", factory: factory
+    it_behaves_like "field_sizes_validate", factory: factory
 
     describe "#max" do
       let(:record) { build(factory, min: min, max: max) }
