@@ -12,10 +12,10 @@ module ActiveFields
         inverse_of: :active_field,
         dependent: :destroy
 
-      scope :for, ->(customizable_type) { where(customizable_type: customizable_type) }
+      scope :for, ->(customizable_type) { where(customizable_type: customizable_type) } # TODO: scope
 
       validates :type, presence: true
-      validates :name, presence: true, uniqueness: { scope: :customizable_type }
+      validates :name, presence: true, uniqueness: { scope: %i[customizable_type scope] }
       validate :validate_default_value
       validate :validate_customizable_model_allows_type
 
