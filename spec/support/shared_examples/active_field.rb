@@ -21,37 +21,6 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
       end
     end
 
-    context "name format" do
-      let(:attributes) { { name: name } }
-
-      context "when contains lowercase alphanumerics and underscores only" do
-        let(:name) { "abcxyz_123456789" }
-
-        it "is valid" do
-          record.valid?
-          expect(record.errors.where(:name, :invalid)).to be_empty
-        end
-      end
-
-      context "when contains uppercase alphanumerics" do
-        let(:name) { "ABCXYZ_123456789" }
-
-        it "is invalid" do
-          record.valid?
-          expect(record.errors.where(:name, :invalid)).not_to be_empty
-        end
-      end
-
-      context "when contains not only lowercase alphanumerics and underscores" do
-        let(:name) { "abc.123(){}" }
-
-        it "is invalid" do
-          record.valid?
-          expect(record.errors.where(:name, :invalid)).not_to be_empty
-        end
-      end
-    end
-
     describe "#validate_default_value" do
       before do
         validator = instance_double(record.value_validator_class, errors: validator_errors)

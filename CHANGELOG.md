@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Disabled fields name format validation
 
 ## [2.0.1] - 2025-04-09
 - Fixed search with `nil` operator

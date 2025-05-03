@@ -16,7 +16,6 @@ module ActiveFields
 
       validates :type, presence: true
       validates :name, presence: true, uniqueness: { scope: :customizable_type }
-      validates :name, format: { with: /\A[a-z0-9_]+\z/ }, allow_blank: true
       validate :validate_default_value
       validate :validate_customizable_model_allows_type
 

@@ -11,8 +11,6 @@ module ActiveFields
     attr_reader :fields
 
     def initialize
-      @field_base_class_name = DEFAULT_FIELD_BASE_CLASS_NAME
-      @value_class_name = DEFAULT_VALUE_CLASS_NAME
       @fields = {
         boolean: "ActiveFields::Field::Boolean",
         date: "ActiveFields::Field::Date",
@@ -28,6 +26,8 @@ module ActiveFields
         text: "ActiveFields::Field::Text",
         text_array: "ActiveFields::Field::TextArray",
       }
+      @field_base_class_name = DEFAULT_FIELD_BASE_CLASS_NAME
+      @value_class_name = DEFAULT_VALUE_CLASS_NAME
     end
 
     def field_base_class
