@@ -13,23 +13,23 @@ class ActiveFieldsController < ApplicationController
     @active_field = model_class.new
   end
 
+  def edit; end
+
   def create
     @active_field = model_class.new(active_field_create_params(model_class))
 
     if @active_field.save
       redirect_to edit_active_field_path(@active_field), status: :see_other
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
-
-  def edit; end
 
   def update
     if @active_field.update(active_field_update_params(@active_field.class))
       redirect_to edit_active_field_path(@active_field), status: :see_other
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -42,7 +42,7 @@ class ActiveFieldsController < ApplicationController
   private
 
   def active_field_create_params(model_class)
-    params.require(:active_field).permit(policy(model_class).permitted_attributes_for_create).tap do |attrs|
+    params.expect(active_field: [policy(model_class).permitted_attributes_for_create]).tap do |attrs|
       attrs.transform_values! do |value|
         value.is_a?(Array) ? compact_array_param(value) : value
       end
@@ -50,7 +50,7 @@ class ActiveFieldsController < ApplicationController
   end
 
   def active_field_update_params(model_class)
-    params.require(:active_field).permit(policy(model_class).permitted_attributes_for_update).tap do |attrs|
+    params.expect(active_field: [policy(model_class).permitted_attributes_for_update]).tap do |attrs|
       attrs.transform_values! do |value|
         value.is_a?(Array) ? compact_array_param(value) : value
       end

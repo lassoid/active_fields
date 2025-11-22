@@ -6,14 +6,14 @@ RSpec.shared_examples "finder_array_size" do
 
     context "when value is a number" do
       let(:value) do
-        size = records.map { _1.value.size }.uniq.sample
+        size = records.map { it.value.size }.uniq.sample
         [size, size.to_s].sample
       end
 
       it "returns only records with elements count equal to the value" do
         expect(perform_search)
-          .to include(*records.select { _1.value.size == value.to_i })
-          .and exclude(*records.reject { _1.value.size == value.to_i })
+          .to include(*records.select { it.value.size == value.to_i })
+          .and exclude(*records.reject { it.value.size == value.to_i })
       end
     end
 
@@ -31,14 +31,14 @@ RSpec.shared_examples "finder_array_size" do
 
     context "when value is a number" do
       let(:value) do
-        size = records.map { _1.value.size }.uniq.sample
+        size = records.map { it.value.size }.uniq.sample
         [size, size.to_s].sample
       end
 
       it "returns only records with elements count not equal to the value" do
         expect(perform_search)
-          .to include(*records.reject { _1.value.size == value.to_i })
-          .and exclude(*records.select { _1.value.size == value.to_i })
+          .to include(*records.reject { it.value.size == value.to_i })
+          .and exclude(*records.select { it.value.size == value.to_i })
       end
     end
 
@@ -56,14 +56,14 @@ RSpec.shared_examples "finder_array_size" do
 
     context "when value is a number" do
       let(:value) do
-        size = (records.map { _1.value.size }.uniq - [records.map { _1.value.size }.max]).sample
+        size = (records.map { it.value.size }.uniq - [records.map { it.value.size }.max]).sample
         [size, size.to_s].sample
       end
 
       it "returns only records with elements count greater than the value" do
         expect(perform_search)
-          .to include(*records.select { _1.value.size > value.to_i })
-          .and exclude(*records.reject { _1.value.size > value.to_i })
+          .to include(*records.select { it.value.size > value.to_i })
+          .and exclude(*records.reject { it.value.size > value.to_i })
       end
     end
 
@@ -81,14 +81,14 @@ RSpec.shared_examples "finder_array_size" do
 
     context "when value is a number" do
       let(:value) do
-        size = (records.map { _1.value.size }.uniq - [records.map { _1.value.size }.min]).sample
+        size = (records.map { it.value.size }.uniq - [records.map { it.value.size }.min]).sample
         [size, size.to_s].sample
       end
 
       it "returns only records with elements count greater than or equal to the value" do
         expect(perform_search)
-          .to include(*records.select { _1.value.size >= value.to_i })
-          .and exclude(*records.reject { _1.value.size >= value.to_i })
+          .to include(*records.select { it.value.size >= value.to_i })
+          .and exclude(*records.reject { it.value.size >= value.to_i })
       end
     end
 
@@ -106,15 +106,15 @@ RSpec.shared_examples "finder_array_size" do
 
     context "when value is a number" do
       let(:value) do
-        size = (records.map { _1.value.size }.uniq - [records.map { _1.value.size }.min]).sample
+        size = (records.map { it.value.size }.uniq - [records.map { it.value.size }.min]).sample
         [size, size.to_s].sample
       end
 
       it "returns only records with elements count less than the value" do
         p
         expect(perform_search)
-          .to include(*records.select { _1.value.size < value.to_i })
-          .and exclude(*records.reject { _1.value.size < value.to_i })
+          .to include(*records.select { it.value.size < value.to_i })
+          .and exclude(*records.reject { it.value.size < value.to_i })
       end
     end
 
@@ -132,14 +132,14 @@ RSpec.shared_examples "finder_array_size" do
 
     context "when value is a number" do
       let(:value) do
-        size = (records.map { _1.value.size }.uniq - [records.map { _1.value.size }.max]).sample
+        size = (records.map { it.value.size }.uniq - [records.map { it.value.size }.max]).sample
         [size, size.to_s].sample
       end
 
       it "returns only records with elements count less than or equal to the value" do
         expect(perform_search)
-          .to include(*records.select { _1.value.size <= value.to_i })
-          .and exclude(*records.reject { _1.value.size <= value.to_i })
+          .to include(*records.select { it.value.size <= value.to_i })
+          .and exclude(*records.reject { it.value.size <= value.to_i })
       end
     end
 

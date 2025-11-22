@@ -28,8 +28,8 @@ RSpec.describe ActiveFields::Finders::EnumFinder do
 
         it "returns only records with such value" do
           expect(perform_search)
-            .to include(*records.select { _1.value == value })
-            .and exclude(*records.reject { _1.value == value })
+            .to include(*records.select { it.value == value })
+            .and exclude(*records.reject { it.value == value })
         end
       end
 
@@ -38,8 +38,8 @@ RSpec.describe ActiveFields::Finders::EnumFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.nil? })
-            .and exclude(*records.reject { _1.value.nil? })
+            .to include(*records.select { it.value.nil? })
+            .and exclude(*records.reject { it.value.nil? })
         end
       end
 
@@ -60,8 +60,8 @@ RSpec.describe ActiveFields::Finders::EnumFinder do
 
         it "returns all records except with such value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value == value })
-            .and exclude(*records.select { _1.value == value })
+            .to include(*records.reject { it.value == value })
+            .and exclude(*records.select { it.value == value })
         end
       end
 
@@ -70,8 +70,8 @@ RSpec.describe ActiveFields::Finders::EnumFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.nil? })
-            .and exclude(*records.select { _1.value.nil? })
+            .to include(*records.reject { it.value.nil? })
+            .and exclude(*records.select { it.value.nil? })
         end
       end
 

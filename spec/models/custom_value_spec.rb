@@ -2,7 +2,7 @@
 
 if ActiveFields.config.value_class_changed?
   RSpec.describe CustomValue do
-    factory = :custom_value
+    def factory = :custom_value
 
     it_behaves_like "active_value", factory: factory
 

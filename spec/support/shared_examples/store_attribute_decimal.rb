@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "store_attribute_decimal" do |attr_name, store_attr_name, klass|
-  max_precision = ActiveFields::MAX_DECIMAL_PRECISION
+  def max_precision = ActiveFields::MAX_DECIMAL_PRECISION
 
   describe "##{attr_name}" do
     subject(:call_method) { record.public_send(attr_name) }

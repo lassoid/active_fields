@@ -12,23 +12,23 @@ class PostsController < ApplicationController
     @post = Post.new
   end
 
+  def edit; end
+
   def create
     @post = Post.new(post_params)
 
     if @post.save
       redirect_to edit_post_path(@post), status: :see_other
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
-
-  def edit; end
 
   def update
     if @post.update(post_params)
       redirect_to edit_post_path(@post), status: :see_other
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -45,11 +45,13 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    permitted_params = params.require(:post).permit(
-      :title,
-      :body,
-      :author_id,
-      active_fields_attributes: [:name, :value, :_destroy, value: []],
+    permitted_params = params.expect(
+      post: [
+        :title,
+        :body,
+        :author_id,
+        active_fields_attributes: [:name, :value, :_destroy, value: []],
+      ],
     )
     permitted_params[:active_fields_attributes]&.each do |_index, value_attrs|
       value_attrs[:value] = compact_array_param(value_attrs[:value]) if value_attrs[:value].is_a?(Array)

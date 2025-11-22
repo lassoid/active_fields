@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Field::Decimal do
-  factory = :decimal_active_field
+  factory = :decimal_active_field # rubocop:disable RSpec/LeakyLocalVariable
 
   it_behaves_like "active_field",
     factory: factory,
@@ -176,7 +176,7 @@ RSpec.describe ActiveFields::Field::Decimal do
     end
 
     describe "before_save #reapply_precision" do
-      max_precision = ActiveFields::MAX_DECIMAL_PRECISION
+      def max_precision = ActiveFields::MAX_DECIMAL_PRECISION
       let(:record) { build(factory) }
       let(:precision) { rand(0..(max_precision - 1)) }
       let(:attrs) do

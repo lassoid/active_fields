@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Field::EnumArray do
-  factory = :enum_array_active_field
+  factory = :enum_array_active_field # rubocop:disable RSpec/LeakyLocalVariable
 
   it_behaves_like "active_field",
     factory: factory,

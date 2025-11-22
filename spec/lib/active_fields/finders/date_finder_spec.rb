@@ -30,8 +30,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
 
         it "returns only records with such value" do
           expect(perform_search)
-            .to include(*records.select { _1.value == saved_value })
-            .and exclude(*records.reject { _1.value == saved_value })
+            .to include(*records.select { it.value == saved_value })
+            .and exclude(*records.reject { it.value == saved_value })
         end
       end
 
@@ -40,8 +40,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.nil? })
-            .and exclude(*records.reject { _1.value.nil? })
+            .to include(*records.select { it.value.nil? })
+            .and exclude(*records.reject { it.value.nil? })
         end
       end
     end
@@ -54,8 +54,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
 
         it "returns all records except with such value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value == saved_value })
-            .and exclude(*records.select { _1.value == saved_value })
+            .to include(*records.reject { it.value == saved_value })
+            .and exclude(*records.select { it.value == saved_value })
         end
       end
 
@@ -64,8 +64,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.nil? })
-            .and exclude(*records.select { _1.value.nil? })
+            .to include(*records.reject { it.value.nil? })
+            .and exclude(*records.select { it.value.nil? })
         end
       end
     end
@@ -78,8 +78,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
 
         it "returns records greater than the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value && _1.value > saved_value })
-            .and exclude(*records.reject { _1.value && _1.value > saved_value })
+            .to include(*records.select { it.value && it.value > saved_value })
+            .and exclude(*records.reject { it.value && it.value > saved_value })
         end
       end
 
@@ -100,8 +100,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
 
         it "returns records greater than or equal to the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value && _1.value >= saved_value })
-            .and exclude(*records.reject { _1.value && _1.value >= saved_value })
+            .to include(*records.select { it.value && it.value >= saved_value })
+            .and exclude(*records.reject { it.value && it.value >= saved_value })
         end
       end
 
@@ -122,8 +122,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
 
         it "returns records less than the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value && _1.value < saved_value })
-            .and exclude(*records.reject { _1.value && _1.value < saved_value })
+            .to include(*records.select { it.value && it.value < saved_value })
+            .and exclude(*records.reject { it.value && it.value < saved_value })
         end
       end
 
@@ -144,8 +144,8 @@ RSpec.describe ActiveFields::Finders::DateFinder do
 
         it "returns records less than or equal to the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value && _1.value <= saved_value })
-            .and exclude(*records.reject { _1.value && _1.value <= saved_value })
+            .to include(*records.select { it.value && it.value <= saved_value })
+            .and exclude(*records.reject { it.value && it.value <= saved_value })
         end
       end
 

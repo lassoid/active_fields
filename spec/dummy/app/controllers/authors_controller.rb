@@ -12,23 +12,23 @@ class AuthorsController < ApplicationController
     @author = Author.new
   end
 
+  def edit; end
+
   def create
     @author = Author.new(author_params)
 
     if @author.save
       redirect_to edit_author_path(@author), status: :see_other
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
-
-  def edit; end
 
   def update
     if @author.update(author_params)
       redirect_to edit_author_path(@author), status: :see_other
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -45,10 +45,12 @@ class AuthorsController < ApplicationController
   end
 
   def author_params
-    permitted_params = params.require(:author).permit(
-      :name,
-      :group_id,
-      active_fields_attributes: [:name, :value, :_destroy, value: []],
+    permitted_params = params.expect(
+      author: [
+        :name,
+        :group_id,
+        active_fields_attributes: [:name, :value, :_destroy, value: []],
+      ],
     )
     permitted_params[:active_fields_attributes]&.each do |_index, value_attrs|
       value_attrs[:value] = compact_array_param(value_attrs[:value]) if value_attrs[:value].is_a?(Array)

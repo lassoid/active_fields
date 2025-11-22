@@ -31,8 +31,8 @@ RSpec.describe ActiveFields::Finders::EnumArrayFinder do
 
         it "returns only records that contain the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.include?(value) })
-            .and exclude(*records.reject { _1.value.include?(value) })
+            .to include(*records.select { it.value.include?(value) })
+            .and exclude(*records.reject { it.value.include?(value) })
         end
       end
 
@@ -53,8 +53,8 @@ RSpec.describe ActiveFields::Finders::EnumArrayFinder do
 
         it "returns only records that doesn't contain the value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.include?(value) })
-            .and exclude(*records.select { _1.value.include?(value) })
+            .to include(*records.reject { it.value.include?(value) })
+            .and exclude(*records.select { it.value.include?(value) })
         end
       end
 

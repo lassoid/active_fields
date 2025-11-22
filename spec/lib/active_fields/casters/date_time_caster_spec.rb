@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Casters::DateTimeCaster do
-  max_precision = ActiveFields::MAX_DATETIME_PRECISION
+  def max_precision = ActiveFields::MAX_DATETIME_PRECISION
 
   let(:object) { described_class.new(**args) }
   let(:args) { {} }

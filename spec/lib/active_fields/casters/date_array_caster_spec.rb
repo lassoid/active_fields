@@ -86,7 +86,7 @@ RSpec.describe ActiveFields::Casters::DateArrayCaster do
     context "when array of date strings" do
       let(:value) { [random_date.iso8601, random_date.iso8601] }
 
-      it { is_expected.to eq(value.map { Date.parse(_1) }) }
+      it { is_expected.to eq(value.map { Date.parse(it) }) }
     end
 
     context "when not an array" do

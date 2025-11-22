@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe IpField do
-  factory = :ip_field
+  factory = :ip_field # rubocop:disable RSpec/LeakyLocalVariable
 
   it_behaves_like "active_field",
     factory: factory,
