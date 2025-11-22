@@ -51,8 +51,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.include?(casted_value) })
-              .and exclude(*records.reject { it.value.include?(casted_value) })
+              .to include(*records.select { |r| r.value.include?(casted_value) })
+              .and exclude(*records.reject { |r| r.value.include?(casted_value) })
           end
         end
 
@@ -75,8 +75,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.reject { it.value.include?(casted_value) })
-              .and exclude(*records.select { it.value.include?(casted_value) })
+              .to include(*records.reject { |r| r.value.include?(casted_value) })
+              .and exclude(*records.select { |r| r.value.include?(casted_value) })
           end
         end
 
@@ -99,8 +99,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? { |elem| elem > casted_value } })
-              .and exclude(*records.reject { it.value.any? { |elem| elem > casted_value } })
+              .to include(*records.select { |r| r.value.any? { |elem| elem > casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? { |elem| elem > casted_value } })
           end
         end
 
@@ -123,8 +123,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? { |elem| elem >= casted_value } })
-              .and exclude(*records.reject { it.value.any? { |elem| elem >= casted_value } })
+              .to include(*records.select { |r| r.value.any? { |elem| elem >= casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? { |elem| elem >= casted_value } })
           end
         end
 
@@ -147,8 +147,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? { |elem| elem < casted_value } })
-              .and exclude(*records.reject { it.value.any? { |elem| elem < casted_value } })
+              .to include(*records.select { |r| r.value.any? { |elem| elem < casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? { |elem| elem < casted_value } })
           end
         end
 
@@ -171,8 +171,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? { |elem| elem <= casted_value } })
-              .and exclude(*records.reject { it.value.any? { |elem| elem <= casted_value } })
+              .to include(*records.select { |r| r.value.any? { |elem| elem <= casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? { |elem| elem <= casted_value } })
           end
         end
 
@@ -195,8 +195,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? && it.value.all? { |elem| elem > casted_value } })
-              .and exclude(*records.reject { it.value.any? && it.value.all? { |elem| elem > casted_value } })
+              .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem > casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem > casted_value } })
           end
         end
 
@@ -219,8 +219,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? && it.value.all? { |elem| elem >= casted_value } })
-              .and exclude(*records.reject { it.value.any? && it.value.all? { |elem| elem >= casted_value } })
+              .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem >= casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem >= casted_value } })
           end
         end
 
@@ -243,8 +243,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? && it.value.all? { |elem| elem < casted_value } })
-              .and exclude(*records.reject { it.value.any? && it.value.all? { |elem| elem < casted_value } })
+              .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem < casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem < casted_value } })
           end
         end
 
@@ -267,8 +267,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(max_precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? && it.value.all? { |elem| elem <= casted_value } })
-              .and exclude(*records.reject { it.value.any? && it.value.all? { |elem| elem <= casted_value } })
+              .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem <= casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem <= casted_value } })
           end
         end
 
@@ -295,8 +295,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.include?(casted_value) })
-              .and exclude(*records.reject { it.value.include?(casted_value) })
+              .to include(*records.select { |r| r.value.include?(casted_value) })
+              .and exclude(*records.reject { |r| r.value.include?(casted_value) })
           end
         end
 
@@ -319,8 +319,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.reject { it.value.include?(casted_value) })
-              .and exclude(*records.select { it.value.include?(casted_value) })
+              .to include(*records.reject { |r| r.value.include?(casted_value) })
+              .and exclude(*records.select { |r| r.value.include?(casted_value) })
           end
         end
 
@@ -343,8 +343,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? { |elem| elem > casted_value } })
-              .and exclude(*records.reject { it.value.any? { |elem| elem > casted_value } })
+              .to include(*records.select { |r| r.value.any? { |elem| elem > casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? { |elem| elem > casted_value } })
           end
         end
 
@@ -367,8 +367,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? { |elem| elem >= casted_value } })
-              .and exclude(*records.reject { it.value.any? { |elem| elem >= casted_value } })
+              .to include(*records.select { |r| r.value.any? { |elem| elem >= casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? { |elem| elem >= casted_value } })
           end
         end
 
@@ -391,8 +391,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? { |elem| elem < casted_value } })
-              .and exclude(*records.reject { it.value.any? { |elem| elem < casted_value } })
+              .to include(*records.select { |r| r.value.any? { |elem| elem < casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? { |elem| elem < casted_value } })
           end
         end
 
@@ -415,8 +415,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? { |elem| elem <= casted_value } })
-              .and exclude(*records.reject { it.value.any? { |elem| elem <= casted_value } })
+              .to include(*records.select { |r| r.value.any? { |elem| elem <= casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? { |elem| elem <= casted_value } })
           end
         end
 
@@ -439,8 +439,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? && it.value.all? { |elem| elem > casted_value } })
-              .and exclude(*records.reject { it.value.any? && it.value.all? { |elem| elem > casted_value } })
+              .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem > casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem > casted_value } })
           end
         end
 
@@ -463,8 +463,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? && it.value.all? { |elem| elem >= casted_value } })
-              .and exclude(*records.reject { it.value.any? && it.value.all? { |elem| elem >= casted_value } })
+              .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem >= casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem >= casted_value } })
           end
         end
 
@@ -487,8 +487,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? && it.value.all? { |elem| elem < casted_value } })
-              .and exclude(*records.reject { it.value.any? && it.value.all? { |elem| elem < casted_value } })
+              .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem < casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem < casted_value } })
           end
         end
 
@@ -511,8 +511,8 @@ RSpec.describe ActiveFields::Finders::DecimalArrayFinder do
             casted_value = saved_value.truncate(precision)
 
             expect(perform_search)
-              .to include(*records.select { it.value.any? && it.value.all? { |elem| elem <= casted_value } })
-              .and exclude(*records.reject { it.value.any? && it.value.all? { |elem| elem <= casted_value } })
+              .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem <= casted_value } })
+              .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem <= casted_value } })
           end
         end
 

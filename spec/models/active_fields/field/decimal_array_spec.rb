@@ -161,6 +161,7 @@ RSpec.describe ActiveFields::Field::DecimalArray do
   context "callbacks" do
     describe "before_save #reapply_precision" do
       def max_precision = ActiveFields::MAX_DECIMAL_PRECISION
+
       let(:record) { build(factory) }
       let(:precision) { rand(0..(max_precision - 1)) }
       let(:attrs) do
@@ -188,7 +189,7 @@ RSpec.describe ActiveFields::Field::DecimalArray do
           .and change { record.options["max"] }
           .from(attrs[:max]).to(BigDecimal(attrs[:max]).truncate(precision).to_s)
           .and change { record.default_value_meta["const"] }
-          .from(attrs[:default_value]).to(attrs[:default_value].map { BigDecimal(it).truncate(precision).to_s })
+          .from(attrs[:default_value]).to(attrs[:default_value].map { |el| BigDecimal(el).truncate(precision).to_s })
       end
     end
   end

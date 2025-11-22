@@ -2,7 +2,7 @@
 
 if ActiveFields.config.value_class_changed?
   RSpec.describe CustomValue do
-    def factory = :custom_value
+    factory = :custom_value # rubocop:disable RSpec/LeakyLocalVariable
 
     it_behaves_like "active_value", factory: factory
 

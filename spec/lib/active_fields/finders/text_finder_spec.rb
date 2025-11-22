@@ -38,8 +38,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with such value" do
           expect(perform_search)
-            .to include(*records.select { it.value == value })
-            .and exclude(*records.reject { it.value == value })
+            .to include(*records.select { |r| r.value == value })
+            .and exclude(*records.reject { |r| r.value == value })
         end
       end
 
@@ -48,8 +48,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with such value" do
           expect(perform_search)
-            .to include(*records.select { it.value == value })
-            .and exclude(*records.reject { it.value == value })
+            .to include(*records.select { |r| r.value == value })
+            .and exclude(*records.reject { |r| r.value == value })
         end
       end
 
@@ -58,8 +58,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { it.value.nil? })
-            .and exclude(*records.reject { it.value.nil? })
+            .to include(*records.select { |r| r.value.nil? })
+            .and exclude(*records.reject { |r| r.value.nil? })
         end
       end
     end
@@ -72,8 +72,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns all records except with such value" do
           expect(perform_search)
-            .to include(*records.reject { it.value == value })
-            .and exclude(*records.select { it.value == value })
+            .to include(*records.reject { |r| r.value == value })
+            .and exclude(*records.select { |r| r.value == value })
         end
       end
 
@@ -82,8 +82,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns all records except with such value" do
           expect(perform_search)
-            .to include(*records.reject { it.value == value })
-            .and exclude(*records.select { it.value == value })
+            .to include(*records.reject { |r| r.value == value })
+            .and exclude(*records.select { |r| r.value == value })
         end
       end
 
@@ -92,8 +92,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { it.value.nil? })
-            .and exclude(*records.select { it.value.nil? })
+            .to include(*records.reject { |r| r.value.nil? })
+            .and exclude(*records.select { |r| r.value.nil? })
         end
       end
     end
@@ -106,8 +106,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that start with the value" do
           expect(perform_search)
-            .to include(*records.select { it.value&.start_with?(value) })
-            .and exclude(*records.reject { it.value&.start_with?(value) })
+            .to include(*records.select { |r| r.value&.start_with?(value) })
+            .and exclude(*records.reject { |r| r.value&.start_with?(value) })
         end
       end
 
@@ -116,8 +116,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { it.value.nil? })
-            .and exclude(*records.select { it.value.nil? })
+            .to include(*records.reject { |r| r.value.nil? })
+            .and exclude(*records.select { |r| r.value.nil? })
         end
       end
     end
@@ -130,8 +130,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that end with the value" do
           expect(perform_search)
-            .to include(*records.select { it.value&.end_with?(value) })
-            .and exclude(*records.reject { it.value&.end_with?(value) })
+            .to include(*records.select { |r| r.value&.end_with?(value) })
+            .and exclude(*records.reject { |r| r.value&.end_with?(value) })
         end
       end
 
@@ -140,8 +140,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { it.value.nil? })
-            .and exclude(*records.select { it.value.nil? })
+            .to include(*records.reject { |r| r.value.nil? })
+            .and exclude(*records.select { |r| r.value.nil? })
         end
       end
     end
@@ -154,8 +154,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that contain the value" do
           expect(perform_search)
-            .to include(*records.select { it.value&.include?(value) })
-            .and exclude(*records.reject { it.value&.include?(value) })
+            .to include(*records.select { |r| r.value&.include?(value) })
+            .and exclude(*records.reject { |r| r.value&.include?(value) })
         end
       end
 
@@ -164,8 +164,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { it.value.nil? })
-            .and exclude(*records.select { it.value.nil? })
+            .to include(*records.reject { |r| r.value.nil? })
+            .and exclude(*records.select { |r| r.value.nil? })
         end
       end
     end
@@ -178,8 +178,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that don't start with the value" do
           expect(perform_search)
-            .to include(*records.reject { it.value&.start_with?(value) })
-            .and exclude(*records.select { it.value&.start_with?(value) })
+            .to include(*records.reject { |r| r.value&.start_with?(value) })
+            .and exclude(*records.select { |r| r.value&.start_with?(value) })
         end
       end
 
@@ -188,8 +188,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { it.value.nil? })
-            .and exclude(*records.reject { it.value.nil? })
+            .to include(*records.select { |r| r.value.nil? })
+            .and exclude(*records.reject { |r| r.value.nil? })
         end
       end
     end
@@ -202,8 +202,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that don't end with the value" do
           expect(perform_search)
-            .to include(*records.reject { it.value&.end_with?(value) })
-            .and exclude(*records.select { it.value&.end_with?(value) })
+            .to include(*records.reject { |r| r.value&.end_with?(value) })
+            .and exclude(*records.select { |r| r.value&.end_with?(value) })
         end
       end
 
@@ -212,8 +212,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { it.value.nil? })
-            .and exclude(*records.reject { it.value.nil? })
+            .to include(*records.select { |r| r.value.nil? })
+            .and exclude(*records.reject { |r| r.value.nil? })
         end
       end
     end
@@ -226,8 +226,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that don't contain with the value" do
           expect(perform_search)
-            .to include(*records.reject { it.value&.include?(value) })
-            .and exclude(*records.select { it.value&.include?(value) })
+            .to include(*records.reject { |r| r.value&.include?(value) })
+            .and exclude(*records.select { |r| r.value&.include?(value) })
         end
       end
 
@@ -236,8 +236,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { it.value.nil? })
-            .and exclude(*records.reject { it.value.nil? })
+            .to include(*records.select { |r| r.value.nil? })
+            .and exclude(*records.reject { |r| r.value.nil? })
         end
       end
     end
@@ -250,8 +250,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that insensitively start with the value" do
           expect(perform_search)
-            .to include(*records.select { it.value&.downcase&.start_with?(value.downcase) })
-            .and exclude(*records.reject { it.value&.downcase&.start_with?(value.downcase) })
+            .to include(*records.select { |r| r.value&.downcase&.start_with?(value.downcase) })
+            .and exclude(*records.reject { |r| r.value&.downcase&.start_with?(value.downcase) })
         end
       end
 
@@ -260,8 +260,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { it.value.nil? })
-            .and exclude(*records.select { it.value.nil? })
+            .to include(*records.reject { |r| r.value.nil? })
+            .and exclude(*records.select { |r| r.value.nil? })
         end
       end
     end
@@ -274,8 +274,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that insensitively end with the value" do
           expect(perform_search)
-            .to include(*records.select { it.value&.downcase&.end_with?(value.downcase) })
-            .and exclude(*records.reject { it.value&.downcase&.end_with?(value.downcase) })
+            .to include(*records.select { |r| r.value&.downcase&.end_with?(value.downcase) })
+            .and exclude(*records.reject { |r| r.value&.downcase&.end_with?(value.downcase) })
         end
       end
 
@@ -284,8 +284,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { it.value.nil? })
-            .and exclude(*records.select { it.value.nil? })
+            .to include(*records.reject { |r| r.value.nil? })
+            .and exclude(*records.select { |r| r.value.nil? })
         end
       end
     end
@@ -298,8 +298,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that insensitively contain with the value" do
           expect(perform_search)
-            .to include(*records.select { it.value&.downcase&.include?(value.downcase) })
-            .and exclude(*records.reject { it.value&.downcase&.include?(value.downcase) })
+            .to include(*records.select { |r| r.value&.downcase&.include?(value.downcase) })
+            .and exclude(*records.reject { |r| r.value&.downcase&.include?(value.downcase) })
         end
       end
 
@@ -308,8 +308,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { it.value.nil? })
-            .and exclude(*records.select { it.value.nil? })
+            .to include(*records.reject { |r| r.value.nil? })
+            .and exclude(*records.select { |r| r.value.nil? })
         end
       end
     end
@@ -322,8 +322,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that don't insensitively start with the value" do
           expect(perform_search)
-            .to include(*records.reject { it.value&.downcase&.start_with?(value.downcase) })
-            .and exclude(*records.select { it.value&.downcase&.start_with?(value.downcase) })
+            .to include(*records.reject { |r| r.value&.downcase&.start_with?(value.downcase) })
+            .and exclude(*records.select { |r| r.value&.downcase&.start_with?(value.downcase) })
         end
       end
 
@@ -332,8 +332,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { it.value.nil? })
-            .and exclude(*records.reject { it.value.nil? })
+            .to include(*records.select { |r| r.value.nil? })
+            .and exclude(*records.reject { |r| r.value.nil? })
         end
       end
     end
@@ -346,8 +346,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that don't insensitively end with the value" do
           expect(perform_search)
-            .to include(*records.reject { it.value&.downcase&.end_with?(value.downcase) })
-            .and exclude(*records.select { it.value&.downcase&.end_with?(value.downcase) })
+            .to include(*records.reject { |r| r.value&.downcase&.end_with?(value.downcase) })
+            .and exclude(*records.select { |r| r.value&.downcase&.end_with?(value.downcase) })
         end
       end
 
@@ -356,8 +356,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { it.value.nil? })
-            .and exclude(*records.reject { it.value.nil? })
+            .to include(*records.select { |r| r.value.nil? })
+            .and exclude(*records.reject { |r| r.value.nil? })
         end
       end
     end
@@ -370,8 +370,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns records that don't insensitively contain with the value" do
           expect(perform_search)
-            .to include(*records.reject { it.value&.downcase&.include?(value.downcase) })
-            .and exclude(*records.select { it.value&.downcase&.include?(value.downcase) })
+            .to include(*records.reject { |r| r.value&.downcase&.include?(value.downcase) })
+            .and exclude(*records.select { |r| r.value&.downcase&.include?(value.downcase) })
         end
       end
 
@@ -380,8 +380,8 @@ RSpec.describe ActiveFields::Finders::TextFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { it.value.nil? })
-            .and exclude(*records.reject { it.value.nil? })
+            .to include(*records.select { |r| r.value.nil? })
+            .and exclude(*records.reject { |r| r.value.nil? })
         end
       end
     end

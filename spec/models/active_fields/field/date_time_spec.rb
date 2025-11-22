@@ -177,6 +177,7 @@ RSpec.describe ActiveFields::Field::DateTime do
 
     describe "before_save #reapply_precision" do
       def max_precision = ActiveFields::MAX_DATETIME_PRECISION
+
       let(:record) { build(factory) }
       let(:precision) { rand(0..(max_precision - 1)) }
       let(:attrs) do
