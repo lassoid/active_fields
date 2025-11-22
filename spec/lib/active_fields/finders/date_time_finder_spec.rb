@@ -9,7 +9,7 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
       described_class.new(active_field: active_field).search(op: op, value: value)
     end
 
-    max_precision = ActiveFields::MAX_DATETIME_PRECISION
+    def max_precision = ActiveFields::MAX_DATETIME_PRECISION
 
     let!(:active_field) { create(:datetime_active_field, precision: precision) }
     let(:precision) { nil }
@@ -42,8 +42,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, max_precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value == casted_value })
-              .and exclude(*records.reject { _1.value == casted_value })
+              .to include(*records.select { |r| r.value == casted_value })
+              .and exclude(*records.reject { |r| r.value == casted_value })
           end
         end
 
@@ -52,8 +52,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
 
           it "returns only records with null value" do
             expect(perform_search)
-              .to include(*records.select { _1.value.nil? })
-              .and exclude(*records.reject { _1.value.nil? })
+              .to include(*records.select { |r| r.value.nil? })
+              .and exclude(*records.reject { |r| r.value.nil? })
           end
         end
       end
@@ -68,8 +68,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, max_precision)
 
             expect(perform_search)
-              .to include(*records.reject { _1.value == casted_value })
-              .and exclude(*records.select { _1.value == casted_value })
+              .to include(*records.reject { |r| r.value == casted_value })
+              .and exclude(*records.select { |r| r.value == casted_value })
           end
         end
 
@@ -78,8 +78,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
 
           it "returns only records with not null value" do
             expect(perform_search)
-              .to include(*records.reject { _1.value.nil? })
-              .and exclude(*records.select { _1.value.nil? })
+              .to include(*records.reject { |r| r.value.nil? })
+              .and exclude(*records.select { |r| r.value.nil? })
           end
         end
       end
@@ -94,8 +94,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, max_precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value && _1.value > casted_value })
-              .and exclude(*records.reject { _1.value && _1.value > casted_value })
+              .to include(*records.select { |r| r.value && r.value > casted_value })
+              .and exclude(*records.reject { |r| r.value && r.value > casted_value })
           end
         end
 
@@ -118,8 +118,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, max_precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value && _1.value >= casted_value })
-              .and exclude(*records.reject { _1.value && _1.value >= casted_value })
+              .to include(*records.select { |r| r.value && r.value >= casted_value })
+              .and exclude(*records.reject { |r| r.value && r.value >= casted_value })
           end
         end
 
@@ -142,8 +142,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, max_precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value && _1.value < casted_value })
-              .and exclude(*records.reject { _1.value && _1.value < casted_value })
+              .to include(*records.select { |r| r.value && r.value < casted_value })
+              .and exclude(*records.reject { |r| r.value && r.value < casted_value })
           end
         end
 
@@ -166,8 +166,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, max_precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value && _1.value <= casted_value })
-              .and exclude(*records.reject { _1.value && _1.value <= casted_value })
+              .to include(*records.select { |r| r.value && r.value <= casted_value })
+              .and exclude(*records.reject { |r| r.value && r.value <= casted_value })
           end
         end
 
@@ -194,8 +194,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value == casted_value })
-              .and exclude(*records.reject { _1.value == casted_value })
+              .to include(*records.select { |r| r.value == casted_value })
+              .and exclude(*records.reject { |r| r.value == casted_value })
           end
         end
 
@@ -204,8 +204,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
 
           it "returns only records with null value" do
             expect(perform_search)
-              .to include(*records.select { _1.value.nil? })
-              .and exclude(*records.reject { _1.value.nil? })
+              .to include(*records.select { |r| r.value.nil? })
+              .and exclude(*records.reject { |r| r.value.nil? })
           end
         end
       end
@@ -220,8 +220,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, precision)
 
             expect(perform_search)
-              .to include(*records.reject { _1.value == casted_value })
-              .and exclude(*records.select { _1.value == casted_value })
+              .to include(*records.reject { |r| r.value == casted_value })
+              .and exclude(*records.select { |r| r.value == casted_value })
           end
         end
 
@@ -230,8 +230,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
 
           it "returns only records with not null value" do
             expect(perform_search)
-              .to include(*records.reject { _1.value.nil? })
-              .and exclude(*records.select { _1.value.nil? })
+              .to include(*records.reject { |r| r.value.nil? })
+              .and exclude(*records.select { |r| r.value.nil? })
           end
         end
       end
@@ -246,8 +246,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value && _1.value > casted_value })
-              .and exclude(*records.reject { _1.value && _1.value > casted_value })
+              .to include(*records.select { |r| r.value && r.value > casted_value })
+              .and exclude(*records.reject { |r| r.value && r.value > casted_value })
           end
         end
 
@@ -270,8 +270,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value && _1.value >= casted_value })
-              .and exclude(*records.reject { _1.value && _1.value >= casted_value })
+              .to include(*records.select { |r| r.value && r.value >= casted_value })
+              .and exclude(*records.reject { |r| r.value && r.value >= casted_value })
           end
         end
 
@@ -294,8 +294,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value && _1.value < casted_value })
-              .and exclude(*records.reject { _1.value && _1.value < casted_value })
+              .to include(*records.select { |r| r.value && r.value < casted_value })
+              .and exclude(*records.reject { |r| r.value && r.value < casted_value })
           end
         end
 
@@ -318,8 +318,8 @@ RSpec.describe ActiveFields::Finders::DateTimeFinder do
             casted_value = apply_datetime_precision(saved_value, precision)
 
             expect(perform_search)
-              .to include(*records.select { _1.value && _1.value <= casted_value })
-              .and exclude(*records.reject { _1.value && _1.value <= casted_value })
+              .to include(*records.select { |r| r.value && r.value <= casted_value })
+              .and exclude(*records.reject { |r| r.value && r.value <= casted_value })
           end
         end
 

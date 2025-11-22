@@ -107,8 +107,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -125,8 +125,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -143,8 +143,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -166,8 +166,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -189,8 +189,8 @@ RSpec.shared_examples "customizable" do
 
         it "returns records with matching active_values" do
           expect(call_scope)
-            .to include(*described_class.where(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
-            .and exclude(*described_class.where.not(id: active_fields.map { mapping[_1.id] }.inject(&:&)).to_a)
+            .to include(*described_class.where(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
+            .and exclude(*described_class.where.not(id: active_fields.map { |r| mapping[r.id] }.inject(&:&)).to_a)
         end
       end
 
@@ -281,7 +281,7 @@ RSpec.shared_examples "customizable" do
             record.reload
           end.to change { record.active_values.count }.by(1)
 
-          active_value = record.active_values.find { _1.active_field_id == active_field.id }
+          active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
           expect(active_value.value).to eq(attributes[:value])
         end
       end
@@ -311,7 +311,7 @@ RSpec.shared_examples "customizable" do
             record.reload
           end.to change { record.active_values.count }.by(-1)
 
-          expect(record.active_values.find { _1.id == active_value.id }).to be_nil
+          expect(record.active_values.find { |r| r.id == active_value.id }).to be_nil
         end
       end
     end
@@ -374,7 +374,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to change { record.active_values.size }.by(1)
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.value).to eq(attributes.first[:value])
             end
           end
@@ -387,7 +387,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to change { record.active_values.size }.by(1)
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.value).to eq(attributes.first["value"])
             end
           end
@@ -407,7 +407,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to change { record.active_values.size }.by(1)
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.value).to eq(attributes.first[:value])
             end
           end
@@ -424,7 +424,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to change { record.active_values.size }.by(1)
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.value).to eq(attributes.values.first[:value])
             end
           end
@@ -493,7 +493,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to not_change { record.active_values.size }
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.value).to eq(attributes.first[:value])
             end
           end
@@ -506,7 +506,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to not_change { record.active_values.size }
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.value).to eq(attributes.first["value"])
             end
           end
@@ -526,7 +526,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to not_change { record.active_values.size }
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.value).to eq(attributes.first[:value])
             end
           end
@@ -543,7 +543,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to not_change { record.active_values.size }
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.value).to eq(attributes.values.first[:value])
             end
           end
@@ -558,7 +558,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to not_change { record.active_values.size }
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.marked_for_destruction?).to be(true)
             end
           end
@@ -571,7 +571,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to not_change { record.active_values.size }
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.marked_for_destruction?).to be(true)
             end
           end
@@ -586,7 +586,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to not_change { record.active_values.size }
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.marked_for_destruction?).to be(true)
             end
           end
@@ -603,7 +603,7 @@ RSpec.shared_examples "customizable" do
                 call_method
               end.to not_change { record.active_values.size }
 
-              active_value = record.active_values.find { _1.active_field_id == active_field.id }
+              active_value = record.active_values.find { |r| r.active_field_id == active_field.id }
               expect(active_value.marked_for_destruction?).to be(true)
             end
           end
@@ -776,7 +776,7 @@ RSpec.shared_examples "customizable" do
         call_method
 
         new_active_values =
-          record.active_values.reject { existing_active_values.map(&:active_field_id).include?(_1.active_field_id) }
+          record.active_values.reject { |r| existing_active_values.map(&:active_field_id).include?(r.active_field_id) }
         expect(new_active_values.map(&:persisted?).uniq).to eq([false])
       end
 
@@ -784,8 +784,8 @@ RSpec.shared_examples "customizable" do
         call_method
 
         new_active_values =
-          record.active_values.reject { existing_active_values.map(&:active_field_id).include?(_1.active_field_id) }
-        expect(new_active_values.map(&:value)).to eq(new_active_values.map { _1.active_field.default_value })
+          record.active_values.reject { |r| existing_active_values.map(&:active_field_id).include?(r.active_field_id) }
+        expect(new_active_values.map(&:value)).to eq(new_active_values.map { |r| r.active_field.default_value })
       end
 
       it "returns new active_values collection" do

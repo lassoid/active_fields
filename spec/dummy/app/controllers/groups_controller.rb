@@ -11,6 +11,8 @@ class GroupsController < ApplicationController
     @group = Group.new
   end
 
+  def edit; end
+
   def create
     @group = Group.new
     @group.assign_attributes(group_params)
@@ -18,17 +20,15 @@ class GroupsController < ApplicationController
     if @group.save
       redirect_to edit_group_path(@group), status: :see_other
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
-
-  def edit; end
 
   def update
     if @group.update(group_params)
       redirect_to edit_group_path(@group), status: :see_other
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -45,6 +45,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name)
+    params.expect(group: [:name])
   end
 end

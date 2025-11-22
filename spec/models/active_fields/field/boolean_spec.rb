@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Field::Boolean do
-  factory = :boolean_active_field
+  factory = :boolean_active_field # rubocop:disable RSpec/LeakyLocalVariable
 
   it_behaves_like "active_field",
     factory: factory,

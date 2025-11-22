@@ -24,8 +24,8 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
 
         it "returns only records with truthy value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.is_a?(TrueClass) })
-            .and exclude(*records.reject { _1.value.is_a?(TrueClass) })
+            .to include(*records.select { |r| r.value.is_a?(TrueClass) })
+            .and exclude(*records.reject { |r| r.value.is_a?(TrueClass) })
         end
       end
 
@@ -34,8 +34,8 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
 
         it "returns only records with falsy value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.is_a?(FalseClass) })
-            .and exclude(*records.reject { _1.value.is_a?(FalseClass) })
+            .to include(*records.select { |r| r.value.is_a?(FalseClass) })
+            .and exclude(*records.reject { |r| r.value.is_a?(FalseClass) })
         end
       end
 
@@ -44,8 +44,8 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
 
         it "returns only records with null value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.nil? })
-            .and exclude(*records.reject { _1.value.nil? })
+            .to include(*records.select { |r| r.value.nil? })
+            .and exclude(*records.reject { |r| r.value.nil? })
         end
       end
     end
@@ -58,8 +58,8 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
 
         it "returns only records with not truthy value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.is_a?(TrueClass) })
-            .and exclude(*records.select { _1.value.is_a?(TrueClass) })
+            .to include(*records.reject { |r| r.value.is_a?(TrueClass) })
+            .and exclude(*records.select { |r| r.value.is_a?(TrueClass) })
         end
       end
 
@@ -68,8 +68,8 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
 
         it "returns only records with not falsy value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.is_a?(FalseClass) })
-            .and exclude(*records.select { _1.value.is_a?(FalseClass) })
+            .to include(*records.reject { |r| r.value.is_a?(FalseClass) })
+            .and exclude(*records.select { |r| r.value.is_a?(FalseClass) })
         end
       end
 
@@ -78,8 +78,8 @@ RSpec.describe ActiveFields::Finders::BooleanFinder do
 
         it "returns only records with not null value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.nil? })
-            .and exclude(*records.select { _1.value.nil? })
+            .to include(*records.reject { |r| r.value.nil? })
+            .and exclude(*records.select { |r| r.value.nil? })
         end
       end
     end

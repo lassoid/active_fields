@@ -13,23 +13,23 @@ class ActiveFieldsController < ApplicationController
     @active_field = model_class.new
   end
 
+  def edit; end
+
   def create
     @active_field = model_class.new(active_field_create_params(model_class))
 
     if @active_field.save
       redirect_to edit_active_field_path(@active_field), status: :see_other
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
-
-  def edit; end
 
   def update
     if @active_field.update(active_field_update_params(@active_field.class))
       redirect_to edit_active_field_path(@active_field), status: :see_other
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

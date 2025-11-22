@@ -12,7 +12,7 @@ RSpec.describe ActiveFields::Value do
       expect(described_class.ancestors).to include(ActiveFields::ValueConcern)
     end
 
-    factory = :active_value
+    factory = :active_value # rubocop:disable RSpec/LeakyLocalVariable
 
     it_behaves_like "active_value", factory: factory
 

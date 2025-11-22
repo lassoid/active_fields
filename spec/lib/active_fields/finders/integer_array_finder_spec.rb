@@ -33,8 +33,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records that contain the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.include?(saved_value) })
-            .and exclude(*records.reject { _1.value.include?(saved_value) })
+            .to include(*records.select { |r| r.value.include?(saved_value) })
+            .and exclude(*records.reject { |r| r.value.include?(saved_value) })
         end
       end
 
@@ -55,8 +55,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records that doesn't contain the value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.include?(saved_value) })
-            .and exclude(*records.select { _1.value.include?(saved_value) })
+            .to include(*records.reject { |r| r.value.include?(saved_value) })
+            .and exclude(*records.select { |r| r.value.include?(saved_value) })
         end
       end
 
@@ -77,8 +77,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records that contain an element greater than the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? { |elem| elem > saved_value } })
-            .and exclude(*records.reject { _1.value.any? { |elem| elem > saved_value } })
+            .to include(*records.select { |r| r.value.any? { |elem| elem > saved_value } })
+            .and exclude(*records.reject { |r| r.value.any? { |elem| elem > saved_value } })
         end
       end
 
@@ -99,8 +99,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records that contain an element greater than or equal to the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? { |elem| elem >= saved_value } })
-            .and exclude(*records.reject { _1.value.any? { |elem| elem >= saved_value } })
+            .to include(*records.select { |r| r.value.any? { |elem| elem >= saved_value } })
+            .and exclude(*records.reject { |r| r.value.any? { |elem| elem >= saved_value } })
         end
       end
 
@@ -121,8 +121,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records that contain an element less than the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? { |elem| elem < saved_value } })
-            .and exclude(*records.reject { _1.value.any? { |elem| elem < saved_value } })
+            .to include(*records.select { |r| r.value.any? { |elem| elem < saved_value } })
+            .and exclude(*records.reject { |r| r.value.any? { |elem| elem < saved_value } })
         end
       end
 
@@ -143,8 +143,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records that contain an element less than or equal to the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? { |elem| elem <= saved_value } })
-            .and exclude(*records.reject { _1.value.any? { |elem| elem <= saved_value } })
+            .to include(*records.select { |r| r.value.any? { |elem| elem <= saved_value } })
+            .and exclude(*records.reject { |r| r.value.any? { |elem| elem <= saved_value } })
         end
       end
 
@@ -165,8 +165,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records where all elements are greater than the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem > saved_value } })
-            .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem > saved_value } })
+            .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem > saved_value } })
+            .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem > saved_value } })
         end
       end
 
@@ -187,8 +187,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records where all elements are greater than or equal to the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem >= saved_value } })
-            .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem >= saved_value } })
+            .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem >= saved_value } })
+            .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem >= saved_value } })
         end
       end
 
@@ -209,8 +209,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records where all elements are less than the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem < saved_value } })
-            .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem < saved_value } })
+            .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem < saved_value } })
+            .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem < saved_value } })
         end
       end
 
@@ -231,8 +231,8 @@ RSpec.describe ActiveFields::Finders::IntegerArrayFinder do
 
         it "returns only records where all elements are less than or equal to the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem <= saved_value } })
-            .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem <= saved_value } })
+            .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem <= saved_value } })
+            .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem <= saved_value } })
         end
       end
 

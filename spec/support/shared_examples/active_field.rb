@@ -11,8 +11,11 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
     let(:traits) { [] }
     let(:attributes) { {} }
 
-    available_traits.map { [nil, _1] }.then { _1.any? ? _1[0].product(*_1[1..-1]) : [] }.each do |traits_combination|
-      traits_combination = traits_combination.compact
+    available_traits
+      .map { |t| [nil, t] }
+      .then { |el| el.any? ? el[0].product(*el[1..-1]) : [] }
+      .each do |traits_combination|
+      traits_combination = traits_combination.compact # rubocop:disable RSpec/LeakyLocalVariable
 
       context "with traits: [#{traits_combination.join(", ")}]" do
         let(:traits) { traits_combination }

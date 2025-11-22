@@ -2,6 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include ActiveFieldsControllerConcern
+
   helper ActiveFieldsHelper
 
   protect_from_forgery prepend: true

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveFields::Field::DateTimeArray do
-  factory = :datetime_array_active_field
+  factory = :datetime_array_active_field # rubocop:disable RSpec/LeakyLocalVariable
 
   it_behaves_like "active_field",
     factory: factory,
@@ -160,7 +160,8 @@ RSpec.describe ActiveFields::Field::DateTimeArray do
 
   context "callbacks" do
     describe "before_save #reapply_precision" do
-      max_precision = ActiveFields::MAX_DATETIME_PRECISION
+      def max_precision = ActiveFields::MAX_DATETIME_PRECISION
+
       let(:record) { build(factory) }
       let(:precision) { rand(0..(max_precision - 1)) }
       let(:attrs) do
@@ -187,7 +188,7 @@ RSpec.describe ActiveFields::Field::DateTimeArray do
           .and change { record.options["max"] }
           .from(attrs[:max]).to(Time.zone.parse(attrs[:max]).iso8601(precision))
           .and change { record.default_value_meta["const"] }
-          .from(attrs[:default_value]).to(attrs[:default_value].map { Time.zone.parse(_1).iso8601(precision) })
+          .from(attrs[:default_value]).to(attrs[:default_value].map { |el| Time.zone.parse(el).iso8601(precision) })
       end
     end
   end

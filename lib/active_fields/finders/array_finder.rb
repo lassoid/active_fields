@@ -91,7 +91,10 @@ module ActiveFields
       def jsonb_path_exists(target, jsonpath, vars = nil)
         Arel::Nodes::NamedFunction.new(
           "jsonb_path_exists",
-          [target, *[jsonpath, vars&.to_json].compact.map { Arel::Nodes.build_quoted(_1) }],
+          [
+            target,
+            *[jsonpath, vars&.to_json].compact.map { |element| Arel::Nodes.build_quoted(element) },
+          ],
         )
       end
 
@@ -99,7 +102,10 @@ module ActiveFields
       def jsonb_path_query_array(target, jsonpath, vars = nil)
         Arel::Nodes::NamedFunction.new(
           "jsonb_path_query_array",
-          [target, *[jsonpath, vars&.to_json].compact.map { Arel::Nodes.build_quoted(_1) }],
+          [
+            target,
+            *[jsonpath, vars&.to_json].compact.map { |element| Arel::Nodes.build_quoted(element) },
+          ],
         )
       end
 

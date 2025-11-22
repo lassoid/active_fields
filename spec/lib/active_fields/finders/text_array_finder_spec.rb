@@ -36,8 +36,8 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
 
         it "returns only records that contain the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.include?(value) })
-            .and exclude(*records.reject { _1.value.include?(value) })
+            .to include(*records.select { |r| r.value.include?(value) })
+            .and exclude(*records.reject { |r| r.value.include?(value) })
         end
       end
 
@@ -46,8 +46,8 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
 
         it "returns only records that contain the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.include?(value) })
-            .and exclude(*records.reject { _1.value.include?(value) })
+            .to include(*records.select { |r| r.value.include?(value) })
+            .and exclude(*records.reject { |r| r.value.include?(value) })
         end
       end
 
@@ -68,8 +68,8 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
 
         it "returns only records that doesn't contain the value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.include?(value) })
-            .and exclude(*records.select { _1.value.include?(value) })
+            .to include(*records.reject { |r| r.value.include?(value) })
+            .and exclude(*records.select { |r| r.value.include?(value) })
         end
       end
 
@@ -78,8 +78,8 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
 
         it "returns only records that doesn't contain the value" do
           expect(perform_search)
-            .to include(*records.reject { _1.value.include?(value) })
-            .and exclude(*records.select { _1.value.include?(value) })
+            .to include(*records.reject { |r| r.value.include?(value) })
+            .and exclude(*records.select { |r| r.value.include?(value) })
         end
       end
 
@@ -100,8 +100,8 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
 
         it "returns only records that contain any element starting with the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? { |elem| elem.start_with?(value) } })
-            .and exclude(*records.reject { _1.value.any? { |elem| elem.start_with?(value) } })
+            .to include(*records.select { |r| r.value.any? { |elem| elem.start_with?(value) } })
+            .and exclude(*records.reject { |r| r.value.any? { |elem| elem.start_with?(value) } })
         end
       end
 
@@ -110,8 +110,8 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
 
         it "returns all non-empty records" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? })
-            .and exclude(*records.reject { _1.value.any? })
+            .to include(*records.select { |r| r.value.any? })
+            .and exclude(*records.reject { |r| r.value.any? })
         end
       end
 
@@ -132,8 +132,8 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
 
         it "returns only records that elements start with the value" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? && _1.value.all? { |elem| elem.start_with?(value) } })
-            .and exclude(*records.reject { _1.value.any? && _1.value.all? { |elem| elem.start_with?(value) } })
+            .to include(*records.select { |r| r.value.any? && r.value.all? { |elem| elem.start_with?(value) } })
+            .and exclude(*records.reject { |r| r.value.any? && r.value.all? { |elem| elem.start_with?(value) } })
         end
       end
 
@@ -142,8 +142,8 @@ RSpec.describe ActiveFields::Finders::TextArrayFinder do
 
         it "returns all non-empty records" do
           expect(perform_search)
-            .to include(*records.select { _1.value.any? })
-            .and exclude(*records.reject { _1.value.any? })
+            .to include(*records.select { |r| r.value.any? })
+            .and exclude(*records.reject { |r| r.value.any? })
         end
       end
 

@@ -8,8 +8,8 @@ inherit_gem:
   rubocop-shopify: rubocop.yml
 
 AllCops:
-  TargetRubyVersion: 3.3
-  TargetRailsVersion: 8.0
+  TargetRubyVersion: 3.4
+  TargetRailsVersion: 8.1
   NewCops: enable
   Exclude:
     - "spec/dummy/db/schema.rb"
@@ -46,4 +46,7 @@ RSpec/ContextWording:
   Enabled: false
 
 RSpec/MultipleExpectations:
+  Enabled: false
+
+Naming/PredicateMethod:
   Enabled: false
