@@ -1,0 +1,54 @@
+<h1>Users</h1>
+
+<div class="links">
+  <%= link_to "New", new_user_path %>
+</div>
+
+<div class="tenant-context-switch">
+  <span>Tenant:</span>
+  <% User.distinct.pluck(:tenant_id).each do |tenant_id| %>
+    <% if tenant_id == params[:tenant_id] %>
+      <b><%= tenant_id.presence || tenant_id.inspect %></b>
+    <% else %>
+      <%= link_to tenant_id.presence || tenant_id.inspect, users_path(tenant_id: tenant_id) %>
+    <% end %>
+    |
+  <% end %>
+</div>
+
+<!-- TODO: Fix tenant_id in the form url -->
+<%= render_active_fields_finders_form(active_fields: User.active_fields(scope: params[:tenant_id]), url: users_path(tenant_id: params[:tenant_id])) %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Group</th>
+      <th>Active Fields</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to "##{user.id}", edit_user_path(user) %></td>
+        <td><%= user.email %></td>
+        <td><%= user.tenant_id %></td>
+        <td>
+          <% user.active_values.each do |active_value| %>
+            <div>
+              <b><%= active_value.name %>:</b>
+              <%= active_value.value.inspect %>
+            </div>
+          <% end %>
+        </td>
+        <td><%= button_to "Destroy", user_path(user), method: :delete %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="links">
+  <%= link_to "Back", root_path %>
+</div>

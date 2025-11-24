@@ -48,6 +48,10 @@ module TestMethods
     [Author, Post] # Group doesn't have Active Fields
   end
 
+  def scoped_dummy_model
+    User
+  end
+
   def customizable_models_for(active_field_class_name)
     dummy_models.select do |model|
       model.allowed_active_fields_class_names.include?(active_field_class_name)

@@ -59,11 +59,18 @@ module ActiveFields
 
     def validate_customizable_allowed
       return true if active_field.nil?
-      return true if customizable_type == active_field.customizable_type
-      return true if active_field.scope.blank? || customizable.public_send(scope_method) == active_field.scope
 
-      errors.add(:customizable, :invalid)
-      false
+      if customizable_type != active_field.customizable_type
+        errors.add(:customizable, :invalid)
+        return false
+      end
+
+      if active_field.scope && customizable&.active_fields_scope != active_field.scope
+        errors.add(:customizable, :invalid)
+        return false
+      end
+
+      true
     end
 
     # Wrap the provided value to differentiate between explicitly setting it to nil and not setting it at all

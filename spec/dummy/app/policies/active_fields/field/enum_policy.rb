@@ -7,6 +7,7 @@ module ActiveFields
         [
           :customizable_type,
           :name,
+          :scope,
           :required,
           :default_value,
           allowed_values: [],

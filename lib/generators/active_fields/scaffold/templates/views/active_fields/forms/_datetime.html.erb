@@ -33,6 +33,11 @@
   </div>
 
   <div>
+    <%= f.label :scope %>
+    <%= f.text_field :scope %>
+  </div>
+
+  <div>
     <%= f.label :required %>
     <%= f.check_box :required, disabled: active_field.persisted? %>
   </div>

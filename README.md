@@ -849,6 +849,10 @@ IpFinder.new(active_field: ip_active_field).search(op: "eq", value: "127.0.0.1")
 IpArrayFinder.new(active_field: ip_array_active_field).search(op: "#>=", value: 5)
 ```
 
+### Scoping
+
+Postgres 15 is required
+
 ### Localization (I18n)
 
 The built-in _validators_ primarily use _Rails_ default error types.

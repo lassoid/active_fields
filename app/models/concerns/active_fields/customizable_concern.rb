@@ -45,7 +45,7 @@ module ActiveFields
       #
       #   # Params (must be permitted)
       #   CustomizableModel.where_active_fields(permitted_params)
-      scope :where_active_fields, ->(filters) do
+      scope :where_active_fields, ->(filters, scope: nil) do
         filters = filters.to_h if filters.respond_to?(:permitted?)
 
         unless filters.is_a?(Array) || filters.is_a?(Hash)
@@ -55,7 +55,7 @@ module ActiveFields
         # Handle `fields_for` params
         filters = filters.values if filters.is_a?(Hash)
 
-        active_fields_by_name = active_fields.index_by(&:name)
+        active_fields_by_name = active_fields(scope: scope).index_by(&:name)
 
         filters.inject(self) do |scope, filter|
           filter = filter.to_h if filter.respond_to?(:permitted?)
@@ -79,9 +79,9 @@ module ActiveFields
     end
 
     class_methods do
-      # Collection of active fields registered for this customizable
-      def active_fields
-        ActiveFields.config.field_base_class.for(name) # TODO: add scope
+      # Collection of active fields registered for this customizable model.
+      def active_fields(scope: nil)
+        ActiveFields.config.field_base_class.for(name, scope: scope)
       end
 
       # Returns active fields type names allowed for this customizable model.
@@ -95,7 +95,17 @@ module ActiveFields
       end
     end
 
-    delegate :active_fields, to: :class
+    # Collection of active fields registered for this customizable.
+    def active_fields
+      self.class.active_fields(scope: active_fields_scope)
+    end
+
+    # Scope value for the active fields collection.
+    def active_fields_scope
+      return if self.class.active_fields_scope_method.nil?
+
+      public_send(self.class.active_fields_scope_method)&.to_s
+    end
 
     # Assigns the given attributes to the active_values association.
     #

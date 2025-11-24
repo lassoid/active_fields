@@ -12,7 +12,11 @@ module ActiveFields
         inverse_of: :active_field,
         dependent: :destroy
 
-      scope :for, ->(customizable_type) { where(customizable_type: customizable_type) } # TODO: scope
+      # If an active field's scope is nil, it will be available to all records of the given customizable type,
+      # regardless of any scope restrictions defined for the customizable model.
+      scope :for, ->(customizable_type, scope: nil) do
+        where(customizable_type: customizable_type, scope: [scope, nil].uniq)
+      end
 
       validates :type, presence: true
       validates :name, presence: true, uniqueness: { scope: %i[customizable_type scope] }
@@ -20,6 +24,7 @@ module ActiveFields
       validate :validate_customizable_model_allows_type
 
       after_initialize :set_defaults
+      before_save :set_scope
     end
 
     class_methods do
@@ -127,5 +132,10 @@ module ActiveFields
     end
 
     def set_defaults; end
+
+    # Forces scope to nil if the customizable model does not have a scope method.
+    def set_scope
+      self.scope = nil if customizable_model.active_fields_scope_method.nil?
+    end
   end
 end

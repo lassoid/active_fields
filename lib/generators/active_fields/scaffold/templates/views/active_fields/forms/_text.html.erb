@@ -33,6 +33,11 @@
   </div>
 
   <div>
+    <%= f.label :scope %>
+    <%= f.text_field :scope %>
+  </div>
+
+  <div>
     <%= f.label :min_length %>
     <%= f.number_field :min_length, disabled: active_field.persisted? %>
   </div>
