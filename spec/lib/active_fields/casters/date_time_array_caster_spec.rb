@@ -163,7 +163,11 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       context "when array of dates" do
         let(:value) { [random_date, random_date] }
 
-        it { is_expected.to eq(value.map { |el| apply_datetime_precision(el.to_time(:utc).in_time_zone, max_precision) }) }
+        it do
+          expect(call_method).to eq(
+            value.map { |el| apply_datetime_precision(el.to_time(:utc).in_time_zone, max_precision) },
+          )
+        end
       end
 
       context "when array of date strings" do
@@ -203,7 +207,11 @@ RSpec.describe ActiveFields::Casters::DateTimeArrayCaster do
       context "when array of dates" do
         let(:value) { [random_date, random_date] }
 
-        it { is_expected.to eq(value.map { |el| apply_datetime_precision(el.to_time(:utc).in_time_zone, max_precision) }) }
+        it do
+          expect(call_method).to eq(
+            value.map { |el| apply_datetime_precision(el.to_time(:utc).in_time_zone, max_precision) },
+          )
+        end
       end
 
       context "when array of date strings" do

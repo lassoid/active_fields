@@ -23,6 +23,8 @@ module ActiveFields
       # - <tt>:op</tt> or <tt>:operator</tt> key specifying search operation or operator;
       # - <tt>:v</tt> or <tt>:value</tt> key specifying search value.
       #
+      # Optionally, a <tt>:scope</tt> key can be provided if the customizable model has scope configured
+      #
       # Example:
       #
       #   # Array of hashes
@@ -45,6 +47,12 @@ module ActiveFields
       #
       #   # Params (must be permitted)
       #   CustomizableModel.where_active_fields(permitted_params)
+      #
+      #   # Scoped
+      #   CustomizableModel.where_active_fields(
+      #     permitted_params,
+      #     scope: Current.tenant.id,
+      #   )
       scope :where_active_fields, ->(filters, scope: nil) do
         filters = filters.to_h if filters.respond_to?(:permitted?)
 
@@ -57,21 +65,21 @@ module ActiveFields
 
         active_fields_by_name = active_fields(scope: scope).index_by(&:name)
 
-        filters.inject(self) do |scope, filter|
+        filters.inject(self) do |query, filter|
           filter = filter.to_h if filter.respond_to?(:permitted?)
           filter = filter.with_indifferent_access
 
           active_field = active_fields_by_name[filter[:n] || filter[:name]]
-          next scope if active_field.nil?
-          next scope if active_field.value_finder.nil?
+          next query if active_field.nil?
+          next query if active_field.value_finder.nil?
 
           active_values = active_field.value_finder.search(
             op: filter[:op] || filter[:operator],
             value: filter[:v] || filter[:value],
           )
-          next scope if active_values.nil?
+          next query if active_values.nil?
 
-          scope.where(id: active_values.select(:customizable_id))
+          query.where(id: active_values.select(:customizable_id))
         end
       end
 
@@ -79,8 +87,12 @@ module ActiveFields
     end
 
     class_methods do
-      # Collection of active fields registered for this customizable model.
+      # Returns the collection of active fields associated with this customizable model.
+      # You can provide an optional <tt>:scope</tt> parameter to retrieve active fields for a specific scope.
+      # This enables multi-tenancy or context-based field definitions per model.
       def active_fields(scope: nil)
+        scope = nil if active_fields_scope_method.nil?
+
         ActiveFields.config.field_base_class.for(name, scope: scope)
       end
 
