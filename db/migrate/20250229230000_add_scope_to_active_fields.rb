@@ -6,8 +6,7 @@ class AddScopeToActiveFields < ActiveRecord::Migration[7.1]
       t.string :scope
 
       t.remove_index %i[name customizable_type], unique: true
-      t.index %i[name customizable_type], unique: true, where: "scope IS NULL"
-      t.index %i[scope customizable_type name], unique: true
+      t.index %i[scope customizable_type name], unique: true, nulls_not_distinct: true
     end
   end
 end

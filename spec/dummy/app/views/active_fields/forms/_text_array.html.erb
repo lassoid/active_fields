@@ -24,7 +24,7 @@
 
   <div class="form-input">
     <%= f.label :scope %>
-    <%= f.text_field :scope %>
+    <%= f.text_field :scope, disabled: active_field.persisted? %>
   </div>
 
   <div class="form-input">

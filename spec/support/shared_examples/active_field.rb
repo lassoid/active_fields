@@ -26,11 +26,15 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
 
     describe "#validate_name_uniqueness" do
       context "when customizable model does not have scope" do
-        let(:attributes) { { customizable_type: customizable_type, name: name } }
-        let(:customizable_type) { customizable_models_for(described_class.name).sample.name }
+        let(:attributes) { { customizable_type: customizable_model.name, name: name } }
+        let(:customizable_model) { customizable_models_for(described_class.name).sample }
 
         before do
-          create(factory, customizable_type: customizable_type, name: "taken_name")
+          create(
+            active_field_factories_for(customizable_model).sample,
+            customizable_type: customizable_model.name,
+            name: "taken_name",
+          )
         end
 
         context "when name is taken" do
@@ -55,12 +59,22 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
       end
 
       context "when customizable model has scope" do
-        let(:attributes) { { customizable_type: customizable_type, name: name, scope: scope } }
-        let(:customizable_type) { scoped_dummy_model.name }
+        let(:attributes) { { customizable_type: customizable_model.name, name: name, scope: scope } }
+        let(:customizable_model) { scoped_dummy_model }
 
         before do
-          create(factory, customizable_type: customizable_type, name: "taken_name_global")
-          create(factory, customizable_type: customizable_type, name: "taken_name_scoped", scope: "taken_scope")
+          create(
+            active_field_factories_for(customizable_model).sample,
+            customizable_type: customizable_model.name,
+            name: "taken_name_global",
+            scope: nil,
+          )
+          create(
+            active_field_factories_for(customizable_model).sample,
+            customizable_type: customizable_model.name,
+            name: "taken_name_scoped",
+            scope: "taken_scope",
+          )
         end
 
         context "when scope is nil" do

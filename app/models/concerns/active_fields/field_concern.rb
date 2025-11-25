@@ -94,7 +94,7 @@ module ActiveFields
 
     # Returns customizable types that allow this field type.
     #
-    # Notes:
+    # NOTE:
     # - The customizable model must be loaded to appear in this list.
     #   Relationships between customizable models and field types are established in the `has_active_fields` method,
     #   which is typically called within the customizable model.
@@ -109,15 +109,24 @@ module ActiveFields
 
     private
 
+    # NOTE: The uniqueness constraint in the DB does not fully enforce this validation:
+    # Records where scope is NULL do not prevent the existence of records with the same
+    # [name, customizable_type] but with a non-NULL scope, and vice versa.
     def validate_name_uniqueness
+      base_scope =
+        ActiveFields.config.field_base_class.excluding(self).where(customizable_type: customizable_type, name: name)
+
       if scope.nil?
-        return true unless self.class.exists?(customizable_type: customizable_type, name: name)
-      else
-        return true unless self.class.exists?(customizable_type: customizable_type, name: name, scope: [scope, nil])
+        if base_scope.exists?
+          errors.add(:name, :taken)
+          return false
+        end
+      elsif base_scope.exists?(scope: [scope, nil])
+        errors.add(:name, :taken)
+        return false
       end
 
-      errors.add(:name, :taken)
-      false
+      true
     end
 
     def validate_default_value

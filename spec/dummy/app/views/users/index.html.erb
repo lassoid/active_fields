@@ -8,9 +8,9 @@
   <span>Tenant:</span>
   <% User.distinct.pluck(:tenant_id).each do |tenant_id| %>
     <% if tenant_id == params[:tenant_id] %>
-      <b><%= tenant_id.presence || tenant_id.inspect %></b>
+      <code><b><%= tenant_id.inspect %></b></code>
     <% else %>
-      <%= link_to tenant_id.presence || tenant_id.inspect, users_path(tenant_id: tenant_id) %>
+      <code><%= link_to tenant_id.inspect, users_path(tenant_id: tenant_id) %></code>
     <% end %>
     |
   <% end %>

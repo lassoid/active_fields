@@ -33,7 +33,7 @@
         <td><%= active_field.type_name %></td>
         <td><%= active_field.customizable_type %></td>
         <td><%= active_field.name %></td>
-        <td><%= active_field.scope %></td>
+        <td><code><%= active_field.scope.inspect %></code></td>
         <td><code><%= active_field.options %></code></td>
         <td><code><%= active_field.default_value.inspect %></code></td>
         <td><%= button_to "Destroy", active_field_path(active_field), method: :delete %></td>
