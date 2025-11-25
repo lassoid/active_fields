@@ -32,10 +32,20 @@ RSpec.describe User do
       subject(:call_method) { record.active_fields_scope }
 
       before do
-        record.tenant_id = random_string
+        record.tenant_id = value
       end
 
-      it { is_expected.to eq(record.tenant_id) }
+      context "when value is nil" do
+        let(:value) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context "when value is not nil" do
+        let(:value) { random_integer }
+
+        it { is_expected.to eq(value.to_s) }
+      end
     end
   end
 end

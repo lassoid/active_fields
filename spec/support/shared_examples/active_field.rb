@@ -124,16 +124,6 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
             end
           end
 
-          context "when name is taken by other scope" do
-            let(:name) { "taken_name_scoped" }
-
-            it "is valid" do
-              record.valid?
-
-              expect(record.errors.where(:name)).to be_empty
-            end
-          end
-
           context "when name is taken by this scope" do
             let(:scope) { "taken_scope" }
             let(:name) { "taken_name_scoped" }
@@ -142,6 +132,16 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
               record.valid?
 
               expect(record.errors.where(:name, :taken)).not_to be_empty
+            end
+          end
+
+          context "when name is taken by other scope" do
+            let(:name) { "taken_name_scoped" }
+
+            it "is valid" do
+              record.valid?
+
+              expect(record.errors.where(:name)).to be_empty
             end
           end
 
