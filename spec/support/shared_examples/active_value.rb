@@ -86,6 +86,53 @@ RSpec.shared_examples "active_value" do |factory:|
           end
         end
       end
+
+      context "when customizable model has scope" do
+        let(:active_field) do
+          build(random_active_field_factory, customizable_type: scoped_dummy_model.name, scope: field_scope)
+        end
+        let(:customizable) do
+          scoped_dummy_model.build(scoped_dummy_model.active_fields_scope_method => customizable_scope)
+        end
+
+        before do
+          record.active_field = active_field
+          record.customizable = customizable
+        end
+
+        context "when active_field scope is nil" do
+          let(:field_scope) { nil }
+          let(:customizable_scope) { [random_string, nil].sample }
+
+          it "is valid" do
+            record.valid?
+
+            expect(record.errors.where(:customizable)).to be_empty
+          end
+        end
+
+        context "when scopes are equal" do
+          let(:field_scope) { random_string }
+          let(:customizable_scope) { field_scope }
+
+          it "is valid" do
+            record.valid?
+
+            expect(record.errors.where(:customizable)).to be_empty
+          end
+        end
+
+        context "when scopes are different" do
+          let(:field_scope) { random_string }
+          let(:customizable_scope) { random_string }
+
+          it "is invalid" do
+            record.valid?
+
+            expect(record.errors.where(:customizable, :invalid)).not_to be_empty
+          end
+        end
+      end
     end
   end
 

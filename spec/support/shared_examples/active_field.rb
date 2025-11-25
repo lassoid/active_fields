@@ -24,6 +24,126 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
       end
     end
 
+    describe "#validate_name_uniqueness" do
+      context "when customizable model does not have scope" do
+        let(:attributes) { { customizable_type: customizable_type, name: name } }
+        let(:customizable_type) { customizable_models_for(described_class.name).sample.name }
+
+        before do
+          create(factory, customizable_type: customizable_type, name: "taken_name")
+        end
+
+        context "when name is taken" do
+          let(:name) { "taken_name" }
+
+          it "is invalid" do
+            record.valid?
+
+            expect(record.errors.where(:name, :taken)).not_to be_empty
+          end
+        end
+
+        context "when name is not taken" do
+          let(:name) { random_string }
+
+          it "is valid" do
+            record.valid?
+
+            expect(record.errors.where(:name)).to be_empty
+          end
+        end
+      end
+
+      context "when customizable model has scope" do
+        let(:attributes) { { customizable_type: customizable_type, name: name, scope: scope } }
+        let(:customizable_type) { scoped_dummy_model.name }
+
+        before do
+          create(factory, customizable_type: customizable_type, name: "taken_name_global")
+          create(factory, customizable_type: customizable_type, name: "taken_name_scoped", scope: "taken_scope")
+        end
+
+        context "when scope is nil" do
+          let(:scope) { nil }
+
+          context "when name is taken globally" do
+            let(:name) { "taken_name_global" }
+
+            it "is invalid" do
+              record.valid?
+
+              expect(record.errors.where(:name, :taken)).not_to be_empty
+            end
+          end
+
+          context "when name is taken by some scope" do
+            let(:name) { "taken_name_scoped" }
+
+            it "is invalid" do
+              record.valid?
+
+              expect(record.errors.where(:name, :taken)).not_to be_empty
+            end
+          end
+
+          context "when name is not taken" do
+            let(:name) { random_string }
+
+            it "is valid" do
+              record.valid?
+
+              expect(record.errors.where(:name)).to be_empty
+            end
+          end
+        end
+
+        context "when scope is not nil" do
+          let(:scope) { "scope" }
+
+          context "when name is taken globally" do
+            let(:name) { "taken_name_global" }
+
+            it "is invalid" do
+              record.valid?
+
+              expect(record.errors.where(:name, :taken)).not_to be_empty
+            end
+          end
+
+          context "when name is taken by other scope" do
+            let(:name) { "taken_name_scoped" }
+
+            it "is valid" do
+              record.valid?
+
+              expect(record.errors.where(:name)).to be_empty
+            end
+          end
+
+          context "when name is taken by this scope" do
+            let(:scope) { "taken_scope" }
+            let(:name) { "taken_name_scoped" }
+
+            it "is invalid" do
+              record.valid?
+
+              expect(record.errors.where(:name, :taken)).not_to be_empty
+            end
+          end
+
+          context "when name is not taken" do
+            let(:name) { random_string }
+
+            it "is valid" do
+              record.valid?
+
+              expect(record.errors.where(:name)).to be_empty
+            end
+          end
+        end
+      end
+    end
+
     describe "#validate_default_value" do
       before do
         validator = instance_double(record.value_validator_class, errors: validator_errors)
@@ -113,30 +233,33 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
 
   context "scopes" do
     describe "#for" do
-      subject(:call_scope) { described_class.for(customizable_type).to_a }
+      let!(:global_record) { create(factory, customizable_type: customizable_type) }
+      let!(:scoped_record) { create(factory, customizable_type: customizable_type, scope: "scope") }
+      let!(:other_scoped_record) { create(factory, customizable_type: customizable_type, scope: "other_scope") }
+      let!(:other_customizable_record) do
+        create(factory, customizable_type: customizable_models_for(described_class.name).sample.name)
+      end
 
-      let!(:active_fields) do
-        customizable_models_for(described_class.name).map do |customizable_model|
-          create(factory, customizable_type: customizable_model.name)
+      let(:customizable_type) { scoped_dummy_model.name }
+
+      context "without scope parameter" do
+        subject(:call_scope) { described_class.for(customizable_type).to_a }
+
+        it "returns only global records" do
+          expect(call_scope)
+            .to include(global_record)
+            .and exclude(scoped_record, other_scoped_record, other_customizable_record)
         end
       end
 
-      let!(:other_type_active_fields) do
-        other_allowed_active_field_factories = active_field_factories_for(customizable_type.constantize) - [factory]
-        other_allowed_active_field_factories.map do |active_field_factory|
-          create(active_field_factory, customizable_type: customizable_type)
+      context "with scope parameter" do
+        subject(:call_scope) { described_class.for(customizable_type, scope: "scope").to_a }
+
+        it "returns records with given scope and global records" do
+          expect(call_scope)
+            .to include(global_record, scoped_record)
+            .and exclude(other_scoped_record, other_customizable_record)
         end
-      end
-
-      let(:customizable_type) { active_fields.sample.customizable_type }
-
-      it "returns active_fields for provided model only" do
-        expect(call_scope)
-          .to include(*active_fields.select { |field| field.customizable_type == customizable_type })
-          .and exclude(
-            *active_fields.reject { |field| field.customizable_type == customizable_type },
-            *other_type_active_fields,
-          )
       end
     end
   end
@@ -238,6 +361,32 @@ RSpec.shared_examples "active_field" do |factory:, available_traits:, **opts|
       subject(:call_method) { record.type_name }
 
       it { is_expected.to eq(ActiveFields.config.fields.key(record.type)) }
+    end
+  end
+
+  context "callbacks" do
+    describe "before_validation #set_scope" do
+      let(:record) { build(factory, customizable_type: customizable_type, scope: "some_scope") }
+
+      context "when customizable model does not have scope" do
+        let(:customizable_type) { customizable_models_for(described_class.name).sample.name }
+
+        it "sets scope to nil" do
+          expect do
+            record.valid?
+          end.to change(record, :scope).to(nil)
+        end
+      end
+
+      context "when customizable model has scope" do
+        let(:customizable_type) { scoped_dummy_model.name }
+
+        it "does not change scope" do
+          expect do
+            record.valid?
+          end.to not_change(record, :scope)
+        end
+      end
     end
   end
 end

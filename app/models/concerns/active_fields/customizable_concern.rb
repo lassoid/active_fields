@@ -116,7 +116,7 @@ module ActiveFields
     def active_fields_scope
       return if self.class.active_fields_scope_method.nil?
 
-      public_send(self.class.active_fields_scope_method)&.to_s
+      send(self.class.active_fields_scope_method)&.to_s
     end
 
     # Assigns the given attributes to the active_values association.

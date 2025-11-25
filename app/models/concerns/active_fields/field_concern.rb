@@ -19,12 +19,13 @@ module ActiveFields
       end
 
       validates :type, presence: true
-      validates :name, presence: true, uniqueness: { scope: %i[customizable_type scope] }
+      validates :name, presence: true
+      validate :validate_name_uniqueness
       validate :validate_default_value
       validate :validate_customizable_model_allows_type
 
       after_initialize :set_defaults
-      before_save :set_scope
+      before_validation :set_scope
     end
 
     class_methods do
@@ -108,6 +109,17 @@ module ActiveFields
 
     private
 
+    def validate_name_uniqueness
+      if scope.nil?
+        return true unless self.class.exists?(customizable_type: customizable_type, name: name)
+      else
+        return true unless self.class.exists?(customizable_type: customizable_type, name: name, scope: [scope, nil])
+      end
+
+      errors.add(:name, :taken)
+      false
+    end
+
     def validate_default_value
       validator = value_validator
       return if validator.validate(default_value)
@@ -135,6 +147,8 @@ module ActiveFields
 
     # Forces scope to nil if the customizable model does not have a scope method.
     def set_scope
+      return if customizable_model.nil?
+
       self.scope = nil if customizable_model.active_fields_scope_method.nil?
     end
   end

@@ -65,12 +65,11 @@ module ActiveFields
         return false
       end
 
-      if active_field.scope && customizable&.active_fields_scope != active_field.scope
-        errors.add(:customizable, :invalid)
-        return false
-      end
+      return true if active_field.scope.nil?
+      return true if customizable&.active_fields_scope == active_field.scope
 
-      true
+      errors.add(:customizable, :invalid)
+      false
     end
 
     # Wrap the provided value to differentiate between explicitly setting it to nil and not setting it at all
