@@ -50,7 +50,7 @@ class PostsController < ApplicationController
         :title,
         :body,
         :author_id,
-        active_fields_attributes: [:name, :value, :_destroy, value: []],
+        active_fields_attributes: [[:name, :value, :_destroy, value: []]],
       ],
     )
     permitted_params[:active_fields_attributes]&.each do |_index, value_attrs|

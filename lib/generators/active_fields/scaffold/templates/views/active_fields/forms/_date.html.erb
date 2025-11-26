@@ -1,4 +1,9 @@
-<%= form_with(model: active_field, scope: :active_field, url: active_field.persisted? ? active_field_path(active_field) : active_fields_path) do |f| %>
+<%= form_with(
+      model: active_field,
+      scope: :active_field,
+      url: active_field.persisted? ? active_field_path(active_field) : active_fields_path,
+      data: { controller: "active-field-form" }
+    ) do |f| %>
   <% if active_field.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(active_field.errors.count, "error") %> prohibited this record from being saved:</h2>
@@ -32,10 +37,21 @@
     <%= f.text_field :name %>
   </div>
 
-  <div>
-    <%= f.label :scope %>
-    <%= f.text_field :scope, disabled: active_field.persisted? %>
-  </div>
+  <% if active_field.persisted? %>
+    <% if active_field.scope %>
+      <div>
+        <%= f.label :scope %>
+        <%= f.text_field :scope, disabled: true %>
+      </div>
+    <% end %>
+  <% else %>
+    <div>
+      <%= f.label :scope %>
+      <%= f.text_field :scope, data: { "active-field-form-target": "scopeInput" } %>
+      <%= f.label :disable_scope %>
+      <%= f.check_box :disable_scope, data: { "active-field-form-target": "disableScopeInput", "action": "change->active-field-form#toggleScopeInput" } %>
+    </div>
+  <% end %>
 
   <div>
     <%= f.label :required %>
