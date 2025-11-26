@@ -48,4 +48,80 @@ RSpec.describe User do
       end
     end
   end
+
+  context "callbacks" do
+    describe "after_update #clear_unavailable_active_values" do
+      let!(:global_active_field) do
+        create(
+          active_field_factories_for(described_class).sample,
+          customizable_type: described_class.name,
+          scope: nil,
+        )
+      end
+      let!(:scoped_active_field) do
+        create(
+          active_field_factories_for(described_class).sample,
+          customizable_type: described_class.name,
+          scope: "scope",
+        )
+      end
+      let!(:other_scope_active_field) do
+        create(
+          active_field_factories_for(described_class).sample,
+          customizable_type: described_class.name,
+          scope: "other_scope",
+        )
+      end
+      let!(:record) do
+        described_class.create!(
+          tenant_id: scoped_active_field.scope,
+          active_values_attributes: [
+            {
+              active_field_id: global_active_field.id,
+              value: active_value_for(global_active_field),
+            },
+            {
+              active_field_id: scoped_active_field.id,
+              value: active_value_for(scoped_active_field),
+            },
+          ],
+        )
+      end
+
+      context "when tenant_id was changed" do
+        let(:new_scope) { other_scope_active_field.scope }
+
+        it "destroys orphaned active_values" do
+          record.update!(tenant_id: new_scope)
+
+          expect(record.active_values.find_by(active_field_id: scoped_active_field.id)).to be_nil
+          expect(record.active_values.find_by(active_field_id: global_active_field.id)).not_to be_nil
+        end
+
+        it "allows active_values for new scope to be created" do
+          record.update!(
+            tenant_id: new_scope,
+            active_values_attributes: [
+              {
+                active_field_id: other_scope_active_field.id,
+                value: active_value_for(other_scope_active_field),
+              },
+            ],
+          )
+
+          expect(record.active_values.find_by(active_field_id: other_scope_active_field.id)).not_to be_nil
+        end
+      end
+
+      context "when tenant_id was not changed" do
+        let(:new_scope) { record.tenant_id }
+
+        it "does not destroy any active_value" do
+          expect do
+            record.update!(tenant_id: new_scope)
+          end.to not_change(record.active_values, :count)
+        end
+      end
+    end
+  end
 end

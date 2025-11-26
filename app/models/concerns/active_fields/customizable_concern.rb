@@ -199,5 +199,29 @@ module ActiveFields
 
       active_values
     end
+
+    # Destroys all active_values that are no longer available for this customizable
+    # (e.g. after its scope has changed).
+    #
+    # This method is suitable for customizables with scope functionality enabled
+    # (when `has_active_fields` is called with a `scope_method:` parameter).
+    # When a customizable's scope value changes,
+    # some active_values may reference active_fields that are no longer available for the new scope.
+    # This method identifies and destroys those orphaned active_values.
+    #
+    # Example:
+    #
+    #   class User < ApplicationRecord
+    #     has_active_fields scope_method: :tenant_id
+    #
+    #     after_update :clear_unavailable_active_values, if: :saved_change_to_tenant_id?
+    #   end
+    def clear_unavailable_active_values
+      available_field_ids = active_fields.pluck(:id)
+
+      active_values.select do |active_value|
+        available_field_ids.exclude?(active_value.active_field_id)
+      end.each(&:destroy)
+    end
   end
 end

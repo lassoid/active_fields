@@ -38,6 +38,12 @@ classDiagram
 All values are stored in a JSON (jsonb) field, which is a highly flexible column type capable of storing various data types,
 such as booleans, strings, numbers, arrays, etc.
 
+## Requirements
+
+- Ruby 3.1+
+- Rails 7.1+
+- Postgres 15+ (17+ for search functionality)
+
 ## Installation
 
 1. Install the gem and add it to your application's Gemfile by running:
@@ -851,7 +857,95 @@ IpArrayFinder.new(active_field: ip_array_active_field).search(op: "#>=", value: 
 
 ### Scoping
 
-Postgres 15 is required
+The scoping feature enables multi-tenancy or context-based field definitions per model.
+It allows you to define different sets of _Active Fields_ for different scopes (e.g., different tenants, organizations, or contexts).
+
+**How it works:**
+- Pass a `scope_method:` parameter to `has_active_fields` to enable scoping for a _Customizable_ model. The method should return a value that identifies the scope (e.g., `tenant_id`, `organization_id`).
+- The scope method's return value is automatically converted to a string and exposed as `active_fields_scope` on each _Customizable_ record. This value is used to match against _Active Field_ `scope` values.
+- When an _Active Field_ has a `nil` scope, it is available to all records of the given _Customizable_ type, regardless of their scope value.
+- When an _Active Field_ has a non-`nil` scope, it is only available to records where the `active_fields_scope` matches the field's scope value.
+
+```ruby
+class User < ApplicationRecord
+  has_active_fields scope_method: :tenant_id
+end
+
+# Global active field (available to all users)
+ActiveFields::Field::Text.create!(
+  name: "note",
+  customizable_type: "User",
+  scope: nil,
+)
+
+# Scoped active field (only available to users with tenant_id = "tenant_1")
+ActiveFields::Field::Integer.create!(
+  name: "age",
+  customizable_type: "User",
+  scope: "tenant_1",
+)
+
+# Scoped active field (only available to users with tenant_id = "tenant_2")
+ActiveFields::Field::Date.create!(
+  name: "registered_on",
+  customizable_type: "User",
+  scope: "tenant_2",
+)
+
+# Usage
+user_1 = User.create!(tenant_id: "tenant_1")
+user_1.active_fields # Returns `note` and `age`
+
+user_2 = User.create!(tenant_id: "tenant_2")
+user_2.active_fields # Returns `note` and `registered_on`
+
+user_3 = User.create!(tenant_id: nil)
+user_3.active_fields # Returns only `note`
+
+# Query with scope
+User.active_fields # Returns only `note`
+User.active_fields(scope: "tenant_1") # Returns `note` and `age`
+User.where_active_fields(filters) # Search by global fields only (`note`)
+User.where_active_fields(filters, scope: "tenant_1") # Search by `note` and `registered_on`
+```
+
+**Important considerations:**
+
+1. **Handling scope changes:**
+   If you change the scope value of a _Customizable_ record (e.g., changing `tenant_id`), you must manually destroy _Active Values_ that are no longer available for that record.
+   The gem does not automatically handle this because `scope_method` could be any method, not just a single database column.
+   Since the scope value is computed dynamically, the gem cannot automatically detect when it has changed.
+   However, there is a helper method available: `clear_unavailable_active_values`.
+
+   **Example 1:** `scope_method` is a single database column.
+
+   ```ruby
+   class User < ApplicationRecord
+     has_active_fields scope_method: :tenant_id
+
+     after_update :clear_unavailable_active_values, if: :saved_change_to_tenant_id?
+   end
+   ```
+
+   **Example 2:** `scope_method` is a computed value from multiple columns.
+
+   ```ruby
+   class User < ApplicationRecord
+     has_active_fields scope_method: :tenant_and_department_scope
+
+     def tenant_and_department_scope
+       "#{tenant_id}-#{department_id}"
+     end
+
+     after_update :clear_unavailable_active_values, if: :tenant_and_department_scope_changed?
+
+     private
+
+     def tenant_and_department_scope_changed?
+       saved_change_to_tenant_id? || saved_change_to_department_id?
+     end
+   end
+   ```
 
 ### Localization (I18n)
 
@@ -865,9 +959,7 @@ For an example, refer to the [locale file](https://github.com/lassoid/active_fie
 
 ## Current Restrictions
 
-1. Only _PostgreSQL_ 17+ is fully supported.
-
-    The gem is tested exclusively with _PostgreSQL_. Support for other databases is not guaranteed.
+1. This gem requires _PostgreSQL_ and is not designed to support other database systems.
 
 2. Updating some _Active Fields_ options may be unsafe.
 
@@ -905,6 +997,7 @@ active_field.available_customizable_types # Available Customizable types for thi
 
 # Scopes:
 ActiveFields::Field::Boolean.for("Post") # Collection of Active Fields registered for the specified Customizable type
+ActiveFields::Field::Integer.for("User", scope: "main_tenant") # Collection of Active Fields available for the specified Customizable type with given scope
 ```
 
 ### Values API
@@ -933,10 +1026,13 @@ customizable = Post.take
 customizable.active_values # `has_many` association with Active Values linked to this Customizable
 
 # Methods:
-customizable.active_fields # Collection of Active Fields registered for this record
-Post.active_fields # Collection of Active Fields registered for this model
+customizable.active_fields # Collection of Active Fields available for this record
+customizable.active_fields_scope # Scope value for this record
+Post.active_fields # Collection of Active Fields available for this model
+User.active_fields(scope: "main_tenant") # Collection of Active Fields available for this model and given scope
 Post.allowed_active_fields_type_names # Active Fields type names allowed for this Customizable model
 Post.allowed_active_fields_class_names # Active Fields class names allowed for this Customizable model
+User.active_fields_scope_method # Scope method for this model
 
 # Create, update or destroy Active Values.
 customizable.active_fields_attributes = [
@@ -974,6 +1070,11 @@ Post.where_active_fields(
     { "name" => "text", operator: "=", "value" => "Lasso" }, # string keys
     { n: "boolean", op: "!=", v: false }, # compact form (string or symbol keys)
   ],
+)
+# Search with given scope.
+User.where_active_fields(
+  filters,
+  scope: "main_tenant",
 )
 ```
 
