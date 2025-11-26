@@ -12,10 +12,12 @@ module ActiveFields
         inverse_of: :active_field,
         dependent: :destroy
 
-      # If an active field's scope is nil, it will be available to all records of the given customizable type,
-      # regardless of any scope restrictions defined for the customizable model.
+      # Returns active fields for the given customizable type, including both
+      # scoped fields (when scope parameter is provided) and global fields (where scope is nil).
       scope :for, ->(customizable_type, scope: nil) do
-        where(customizable_type: customizable_type, scope: [scope, nil].uniq)
+        # Global fields are available to all records of the given customizable type.
+        scopes = [scope, nil].uniq
+        where(customizable_type: customizable_type, scope: scopes)
       end
 
       validates :type, presence: true

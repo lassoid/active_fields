@@ -23,7 +23,9 @@ module ActiveFields
       # - <tt>:op</tt> or <tt>:operator</tt> key specifying search operation or operator;
       # - <tt>:v</tt> or <tt>:value</tt> key specifying search value.
       #
-      # Optionally, a <tt>:scope</tt> key can be provided if the customizable model has scope configured
+      # Optionally, a <tt>:scope</tt> keyword argument can be provided to expand the search
+      # to include both global fields (where scope is nil) and scoped fields for the given scope.
+      # When <tt>:scope</tt> is omitted or nil, only global fields are searched.
       #
       # Example:
       #
@@ -50,7 +52,7 @@ module ActiveFields
       #
       #   # Scoped
       #   CustomizableModel.where_active_fields(
-      #     permitted_params,
+      #     filters,
       #     scope: Current.tenant.id,
       #   )
       scope :where_active_fields, ->(filters, scope: nil) do
@@ -88,8 +90,8 @@ module ActiveFields
 
     class_methods do
       # Returns the collection of active fields associated with this customizable model.
-      # You can provide an optional <tt>:scope</tt> parameter to retrieve active fields for a specific scope.
-      # This enables multi-tenancy or context-based field definitions per model.
+      # You can provide an optional <tt>:scope</tt> parameter
+      # to retrieve active fields available for a specific scope, not just global fields.
       def active_fields(scope: nil)
         scope = nil if active_fields_scope_method.nil?
 
