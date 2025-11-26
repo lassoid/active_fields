@@ -4,7 +4,10 @@
   <%= link_to "New", new_author_path %>
 </div>
 
-<%= render_active_fields_finders_form(active_fields: Author.active_fields, url: authors_path) %>
+<%= render_active_fields_finders_form(
+      active_fields: Author.active_fields,
+      url: authors_path,
+    ) %>
 
 <table class="table">
   <thead>
