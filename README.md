@@ -861,10 +861,10 @@ The scoping feature enables multi-tenancy or context-based field definitions per
 It allows you to define different sets of _Active Fields_ for different scopes (e.g., different tenants, organizations, or contexts).
 
 **How it works:**
-- Pass a `scope_method:` parameter to `has_active_fields` to enable scoping for a _Customizable_ model. The method should return a value that identifies the scope (e.g., `tenant_id`, `organization_id`).
+- Pass a `scope_method` parameter to `has_active_fields` to enable scoping for a _Customizable_ model. The method should return a value that identifies the scope (e.g., `tenant_id`, `organization_id`).
 - The scope method's return value is automatically converted to a string and exposed as `active_fields_scope` on each _Customizable_ record. This value is used to match against _Active Field_ `scope` values.
-- When an _Active Field_ has a `nil` scope, it is available to all records of the given _Customizable_ type, regardless of their scope value.
-- When an _Active Field_ has a non-`nil` scope, it is only available to records where the `active_fields_scope` matches the field's scope value.
+- When an _Active Field_ has `scope` = `nil` (_global field_), it is available to all _Customizable_ records, regardless of their scope value.
+- When an _Active Field_ has a `scope` != `nil` (_scope field_), it is only available to _Customizable_ records where `active_fields_scope` matches the `scope`.
 
 ```ruby
 class User < ApplicationRecord
@@ -909,43 +909,42 @@ User.where_active_fields(filters) # Search by global fields only (`note`)
 User.where_active_fields(filters, scope: "tenant_1") # Search by `note` and `registered_on`
 ```
 
-**Important considerations:**
+**Handling scope changes:**
 
-1. **Handling scope changes:**
-   If you change the scope value of a _Customizable_ record (e.g., changing `tenant_id`), you must manually destroy _Active Values_ that are no longer available for that record.
-   The gem does not automatically handle this because `scope_method` could be any method, not just a single database column.
-   Since the scope value is computed dynamically, the gem cannot automatically detect when it has changed.
-   However, there is a helper method available: `clear_unavailable_active_values`.
+If you change the scope value of a _Customizable_ record (e.g., changing `tenant_id`), you must manually destroy _Active Values_ that are no longer available for that record.
+The gem does not automatically handle this because the `scope_method` implementation is up to you, and therefore its change tracking is your responsibility.
+However, there is a helper method that you could use to clear the _Active Values_ list: `clear_unavailable_active_values`.
 
-   **Example 1:** `scope_method` is a single database column.
+**Example 1:** `scope_method` is a single database column.
 
-   ```ruby
-   class User < ApplicationRecord
-     has_active_fields scope_method: :tenant_id
+```ruby
+class User < ApplicationRecord
+  has_active_fields scope_method: :tenant_id
 
-     after_update :clear_unavailable_active_values, if: :saved_change_to_tenant_id?
-   end
-   ```
+  after_update :clear_unavailable_active_values, if: :saved_change_to_tenant_id?
+end
+```
 
-   **Example 2:** `scope_method` is a computed value from multiple columns.
+**Example 2:** `scope_method` is a computed value from multiple columns.
 
-   ```ruby
-   class User < ApplicationRecord
-     has_active_fields scope_method: :tenant_and_department_scope
+```ruby
+class User < ApplicationRecord
+  has_active_fields scope_method: :tenant_and_department_scope
 
-     def tenant_and_department_scope
-       "#{tenant_id}-#{department_id}"
-     end
+  # The scope method should return a string
+  def tenant_and_department_scope
+    "#{tenant_id}-#{department_id}"
+  end
 
-     after_update :clear_unavailable_active_values, if: :tenant_and_department_scope_changed?
+  after_update :clear_unavailable_active_values, if: :tenant_and_department_scope_changed?
 
-     private
+  private
 
-     def tenant_and_department_scope_changed?
-       saved_change_to_tenant_id? || saved_change_to_department_id?
-     end
-   end
-   ```
+  def tenant_and_department_scope_changed?
+    saved_change_to_tenant_id? || saved_change_to_department_id?
+  end
+end
+```
 
 ### Localization (I18n)
 
