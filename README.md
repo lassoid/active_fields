@@ -7,6 +7,33 @@
 **ActiveFields** is a _Rails_ plugin that implements the _Entity-Attribute-Value_ (_EAV_) pattern,
 enabling the addition of custom fields to any model at runtime without requiring changes to the database schema.
 
+## Table of Contents
+
+- [Key Concepts](#key-concepts)
+- [Models Structure](#models-structure)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Field Types](#field-types)
+  - [Fields Base Attributes](#fields-base-attributes)
+  - [Field Types Summary](#field-types-summary)
+  - [Search Functionality](#search-functionality)
+- [Configuration](#configuration)
+  - [Limiting Field Types for a Customizable](#limiting-field-types-for-a-customizable)
+  - [Customizing Internal Model Classes](#customizing-internal-model-classes)
+  - [Adding Custom Field Types](#adding-custom-field-types)
+  - [Scoping](#scoping)
+  - [Localization (I18n)](#localization-i18n)
+- [Current Restrictions](#current-restrictions)
+- [API Overview](#api-overview)
+  - [Fields API](#fields-api)
+  - [Values API](#values-api)
+  - [Customizable API](#customizable-api)
+  - [Global Config](#global-config)
+  - [Registry](#registry)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Key Concepts
 
 - **Customizable**: A record that has custom fields (_Entity_).
@@ -292,6 +319,9 @@ classDiagram
 All _Active Field_ model names start with `ActiveFields::Field`.
 We replace it with `**` for conciseness.
 
+<details>
+<summary><strong>Table</strong></summary>
+
 | Active Field model              | Type name        | Attributes                               | Options                                                                                                                                                                                                                                                                                                         |
 |---------------------------------|------------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `**::Boolean`                   | `boolean`        | `default_value`<br>(`boolean` or `nil`)  | `required`(`boolean`) - the value must not be `false`<br>`nullable`(`boolean`) - the value could be `nil`                                                                                                                                                                                                       |
@@ -308,6 +338,8 @@ We replace it with `**` for conciseness.
 | `**::Text`                      | `text`           | `default_value`<br>(`string` or `nil`)   | `required`(`boolean`) - the value must not be `nil`<br>`min_length`(`integer`) - minimum value length allowed<br>`max_length`(`integer`) - maximum value length allowed                                                                                                                                         |
 | `**::TextArray`                 | `text_array`     | `default_value`<br>(`array[string]`)     | `min_length`(`integer`) - minimum value length allowed, for each element<br>`max_length`(`integer`) - maximum value length allowed, for each element<br>`min_size`(`integer`) - minimum value size<br>`max_size`(`integer`) - maximum value size                                                                |
 | _Your custom class can be here_ | _..._            | _..._                                    | _..._                                                                                                                                                                                                                                                                                                           |
+
+</details>
 
 **Note:** Options marked with **\*** are mandatory.
 
@@ -354,14 +386,18 @@ Key details:
 
 Supported _operations_ and _operators_ for each _Active Field_ type are listed below.
 
-#### Boolean
+<details>
+<summary><strong>Boolean</strong></summary>
 
 | Operation  | Operator | Description                 |
 |------------|----------|-----------------------------|
 | `eq`       | `=`      | Value is equal to given     |
 | `not_eq`   | `!=`     | Value is not equal to given |
 
-#### Date
+</details>
+
+<details>
+<summary><strong>Date</strong></summary>
 
 | Operation  | Operator | Description                             |
 |------------|----------|-----------------------------------------|
@@ -372,7 +408,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `lt`       | `<`      | Value is less than given                |
 | `lteq`     | `<=`     | Value is less than or equal to given    |
 
-#### DateArray
+</details>
+
+<details>
+<summary><strong>DateArray</strong></summary>
 
 | Operation     | Operator | Description                                                    |
 |---------------|----------|----------------------------------------------------------------|
@@ -393,7 +432,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `size_lt`     | `#<`     | Array value size is less than given                            |
 | `size_lteq`   | `#<=`    | Array value size is less than or equal to given                |
 
-#### DateTime
+</details>
+
+<details>
+<summary><strong>DateTime</strong></summary>
 
 | Operation  | Operator | Description                             |
 |------------|----------|-----------------------------------------|
@@ -404,7 +446,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `lt`       | `<`      | Value is less than given                |
 | `lteq`     | `<=`     | Value is greater than or equal to given |
 
-#### DateTimeArray
+</details>
+
+<details>
+<summary><strong>DateTimeArray</strong></summary>
 
 | Operation     | Operator | Description                                                    |
 |---------------|----------|----------------------------------------------------------------|
@@ -425,7 +470,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `size_lt`     | `#<`     | Array value size is less than given                            |
 | `size_lteq`   | `#<=`    | Array value size is less than or equal to given                |
 
-#### Decimal
+</details>
+
+<details>
+<summary><strong>Decimal</strong></summary>
 
 | Operation  | Operator | Description                             |
 |------------|----------|-----------------------------------------|
@@ -436,7 +484,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `lt`       | `<`      | Value is less than given                |
 | `lteq`     | `<=`     | Value is greater than or equal to given |
 
-#### DecimalArray
+</details>
+
+<details>
+<summary><strong>DecimalArray</strong></summary>
 
 | Operation     | Operator | Description                                                    |
 |---------------|----------|----------------------------------------------------------------|
@@ -457,14 +508,20 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `size_lt`     | `#<`     | Array value size is less than given                            |
 | `size_lteq`   | `#<=`    | Array value size is less than or equal to given                |
 
-#### Enum
+</details>
+
+<details>
+<summary><strong>Enum</strong></summary>
 
 | Operation  | Operator | Description                 |
 |------------|----------|-----------------------------|
 | `eq`       | `=`      | Value is equal to given     |
 | `not_eq`   | `!=`     | Value is not equal to given |
 
-#### EnumArray
+</details>
+
+<details>
+<summary><strong>EnumArray</strong></summary>
 
 | Operation     | Operator | Description                                        |
 |---------------|----------|----------------------------------------------------|
@@ -477,7 +534,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `size_lt`     | `#<`     | Array value size is less than given                |
 | `size_lteq`   | `#<=`    | Array value size is less than or equal to given    |
 
-#### Integer
+</details>
+
+<details>
+<summary><strong>Integer</strong></summary>
 
 | Operation  | Operator | Description                             |
 |------------|----------|-----------------------------------------|
@@ -488,7 +548,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `lt`       | `<`      | Value is less than given                |
 | `lteq`     | `<=`     | Value is greater than or equal to given |
 
-#### IntegerArray
+</details>
+
+<details>
+<summary><strong>IntegerArray</strong></summary>
 
 | Operation     | Operator | Description                                                    |
 |---------------|----------|----------------------------------------------------------------|
@@ -509,7 +572,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `size_lt`     | `#<`     | Array value size is less than given                            |
 | `size_lteq`   | `#<=`    | Array value size is less than or equal to given                |
 
-#### Text
+</details>
+
+<details>
+<summary><strong>Text</strong></summary>
 
 | Operation         | Operator | Description                                                 |
 |-------------------|----------|-------------------------------------------------------------|
@@ -528,7 +594,10 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `not_iend_with`   | `!$*`    | Value doesn't end with given substring (case-insensitive)   |
 | `not_icontain`    | `!~*`    | Value doesn't contain given substring (case-insensitive)    |
 
-#### TextArray
+</details>
+
+<details>
+<summary><strong>TextArray</strong></summary>
 
 | Operation        | Operator | Description                                                 |
 |------------------|----------|-------------------------------------------------------------|
@@ -542,6 +611,8 @@ Supported _operations_ and _operators_ for each _Active Field_ type are listed b
 | `size_gteq`      | `#>=`    | Array value size is greater than or equal to given          |
 | `size_lt`        | `#<`     | Array value size is less than given                         |
 | `size_lteq`      | `#<=`    | Array value size is less than or equal to given             |
+
+</details>
 
 ## Configuration
 
