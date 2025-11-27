@@ -14,6 +14,7 @@ AllCops:
   TargetRailsVersion: 8.1
   NewCops: enable
   Exclude:
+    - "gemfiles/*"
     - "spec/dummy/db/schema.rb"
 
 Layout/LineLength:

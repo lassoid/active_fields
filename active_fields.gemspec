@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   # Dependencies
   spec.add_dependency "rails", ">= 7.1"
 
+  spec.add_development_dependency "appraisal"
   spec.add_development_dependency "factory_bot"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "rake"
