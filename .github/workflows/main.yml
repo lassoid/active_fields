@@ -66,7 +66,7 @@ jobs:
     - name: Set up Dummy
       run: spec/dummy/bin/setup
       env:
-        BUNDLE_GEMFILE: ../../gemfiles/${{ matrix.appraisal }}.gemfile
+        BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
 
     - name: Run tests
       run: bin/rspec
