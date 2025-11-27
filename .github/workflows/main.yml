@@ -16,7 +16,7 @@ jobs:
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.4.7
+          ruby-version: 3.4
           bundler-cache: true
 
       - name: Run Rubocop
@@ -24,14 +24,16 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }}
+    name: Ruby ${{ matrix.ruby }} (${{ matrix.appraisal }})
     strategy:
       matrix:
-        ruby:
-        - "3.1.7"
-        - "3.2.9"
-        - "3.3.10"
-        - "3.4.7"
+        ruby: ["3.1", "3.2", "3.3", "3.4"]
+        appraisal: ["rails_7.1", "rails_7.2", "rails_8.0", "rails_8.1"]
+        exclude:
+          - ruby: "3.1"
+            appraisal: "rails_8.0"
+          - ruby: "3.1"
+            appraisal: "rails_8.1"
     services:
       postgres:
         image: postgres:17
@@ -49,21 +51,26 @@ jobs:
     env:
       RAILS_ENV: test
       CI: true
+      # Use absolute path for BUNDLE_GEMFILE to avoid issues with relative path resolution
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.appraisal }}.gemfile
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Install Ruby and gems
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
 
-    - name: Set up Dummy
-      run: spec/dummy/bin/setup
+      - name: Set up Dummy
+        run: spec/dummy/bin/setup
 
-    - name: Run tests
-      run: bin/rspec
+      - name: Run tests
+        run: bin/rspec
 
-    - name: Run tests with customization
-      run: CHANGE_FIELD_BASE_CLASS=true CHANGE_VALUE_CLASS=true bin/rspec
+      - name: Run tests with customization
+        run: bin/rspec
+        env:
+          CHANGE_FIELD_BASE_CLASS: true
+          CHANGE_VALUE_CLASS: true

@@ -20,4 +20,5 @@
 
 .ruby-version
 Gemfile.lock
+gemfiles/*.lock
 TODO.md

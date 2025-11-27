@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+# See https://github.com/thoughtbot/appraisal for more information.
+
+appraise "rails_7.1" do
+  gem "rails", "~> 7.1.0"
+end
+
+appraise "rails_7.2" do
+  gem "rails", "~> 7.2.0"
+end
+
+appraise "rails_8.0" do
+  gem "rails", "~> 8.0.0"
+end
+
+appraise "rails_8.1" do
+  gem "rails", "~> 8.1.0"
+end
