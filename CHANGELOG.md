@@ -1,6 +1,6 @@
 ## [Unreleased]
 - Disabled fields name format validation
-- Added scope functionality: _Active Field_ can now be limited to specific tenants, organizations, or contexts, allowing different sets of custom fields per group within the same _Customizable_ model.
+- Added scope functionality: _Active Field_ can now be limited to a specific context, allowing different sets of fields per group within the same _Customizable_ model.
 
 ## [2.0.1] - 2025-04-09
 - Fixed search with `nil` operator
