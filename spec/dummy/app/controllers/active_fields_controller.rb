@@ -4,7 +4,7 @@ class ActiveFieldsController < ApplicationController
   before_action :set_active_field, only: %i[show edit update destroy]
 
   def index
-    @active_fields = ActiveFields.config.field_base_class.order(:customizable_type, :id)
+    @active_fields = ActiveFields.config.field_base_class.order(:customizable_type, :scope, :id)
   end
 
   def show; end
@@ -42,7 +42,7 @@ class ActiveFieldsController < ApplicationController
   private
 
   def active_field_create_params(model_class)
-    params.expect(active_field: [policy(model_class).permitted_attributes_for_create]).tap do |attrs|
+    params.expect(active_field: policy(model_class).permitted_attributes_for_create).tap do |attrs|
       attrs.transform_values! do |value|
         value.is_a?(Array) ? compact_array_param(value) : value
       end
@@ -50,7 +50,7 @@ class ActiveFieldsController < ApplicationController
   end
 
   def active_field_update_params(model_class)
-    params.expect(active_field: [policy(model_class).permitted_attributes_for_update]).tap do |attrs|
+    params.expect(active_field: policy(model_class).permitted_attributes_for_update).tap do |attrs|
       attrs.transform_values! do |value|
         value.is_a?(Array) ? compact_array_param(value) : value
       end

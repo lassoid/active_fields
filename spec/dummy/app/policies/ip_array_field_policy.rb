@@ -5,6 +5,7 @@ class IpArrayFieldPolicy < ApplicationPolicy
     [
       :customizable_type,
       :name,
+      :scope,
       :min_size,
       :max_size,
       default_value: [],

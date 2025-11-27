@@ -1,0 +1,22 @@
+<%= form_with(model: user) do |f| %>
+  <%= render partial: "shared/form_errors", locals: { record: user } %>
+
+  <div class="form-input">
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </div>
+
+  <div class="form-input">
+    <%= f.label :tenant_id %>
+    <%= f.text_field :tenant_id %>
+  </div>
+
+  <%= f.fields_for :active_fields, user.initialize_active_values.sort_by(&:active_field_id), include_id: false do |active_fields_form| %>
+    <%= active_fields_form.hidden_field :name %>
+    <%= render_active_value_input(form: active_fields_form, active_value: active_fields_form.object) %>
+  <% end %>
+
+  <div class="form-input">
+    <%= f.submit %>
+  </div>
+<% end %>

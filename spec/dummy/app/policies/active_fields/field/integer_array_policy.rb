@@ -7,6 +7,7 @@ module ActiveFields
         [
           :customizable_type,
           :name,
+          :scope,
           :min_size,
           :max_size,
           :min,

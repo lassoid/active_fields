@@ -4,7 +4,10 @@
   <%= link_to "New", new_post_path %>
 </div>
 
-<%= render_active_fields_finders_form(active_fields: Post.active_fields, url: posts_path) %>
+<%= render_active_fields_finders_form(
+      active_fields: Post.active_fields,
+      url: posts_path,
+    ) %>
 
 <table class="table">
   <thead>

@@ -1,55 +1,56 @@
 # frozen_string_literal: true
 
-class PostsController < ApplicationController
-  before_action :set_post, only: %i[edit update destroy]
+class UsersController < ApplicationController
+  before_action :set_user, only: %i[edit update destroy]
 
   def index
-    @posts = Post.where_active_fields(active_fields_finders_params)
+    @users = User.where_active_fields(active_fields_finders_params, scope: params[:tenant_id])
       .includes(active_values: :active_field).order(id: :desc)
+
+    @users = @users.where(tenant_id: params[:tenant_id]) if params[:tenant_id]
   end
 
   def new
-    @post = Post.new
+    @user = User.new
   end
 
   def edit; end
 
   def create
-    @post = Post.new(post_params)
+    @user = User.new(user_params)
 
-    if @post.save
-      redirect_to edit_post_path(@post), status: :see_other
+    if @user.save
+      redirect_to edit_user_path(@user), status: :see_other
     else
       render :new, status: :unprocessable_content
     end
   end
 
   def update
-    if @post.update(post_params)
-      redirect_to edit_post_path(@post), status: :see_other
+    if @user.update(user_params)
+      redirect_to edit_user_path(@user), status: :see_other
     else
       render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
-    @post.destroy!
+    @user.destroy!
 
-    redirect_to posts_path, status: :see_other
+    redirect_to users_path, status: :see_other
   end
 
   private
 
-  def set_post
-    @post = Post.find(params[:id])
+  def set_user
+    @user = User.find(params[:id])
   end
 
-  def post_params
+  def user_params
     permitted_params = params.expect(
-      post: [
-        :title,
-        :body,
-        :author_id,
+      user: [
+        :email,
+        :tenant_id,
         active_fields_attributes: [[:name, :value, :_destroy, value: []]],
       ],
     )

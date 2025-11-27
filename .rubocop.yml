@@ -3,6 +3,8 @@ plugins:
   - rubocop-rails
   - rubocop-rake
   - rubocop-rspec
+  - rubocop-factory_bot
+  - rubocop-rspec_rails
 
 inherit_gem:
   rubocop-shopify: rubocop.yml
@@ -13,6 +15,10 @@ AllCops:
   NewCops: enable
   Exclude:
     - "spec/dummy/db/schema.rb"
+
+Layout/LineLength:
+  Enabled: true
+  Max: 120
 
 Layout/EmptyLinesAroundAccessModifier:
   EnforcedStyle: around
@@ -49,4 +55,7 @@ RSpec/MultipleExpectations:
   Enabled: false
 
 Naming/PredicateMethod:
+  Enabled: false
+
+Naming/InclusiveLanguage:
   Enabled: false

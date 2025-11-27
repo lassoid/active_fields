@@ -59,7 +59,14 @@ module ActiveFields
 
     def validate_customizable_allowed
       return true if active_field.nil?
-      return true if customizable_type == active_field.customizable_type
+
+      if customizable_type != active_field.customizable_type
+        errors.add(:customizable, :invalid)
+        return false
+      end
+
+      return true if active_field.scope.nil?
+      return true if customizable&.active_fields_scope == active_field.scope
 
       errors.add(:customizable, :invalid)
       false

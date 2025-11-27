@@ -23,6 +23,10 @@ module ActiveFields
       # - <tt>:op</tt> or <tt>:operator</tt> key specifying search operation or operator;
       # - <tt>:v</tt> or <tt>:value</tt> key specifying search value.
       #
+      # Optionally, a <tt>:scope</tt> keyword argument can be provided to expand the search
+      # to include both global fields (where scope is nil) and scoped fields for the given scope.
+      # When <tt>:scope</tt> is omitted or nil, only global fields are searched.
+      #
       # Example:
       #
       #   # Array of hashes
@@ -45,7 +49,13 @@ module ActiveFields
       #
       #   # Params (must be permitted)
       #   CustomizableModel.where_active_fields(permitted_params)
-      scope :where_active_fields, ->(filters) do
+      #
+      #   # Scoped
+      #   CustomizableModel.where_active_fields(
+      #     filters,
+      #     scope: Current.tenant.id,
+      #   )
+      scope :where_active_fields, ->(filters, scope: nil) do
         filters = filters.to_h if filters.respond_to?(:permitted?)
 
         unless filters.is_a?(Array) || filters.is_a?(Hash)
@@ -55,23 +65,23 @@ module ActiveFields
         # Handle `fields_for` params
         filters = filters.values if filters.is_a?(Hash)
 
-        active_fields_by_name = active_fields.index_by(&:name)
+        active_fields_by_name = active_fields(scope: scope).index_by(&:name)
 
-        filters.inject(self) do |scope, filter|
+        filters.inject(self) do |query, filter|
           filter = filter.to_h if filter.respond_to?(:permitted?)
           filter = filter.with_indifferent_access
 
           active_field = active_fields_by_name[filter[:n] || filter[:name]]
-          next scope if active_field.nil?
-          next scope if active_field.value_finder.nil?
+          next query if active_field.nil?
+          next query if active_field.value_finder.nil?
 
           active_values = active_field.value_finder.search(
             op: filter[:op] || filter[:operator],
             value: filter[:v] || filter[:value],
           )
-          next scope if active_values.nil?
+          next query if active_values.nil?
 
-          scope.where(id: active_values.select(:customizable_id))
+          query.where(id: active_values.select(:customizable_id))
         end
       end
 
@@ -79,9 +89,13 @@ module ActiveFields
     end
 
     class_methods do
-      # Collection of active fields registered for this customizable
-      def active_fields
-        ActiveFields.config.field_base_class.for(name)
+      # Returns the collection of active fields associated with this customizable model.
+      # You can provide an optional <tt>:scope</tt> parameter
+      # to retrieve active fields available for a specific scope, not just global fields.
+      def active_fields(scope: nil)
+        scope = nil if active_fields_scope_method.nil?
+
+        ActiveFields.config.field_base_class.for(name, scope: scope)
       end
 
       # Returns active fields type names allowed for this customizable model.
@@ -95,7 +109,17 @@ module ActiveFields
       end
     end
 
-    delegate :active_fields, to: :class
+    # Collection of active fields registered for this customizable.
+    def active_fields
+      self.class.active_fields(scope: active_fields_scope)
+    end
+
+    # Scope value for the active fields collection.
+    def active_fields_scope
+      return if self.class.active_fields_scope_method.nil?
+
+      send(self.class.active_fields_scope_method)&.to_s
+    end
 
     # Assigns the given attributes to the active_values association.
     #
@@ -176,6 +200,30 @@ module ActiveFields
       end
 
       active_values
+    end
+
+    # Destroys all active_values that are no longer available for this customizable
+    # (e.g. after its scope has changed).
+    #
+    # This method is suitable for customizables with scope functionality enabled
+    # (when `has_active_fields` is called with a `scope_method:` parameter).
+    # When a customizable's scope value changes,
+    # some active_values may reference active_fields that are no longer available for the new scope.
+    # This method identifies and destroys those orphaned active_values.
+    #
+    # Example:
+    #
+    #   class User < ApplicationRecord
+    #     has_active_fields scope_method: :tenant_id
+    #
+    #     after_update :clear_unavailable_active_values, if: :saved_change_to_tenant_id?
+    #   end
+    def clear_unavailable_active_values
+      available_field_ids = active_fields.pluck(:id)
+
+      active_values.select do |active_value|
+        available_field_ids.exclude?(active_value.active_field_id)
+      end.each(&:destroy)
     end
   end
 end
