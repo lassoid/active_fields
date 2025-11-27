@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [3.0.0] - 2025-11-27
 - Disabled fields name format validation
 - Added scope functionality: _Active Field_ can now be limited to a specific context, allowing different sets of fields per group within the same _Customizable_ model.
 - Added Appraisal to run tests across multiple Rails versions.
