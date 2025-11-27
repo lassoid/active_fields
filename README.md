@@ -1062,6 +1062,10 @@ customizable.active_values_attributes = attributes
 # `form.fields_for :active_fields, customizable.initialize_active_values`.
 customizable.initialize_active_values
 
+# Destroys Active Values that are no longer associated with Active Fields available for this record.
+# Call this method after changing the scope value to ensure all Active Values are valid.
+customizable.clear_unavailable_active_values
+
 # Query Customizables by Active Values.
 Post.where_active_fields(
   [
