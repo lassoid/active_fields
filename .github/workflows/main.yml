@@ -74,6 +74,8 @@ jobs:
         BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
 
     - name: Run tests with customization
-      run: CHANGE_FIELD_BASE_CLASS=true CHANGE_VALUE_CLASS=true bin/rspec
+      run: bin/rspec
       env:
+        CHANGE_FIELD_BASE_CLASS: true
+        CHANGE_VALUE_CLASS: true
         BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
