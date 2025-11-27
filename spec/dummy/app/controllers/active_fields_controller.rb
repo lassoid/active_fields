@@ -4,7 +4,7 @@ class ActiveFieldsController < ApplicationController
   before_action :set_active_field, only: %i[show edit update destroy]
 
   def index
-    @active_fields = ActiveFields.config.field_base_class.order(:customizable_type, :id)
+    @active_fields = ActiveFields.config.field_base_class.order(:customizable_type, :scope, :id)
   end
 
   def show; end

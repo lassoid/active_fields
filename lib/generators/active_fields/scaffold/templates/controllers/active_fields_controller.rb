@@ -4,7 +4,7 @@ class ActiveFieldsController < ApplicationController
   before_action :set_active_field, only: %i[show edit update destroy]
 
   def index
-    @active_fields = ActiveFields.config.field_base_class.order(:customizable_type, :id)
+    @active_fields = ActiveFields.config.field_base_class.order(:customizable_type, :scope, :id)
   end
 
   def show; end
@@ -60,31 +60,31 @@ class ActiveFieldsController < ApplicationController
   # It is strongly recommended to move it to, for example, policies.
   def permitted_attributes_for_create(model_class)
     if model_class == ActiveFields::Field::Boolean
-      %i[customizable_type name required nullable default_value]
+      %i[customizable_type name scope required nullable default_value]
     elsif model_class == ActiveFields::Field::Date
-      %i[customizable_type name required min max default_value]
+      %i[customizable_type name scope required min max default_value]
     elsif model_class == ActiveFields::Field::DateArray
-      [:customizable_type, :name, :min_size, :max_size, :min, :max, default_value: []]
+      [:customizable_type, :name, :scope, :min_size, :max_size, :min, :max, default_value: []]
     elsif model_class == ActiveFields::Field::DateTime
-      %i[customizable_type name required min max precision default_value]
+      %i[customizable_type name scope required min max precision default_value]
     elsif model_class == ActiveFields::Field::DateTimeArray
-      [:customizable_type, :name, :min_size, :max_size, :min, :max, :precision, default_value: []]
+      [:customizable_type, :name, :scope, :min_size, :max_size, :min, :max, :precision, default_value: []]
     elsif model_class == ActiveFields::Field::Decimal
-      %i[customizable_type name required min max precision default_value]
+      %i[customizable_type name scope required min max precision default_value]
     elsif model_class == ActiveFields::Field::DecimalArray
-      [:customizable_type, :name, :min_size, :max_size, :min, :max, :precision, default_value: []]
+      [:customizable_type, :name, :scope, :min_size, :max_size, :min, :max, :precision, default_value: []]
     elsif model_class == ActiveFields::Field::Enum
-      [:customizable_type, :name, :required, :default_value, allowed_values: []]
+      [:customizable_type, :name, :scope, :required, :default_value, allowed_values: []]
     elsif model_class == ActiveFields::Field::EnumArray
-      [:customizable_type, :name, :min_size, :max_size, allowed_values: [], default_value: []]
+      [:customizable_type, :name, :scope, :min_size, :max_size, allowed_values: [], default_value: []]
     elsif model_class == ActiveFields::Field::Integer
-      %i[customizable_type name required min max default_value]
+      %i[customizable_type name scope required min max default_value]
     elsif model_class == ActiveFields::Field::IntegerArray
-      [:customizable_type, :name, :min_size, :max_size, :min, :max, default_value: []]
+      [:customizable_type, :name, :scope, :min_size, :max_size, :min, :max, default_value: []]
     elsif model_class == ActiveFields::Field::Text
-      %i[customizable_type name min_length max_length default_value]
+      %i[customizable_type name scope min_length max_length default_value]
     elsif model_class == ActiveFields::Field::TextArray
-      [:customizable_type, :name, :min_size, :max_size, :min_length, :max_length, default_value: []]
+      [:customizable_type, :name, :scope, :min_size, :max_size, :min_length, :max_length, default_value: []]
     else
       raise ArgumentError, "undefined model_class `#{model_class.inspect}`"
     end
