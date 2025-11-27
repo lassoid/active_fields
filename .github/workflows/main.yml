@@ -59,7 +59,7 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
+        # bundler-cache: true
       env:
         BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
 
