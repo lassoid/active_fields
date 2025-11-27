@@ -51,7 +51,6 @@ jobs:
     env:
       RAILS_ENV: test
       CI: true
-      BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -61,12 +60,16 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+      env:
+        BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
 
     - name: Set up Dummy
       run: spec/dummy/bin/setup
+      env:
+        BUNDLE_GEMFILE: ../../gemfiles/${{ matrix.appraisal }}.gemfile
 
     - name: Run tests
-      run: bin/rspec
+      run: bin/appraisal ${{ matrix.appraisal }} rspec
 
     - name: Run tests with customization
-      run: CHANGE_FIELD_BASE_CLASS=true CHANGE_VALUE_CLASS=true bin/rspec
+      run: CHANGE_FIELD_BASE_CLASS=true CHANGE_VALUE_CLASS=true bin/appraisal ${{ matrix.appraisal }} rspec
