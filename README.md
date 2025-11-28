@@ -5,7 +5,11 @@
 [![Github Actions CI](https://github.com/lassoid/active_fields/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/lassoid/active_fields/actions/workflows/main.yml)
 
 **ActiveFields** is a _Rails_ plugin that implements the _Entity-Attribute-Value_ (_EAV_) pattern,
-enabling the addition of custom fields to any model at runtime without requiring changes to the database schema.
+enabling the addition of custom fields to any model at runtime without requiring changes to the database schema or application code.
+
+It may look similar to other gems like [attr_json](https://github.com/jrochkind/attr_json) or [store_attribute](https://github.com/palkan/store_attribute), but it solves a fundamentally different problem. While those tools allow you to add fields without migrations, they still require developer work - you must write code to define each field.
+
+The main use case of _EAV_ in general, and _ActiveFields_ in particular, is to enable **any application user** (not just developers) to add their own fields. Not just without migrations, but without touching the source code at all. These are truly data-driven fields that can be created, modified, and managed entirely through your application's interface.
 
 ## Table of Contents
 
@@ -21,7 +25,7 @@ enabling the addition of custom fields to any model at runtime without requiring
   - [Limiting Field Types for a Customizable](#limiting-field-types-for-a-customizable)
   - [Customizing Internal Model Classes](#customizing-internal-model-classes)
   - [Adding Custom Field Types](#adding-custom-field-types)
-  - [Scoping](#scoping)
+  - [Multi-tenancy (scoping)](#multi-tenancy-scoping)
   - [Localization (I18n)](#localization-i18n)
 - [Current Restrictions](#current-restrictions)
 - [API Overview](#api-overview)
@@ -926,7 +930,7 @@ IpFinder.new(active_field: ip_active_field).search(op: "eq", value: "127.0.0.1")
 IpArrayFinder.new(active_field: ip_array_active_field).search(op: "#>=", value: 5)
 ```
 
-### Scoping
+### Multi-tenancy (scoping)
 
 The scoping feature enables multi-tenancy or context-based field definitions per model.
 It allows you to define different sets of _Active Fields_ for different scopes (e.g., different tenants, organizations, or contexts).
