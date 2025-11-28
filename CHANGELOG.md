@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [3.0.1] - 2025-11-28
+- Fixed an issue where searching with `v: false` was treated as `nil` due to `false || nil` logic
+
 ## [3.0.0] - 2025-11-27
 - Disabled fields name format validation
 - Added scope functionality: _Active Field_ can now be limited to a specific context, allowing different sets of fields per group within the same _Customizable_ model.
