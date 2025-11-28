@@ -71,13 +71,17 @@ module ActiveFields
           filter = filter.to_h if filter.respond_to?(:permitted?)
           filter = filter.with_indifferent_access
 
-          active_field = active_fields_by_name[filter[:n] || filter[:name]]
+          name = filter.key?(:n) ? filter[:n] : filter[:name]
+          operator = filter.key?(:op) ? filter[:op] : filter[:operator]
+          value = filter.key?(:v) ? filter[:v] : filter[:value]
+
+          active_field = active_fields_by_name[name]
           next query if active_field.nil?
           next query if active_field.value_finder.nil?
 
           active_values = active_field.value_finder.search(
-            op: filter[:op] || filter[:operator],
-            value: filter[:v] || filter[:value],
+            op: operator,
+            value: value,
           )
           next query if active_values.nil?
 
